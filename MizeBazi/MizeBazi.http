@@ -1,0 +1,6 @@
+@MizeBazi_HostAddress = http://localhost:5033
+
+GET {{MizeBazi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
