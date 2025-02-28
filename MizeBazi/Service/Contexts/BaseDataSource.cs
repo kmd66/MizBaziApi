@@ -1,123 +1,73 @@
-﻿//using Azure;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.Hosting;
-//using Microsoft.Win32;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Win32;
+using MizeBazi.Models;
 
-//namespace MizeBazi.DataSource;
+namespace MizeBazi.DataSource;
 
-//public class CntContexts : DbContext
-//{
-//    protected override void OnModelCreating(ModelBuilder modelBuilder)
-//    {
-//        modelBuilder.HasDefaultSchema("org");
-//        postConfig(ref modelBuilder);
-//        productConfig(ref modelBuilder);
-//        commentConfig(ref modelBuilder);
-//        PostOptionConfig(ref modelBuilder);
-//    }
+public class OrgContexts : DbContext
+{
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("org");
+        securityStampConfig(ref modelBuilder);
+        deviceConfig(ref modelBuilder);
+        tokenConfig(ref modelBuilder);
+        userConfig(ref modelBuilder);
+        UsersThumbnailConfig(ref modelBuilder);
+    }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//    {
-//        optionsBuilder.UseSqlServer(Register.ConnectionString, x =>
-//        {
-//            x.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-//        });
-//        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(AppStrings.MizeBaziContext, x =>
+        {
+            x.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+        });
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
-//    }
+    }
 
-//    private void postConfig(ref ModelBuilder modelBuilder)
-//    {
-//        modelBuilder.Entity<Post>()
-//            .HasIndex(p => p.UnicId);
-//        modelBuilder.Entity<Post>()
-//            .Property(b => b.Img).HasDefaultValue("");
-//        modelBuilder
-//            .Entity<PostDto>(eb =>
-//            {
-//                eb.HasNoKey();
-//                eb.ToView("PostViwe");
-//            });
-//        modelBuilder
-//            .Entity<PostProduct>(eb =>
-//            {
-//                eb.HasNoKey();
-//                eb.ToView("PostProductViwe");
-//            });
-//        //modelBuilder.Entity<Post>()
-//        //    .Property(b => b.Published).HasDefaultValue(true);
-//        //modelBuilder.Entity<Post>()
-//        //    .Property(b => b.Special).HasDefaultValue(true);
-//        //modelBuilder.Entity<Post>()
-//        //    .Property(b => b.Access).HasDefaultValue(1);
-//        //modelBuilder.Ignore<PostDto>();
+    private void securityStampConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SecurityStamp>()
+            .HasIndex(p => p.Id);
+        modelBuilder.Entity<SecurityStamp>()
+            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+        modelBuilder.Entity<SecurityStamp>()
+            .Property(b => b.Count).HasDefaultValue(0);
+    }
+    private void deviceConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Device>()
+            .HasIndex(p => p.Id);
+        modelBuilder.Entity<Device>()
+            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+    }
+    private void tokenConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Token>()
+            .HasIndex(p => p.Id);
+    }
+    private void userConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .HasIndex(p => p.UnicId);
+        modelBuilder.Entity<User>()
+            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+        modelBuilder.Entity<User>()
+            .Property(b => b.Type).HasDefaultValue(1);
+    }
+    private void UsersThumbnailConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserThumbnail>()
+            .HasIndex(p => p.Id);
+    }
 
+    public DbSet<SecurityStamp> SecurityStamps { get; set; }
+    public DbSet<Device> Devices { get; set; }
+    public DbSet<Token> Tokens { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<UserThumbnail> UsersThumbnail { get; set; }
 
-//    }
-//    private void productConfig(ref ModelBuilder modelBuilder)
-//    {
-//        modelBuilder.Entity<Product>()
-//            .HasIndex(p => p.UnicId);
-//        modelBuilder.Entity<Product>()
-//            .Property(b => b.ProductID).HasDefaultValue("");
-//        modelBuilder.Entity<Product>()
-//            .Property(b => b.Property).HasDefaultValue("");
-//        modelBuilder.Entity<Product>()
-//            .Property(b => b.Img).HasDefaultValue("");
-//    }
-
-//    private void commentConfig(ref ModelBuilder modelBuilder)
-//    {
-//        modelBuilder.Entity<Comment>()
-//            .HasIndex(p => p.UnicId);
-//        modelBuilder.Entity<Comment>()
-//            .Property(b => b.WebSite).HasDefaultValue("");
-//        modelBuilder.Entity<Comment>()
-//            .HasIndex(p => p.PostId);
-
-//        modelBuilder.Entity<Score>()
-//            .HasIndex(p => p.CommentId);
-//        modelBuilder
-//            .Entity<CommentDto>(eb =>
-//            {
-//                eb.HasNoKey();
-//                eb.ToView("CommentViwe");
-//            });
-//        //modelBuilder.Ignore<CommentDto>();
-//    }
-
-//    private void PostOptionConfig(ref ModelBuilder modelBuilder)
-//    {
-//        modelBuilder.Entity<PostOption>()
-//            .HasIndex(p => p.UnicId);
-//        modelBuilder.Entity<PostOption>()
-//            .Property(b => b.Redirect).HasDefaultValue("");
-//        //modelBuilder.Entity<PostOption>()
-//        //    .Property(b => b.NoFlow).HasDefaultValue(false);
-//        //modelBuilder.Entity<PostOption>()
-//        //    .Property(b => b.NoIndex).HasDefaultValue(false);
-//        //modelBuilder.Entity<PostOption>()
-//        //    .Property(b => b.IsScore).HasDefaultValue(true);
-//        //modelBuilder.Entity<PostOption>()
-//        //    .Property(b => b.Comment).HasDefaultValue(true);
-//    }
-
-//    public DbSet<Post> Posts { get; set; }
-
-//    public DbSet<PostOption> PostOptions { get; set; }
-
-//    public DbSet<Tag> Tags { get; set; }
-
-//    public DbSet<Product> Products { get; set; }
-
-
-//    public DbSet<Comment> Comments { get; set; }
-
-//    public DbSet<Score> Scores { get; set; }
-
-//    public DbSet<PostDto> PostDtos { get; set; }
-
-//    public DbSet<CommentDto> CommentDtos { get; set; }
-
-//    public DbSet<PostProduct> PostProducts { get; set; }
-//}
+}

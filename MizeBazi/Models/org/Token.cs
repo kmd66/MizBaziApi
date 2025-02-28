@@ -6,11 +6,12 @@ namespace MizeBazi.Models;
 
 
 
-[Index(nameof(UnicId))]
-public class Token: BaseModel
+[Index(nameof(Id))]
+public class Token
 {
-    public Guid UnicId { get; set; }
-    
+    public Guid Id { get; set; }
+
+    [Required]
     public long UserId { get; set; }
 
 

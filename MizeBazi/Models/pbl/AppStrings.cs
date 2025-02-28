@@ -6,6 +6,10 @@ public class AppStrings
 {
     public static IConfiguration Configuration { get; set; }
 
+    public static string MizeBaziContext
+        => Configuration.GetSection("ConnectionStrings:MizeBaziContext").Value!;
+
+
     public static string JwtKey 
         => Configuration.GetSection("Jwt:Key").Value!; 
     public static string JwtIv
