@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\org\" />
-    <Folder Include="Service\Contexts\" />
     <Folder Include="Service\Service\" />
   </ItemGroup>
 

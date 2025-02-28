@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MizeBazi.Models;
 
@@ -11,8 +12,10 @@ public class Token: BaseModel
     public Guid UnicId { get; set; }
     
     public long UserId { get; set; }
-    
-    [MaxLength(32)]
+
+
+    [Required]
+    [Column(TypeName = "varchar(32)")]
     public string Hash { get; set; }
 
 }
