@@ -11,7 +11,6 @@ public class Result
 
     public int Code { get; set; }
 
-    public string Description => Message;
 
     private List<string> _errors { get; set; }
 

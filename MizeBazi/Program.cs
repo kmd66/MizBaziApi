@@ -2,6 +2,7 @@
 
 using Microsoft.Identity.Client;
 using MizeBazi.Models;
+using MizeBazi.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.SwaggerHederHandling();
+
 AppStrings.Configuration = builder.Configuration;
+
 
 var app = builder.Build();
 
@@ -46,6 +50,8 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.ExceptionHandling();
 
 app.Run();
 

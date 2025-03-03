@@ -48,6 +48,8 @@ public class OrgContexts : DbContext
     {
         modelBuilder.Entity<Token>()
             .HasIndex(p => p.Id);
+        modelBuilder.Entity<Token>()
+            .Property(b => b.IsValid).HasDefaultValue(true);
     }
     private void userConfig(ref ModelBuilder modelBuilder)
     {

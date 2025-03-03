@@ -24,7 +24,7 @@ namespace MizeBazi.Controllers
         public dynamic Get()
         {
             var jwtHelper = new JwtHelper();
-            var t = jwtHelper.Code(Guid.NewGuid(),  165893213);
+            var t = jwtHelper.Code(Guid.NewGuid(),  165893213, "testwwww".HashText());
             return new
             {
                 GetSecurityStamp = 5.GetSecurityStamp(),

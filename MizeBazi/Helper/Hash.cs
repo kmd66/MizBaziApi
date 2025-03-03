@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using MizeBazi.Models;
-using System.Buffers.Text;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -16,6 +13,9 @@ public static class Hash
 
     public static string GetDigitsFromString(this string input, int from, int to)
         => new string(input.Where(char.IsDigit).ToArray()).Substring(from, to);
+    public static string GetDigitsFromGuid()
+        => Guid.NewGuid().ToString().GetDigitsFromString(0,5);
+
     public static string Md5(this string plainText)
     {
         return HashMd5.Hash(plainText);

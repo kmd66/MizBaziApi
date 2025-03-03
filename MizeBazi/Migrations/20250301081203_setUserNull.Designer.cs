@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MizeBazi.DataSource;
 
@@ -11,9 +12,11 @@ using MizeBazi.DataSource;
 namespace MizeBazi.Migrations
 {
     [DbContext(typeof(OrgContexts))]
-    partial class OrgContextsModelSnapshot : ModelSnapshot
+    [Migration("20250301081203_setUserNull")]
+    partial class setUserNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +35,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 3, 7, 5, 20, 537, DateTimeKind.Local).AddTicks(8077));
+                        .HasDefaultValue(new DateTime(2025, 3, 1, 9, 12, 3, 92, DateTimeKind.Local).AddTicks(1207));
 
                     b.Property<string>("DeviceId")
                         .IsRequired()
@@ -63,7 +66,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 3, 7, 5, 20, 537, DateTimeKind.Local).AddTicks(6168));
+                        .HasDefaultValue(new DateTime(2025, 3, 1, 9, 12, 3, 91, DateTimeKind.Local).AddTicks(9540));
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -90,11 +93,6 @@ namespace MizeBazi.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
-                    b.Property<bool>("IsValid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
@@ -116,7 +114,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 3, 7, 5, 20, 538, DateTimeKind.Local).AddTicks(590));
+                        .HasDefaultValue(new DateTime(2025, 3, 1, 9, 12, 3, 92, DateTimeKind.Local).AddTicks(2997));
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(25)
@@ -127,6 +125,7 @@ namespace MizeBazi.Migrations
                         .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<byte>("Type")
@@ -157,6 +156,7 @@ namespace MizeBazi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<byte[]>("img")
+                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");

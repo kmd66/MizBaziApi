@@ -1,34 +1,32 @@
 ﻿using MizeBazi.Models;
-using System.Buffers.Text;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace MizeBazi.Helper;
 
 public class JwtHelper
 {
 
-    public string Code(Guid id ,long userId)
+    public string Code(Guid id ,long userId, string deviceId)
     {
         var model = new Jwt
         {
             Id = id,
             Date = DateTime.Now,
-            Expiry = DateTime.Now.AddMonths(1),
-            UserId = userId
+            Expiry = DateTime.Now.AddMonths(AppStrings.AccessTokenTime),
+            UserId = userId,
+            DeviceId = deviceId
         };
         return code(model);
 
     }
-    public string Code(long userId)
+    public string Code(long userId, string deviceId)
     {
         var model = new Jwt
         {
             Id = Guid.NewGuid(),
             Date = DateTime.Now,
-            Expiry = DateTime.Now.AddMonths(1),
-            UserId = userId
+            Expiry = DateTime.Now.AddMonths(AppStrings.AccessTokenTime),
+            UserId = userId,
+            DeviceId = deviceId
         };
         return code(model);
 
