@@ -1,4 +1,5 @@
-﻿using MizeBazi.Models;
+﻿using Microsoft.IdentityModel.Tokens;
+using MizeBazi.Models;
 
 namespace MizeBazi.Helper;
 
@@ -40,8 +41,12 @@ public class JwtHelper
     public Jwt Decode(string token){
         try
         {
+            if (token.IsNullOrEmpty())
+                return null;
 
             var model = System.Text.Json.JsonSerializer.Deserialize<Jwt>(token.AesDecrypt(AppStrings.JwtKey, AppStrings.JwtIv));
+            if (model.Expiry < DateTime.Now)
+                return null;
             return model;
          }
         catch

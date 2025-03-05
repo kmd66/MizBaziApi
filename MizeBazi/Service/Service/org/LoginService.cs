@@ -3,27 +3,28 @@ using MizeBazi.Models;
 
 namespace MizeBazi.Service;
 
-public class LoginService
+public class LoginService : IService
 {
     //readonly DataSource.LoginDataSource _loginDataSource;
-
-    public LoginService()
+    readonly Helper.IRequestInfo _requestInfo;
+    public LoginService(IRequestInfo requestInfo)
     {
+        _requestInfo = requestInfo;
     }
 
-    public async Task<Result> SendSecurityStamp(SendSecurityStampDto model, string Did)
+    public async Task<Result> SendSecurityStamp(SendSecurityStampDto model)
     {
 
         new UserValidate().SendSecurityStamp(model);
 
-        var deviceModel = new DeviceDto(Guid.NewGuid(), Did, model.Phone, DateTime.Now);
+        var deviceModel = new DeviceDto(Guid.NewGuid(), _requestInfo.DeviceId, model.Phone, DateTime.Now);
         await new DeviceValidate().SendSecurityStamp(deviceModel);
 
         await new SecurityStampValidate().SendSecurityStamp(model.Phone);
 
 
-        var userDataSource = new DataSource.UserDataSource();
-        var userResult = await userDataSource.GetByPhone(model.Phone);
+            var userDataSource = new DataSource.UserDataSource();
+            var userResult = await userDataSource.GetByPhone(model.Phone);
 
 
         if (userResult.Data == null)
@@ -33,9 +34,6 @@ public class LoginService
         }
 
 
-        var deviceDataSource = new DataSource.DeviceDataSource();
-        await deviceDataSource.Add(deviceModel);
-
         var SecurityStampModel = new SecurityStampDto(Guid.NewGuid(), model.Phone, Helper.Hash.GetDigitsFromGuid(), 0, DateTime.Now);
 
         var SecurityStamDataSource = new DataSource.SecurityStampDataSource();
@@ -44,7 +42,7 @@ public class LoginService
         return Result.Successful();
     }
 
-    public async Task<Result<string>> GetToken(SendSecurityStampDto model, string Did)
+    public async Task<Result<string>> GetToken(SendSecurityStampDto model)
     {
         new UserValidate().SendSecurityStamp(model);
 
@@ -72,11 +70,15 @@ public class LoginService
         await tokenDataSource.RemoveAllToken(userResult.Data.Id);
 
         var jwtHelper = new JwtHelper();
-        var token = jwtHelper.Code(tokenId, userResult.Data.Id, Did);
+        var token = jwtHelper.Code(tokenId, userResult.Data.Id, _requestInfo.DeviceId);
         var tokenModel = new TokenDto(tokenId, userResult.Data.Id, token.Md5(), true);
 
         await tokenDataSource.Add(tokenModel);
         await securityStamDataSource.Expiry(result.Data.Id);
+
+        var deviceDataSource = new DataSource.DeviceDataSource();
+        var deviceModel = new DeviceDto(Guid.NewGuid(), _requestInfo.DeviceId, model.Phone, DateTime.Now);
+        await deviceDataSource.Add(deviceModel);
 
         return Result<string>.Successful(data: token);
     }

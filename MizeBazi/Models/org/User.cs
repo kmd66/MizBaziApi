@@ -1,8 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
 
 namespace MizeBazi.Models;
+
+public record UserEdit(string FirstName, string LastName, string UserName);
 
 public record UserDto(long Id, Guid UnicId, string FirstName, string LastName, string Phone, string UserName, byte Type, DateTime Date);
 
@@ -16,10 +20,42 @@ public class UserValidate
             throw MizeBaziException.Error(message: "شماره تماس را وارد کنید");
         if (model.Phone.Length != 11 || model.Phone[0] != '0' || model.Phone[1] != '9')
             throw MizeBaziException.Error(message: "شماره تماس صحیح وارد نشده است");
+    }
+    public void Edit(UserEdit model)
+    {
+        if (string.IsNullOrEmpty(model.FirstName))
+            throw MizeBaziException.Error(message: "نام را وارد کنید");
+        if (string.IsNullOrEmpty(model.LastName))
+            throw MizeBaziException.Error(message: " نام خانوادگی وارد نشده است");
 
+        //if (model.FirstName.Contains(" "))
+        //    throw MizeBaziException.Error(message: "نام باید بدون فاصله باشد");
+        //if (model.LastName.Contains(" "))
+        //    throw MizeBaziException.Error(message: " نام خانوادگی وارد نشده است");
+
+        if (model.LastName.Length < 4 || model.FirstName.Length < 4)
+            throw MizeBaziException.Error(message: " نام و نام خانوادگی هر کدام باید بیش از 3 حرف باشد");
+        if (model.LastName.Length > 25 || model.FirstName.Length > 25)
+            throw MizeBaziException.Error(message: " نام و نام خانوادگی نمیتواند بیش از 25 حرف باشد");
+
+    }
+    public void EditUserName(UserEdit model)
+    {
+        if (model.UserName.Length < 5)
+            throw MizeBaziException.Error(message: " نام کاربری باید بیش از 5 حرف باشد");
+        if (model.UserName.Length > 25)
+            throw MizeBaziException.Error(message: " نام کاربری نمیتواند بیش از 25 حرف باشد");
+
+        if (!Regex.IsMatch(model.UserName, @"^[a-zA-Z0-9]+$"))
+            throw MizeBaziException.Error(message: " نام کاربری باید از اعداد و حروف لاتین باشد");
     }
 }
 
+[Keyless]
+public class PostView : User
+{
+    public byte[] img { get; set; }
+}
 public class User : BaseModel
 {
     [MaxLength(25)]

@@ -12,8 +12,8 @@ using MizeBazi.DataSource;
 namespace MizeBazi.Migrations
 {
     [DbContext(typeof(OrgContexts))]
-    [Migration("20250228191004_creatdb")]
-    partial class creatdb
+    [Migration("20250305074250_UserThumbnailAddKey")]
+    partial class UserThumbnailAddKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(5629));
+                        .HasDefaultValue(new DateTime(2025, 3, 5, 8, 42, 49, 746, DateTimeKind.Local).AddTicks(3902));
 
                     b.Property<string>("DeviceId")
                         .IsRequired()
@@ -66,7 +66,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(3954));
+                        .HasDefaultValue(new DateTime(2025, 3, 5, 8, 42, 49, 746, DateTimeKind.Local).AddTicks(2365));
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -93,6 +93,11 @@ namespace MizeBazi.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
+                    b.Property<bool>("IsValid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
@@ -114,20 +119,17 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(7470));
+                        .HasDefaultValue(new DateTime(2025, 3, 5, 8, 42, 49, 746, DateTimeKind.Local).AddTicks(6420));
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<byte>("Type")
@@ -139,7 +141,6 @@ namespace MizeBazi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
@@ -153,18 +154,12 @@ namespace MizeBazi.Migrations
             modelBuilder.Entity("MizeBazi.Models.UserThumbnail", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
                     b.Property<byte[]>("img")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id");
 
                     b.ToTable("UsersThumbnail", "org");
                 });

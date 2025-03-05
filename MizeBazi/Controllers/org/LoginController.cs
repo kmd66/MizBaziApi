@@ -1,26 +1,25 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MizeBazi.Helper;
+using MizeBazi.Service;
 
 namespace MizeBazi.Controllers
 {
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class LoginController : ControllerBase
+    public class LoginController : _ControllerBase
     {
-        readonly Service.LoginService _loginService;
+        readonly Service.LoginService _service;
 
-        public LoginController()
+        public LoginController(Service.LoginService service)
         {
-            _loginService = new Service.LoginService();
+            _service = service;
         }
 
-        [HttpPost, Route("SendSecurityStamp")]
+        [HttpPost, Route("GetUser")]
         public Task<Models.Result> SendSecurityStamp([FromBody] Models.SendSecurityStampDto model)
-            => _loginService.SendSecurityStamp(model, HttpContext.Request.Headers["D-Id"].First());
+            => _service.SendSecurityStamp(model);
 
-        [HttpPost, Route("GetToken")]
+        [AllowAnonymous, HttpPost, Route("GetToken")]
         public Task<Models.Result<string>> GetToken([FromBody] Models.SendSecurityStampDto model)
-            => _loginService.GetToken(model, HttpContext.Request.Headers["D-Id"].First());
+            => _service.GetToken(model);
 
     }
 }

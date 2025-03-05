@@ -20,12 +20,5 @@ namespace MizeBazi.Controllers
             return Result<CheckHost>.Successful(data: new CheckHost { WebWersion = WebWersion });
         }
 
-        [HttpPost, Route("api/testCheckHost")]
-        public Result<CheckHost> test([FromBody] CheckHost model)
-        {
-            model.WebWersion = model.WebWersion + " ss";
-            return Result<CheckHost>.Successful(data: model);
-        }
-
     }
 }

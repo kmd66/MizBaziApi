@@ -14,6 +14,28 @@ namespace MizeBazi.DataSource
             _orgContexts = new OrgContexts();
         }
 
+        public async Task<Result<TokenDto>> Get(Guid id)
+        {
+            try
+            {
+                var ett = await _orgContexts.Tokens.Where(x =>
+                    x.Id == id && x.IsValid == true
+                ).AsNoTracking().Take(1).FirstOrDefaultAsync();
+
+                var returnModel = Map<TokenDto, Token>(ett);
+
+                return Result<TokenDto>.Successful(data: returnModel);
+            }
+            catch (Exception ex)
+            {
+                throw MizeBaziException.Error(message: ex.Message);
+            }
+            finally
+            {
+                _orgContexts.ChangeTracker.Clear();
+            }
+        }
+
         public async Task<Result> RemoveAllToken(long UserId)
         {
             try

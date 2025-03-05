@@ -28,8 +28,8 @@ namespace MizeBazi.DataSource
                             group d by d.Phone
                             into g
                             select new DeviceGroupBy { Phone = g.Key, Count = g.Count() };
-                var s = query.ToQueryString();
-                var ett = await query.ToListAsync();
+
+                var ett = await query.AsNoTracking().ToListAsync();
 
                 return Result<List<DeviceGroupBy>>.Successful(data: ett);
 

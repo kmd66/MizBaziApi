@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Win32;
 using MizeBazi.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MizeBazi.DataSource;
 
@@ -59,17 +60,30 @@ public class OrgContexts : DbContext
             .Property(b => b.Date).HasDefaultValue(DateTime.Now);
         modelBuilder.Entity<User>()
             .Property(b => b.Type).HasDefaultValue(1);
+        modelBuilder
+               .Entity<PostView>(eb =>
+               {
+                   eb.HasNoKey();
+                   eb.ToView("PostView");
+               });
     }
     private void UsersThumbnailConfig(ref ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserThumbnail>()
-            .HasIndex(p => p.Id);
+        //modelBuilder.Entity<UserThumbnail>().Property(e => e.Id)
+        //    .ValueGeneratedNever();
+        //modelBuilder.Entity<UserThumbnail>().HasOne<User>()
+        //    .WithOne()
+        //    .HasForeignKey<UserThumbnail>(p => p.Id);
+        modelBuilder.Entity<UserThumbnail>().Property(e => e.Id)
+            .ValueGeneratedNever();
     }
 
     public DbSet<SecurityStamp> SecurityStamps { get; set; }
     public DbSet<Device> Devices { get; set; }
     public DbSet<Token> Tokens { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<PostView> PostViews { get; set; }
     public DbSet<UserThumbnail> UsersThumbnail { get; set; }
+    //public DbSet<UserThumbnail2> UsersThumbnail2 { get; set; }
 
 }

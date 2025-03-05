@@ -6,21 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MizeBazi.Migrations
 {
     /// <inheritdoc />
-    public partial class creatdb : Migration
+    public partial class addorg : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "Date",
-                schema: "org",
-                table: "SecurityStamps",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(3954),
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldDefaultValue: new DateTime(2025, 2, 28, 19, 56, 27, 935, DateTimeKind.Local).AddTicks(4802));
+            migrationBuilder.EnsureSchema(
+                name: "org");
 
             migrationBuilder.CreateTable(
                 name: "Devices",
@@ -30,11 +22,27 @@ namespace MizeBazi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DeviceId = table.Column<string>(type: "varchar(32)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(11)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(5629))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(3705))
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Devices", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SecurityStamps",
+                schema: "org",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(11)", nullable: false),
+                    Stamp = table.Column<string>(type: "varchar(5)", nullable: false),
+                    Count = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(2159))
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SecurityStamps", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,7 +52,8 @@ namespace MizeBazi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    Hash = table.Column<string>(type: "varchar(32)", nullable: false)
+                    Hash = table.Column<string>(type: "varchar(32)", nullable: false),
+                    IsValid = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -58,12 +67,12 @@ namespace MizeBazi.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Phone = table.Column<string>(type: "varchar(11)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
+                    Phone = table.Column<string>(type: "varchar(11)", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
                     Type = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)1),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(7470)),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(6201)),
                     UnicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -76,9 +85,8 @@ namespace MizeBazi.Migrations
                 schema: "org",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    img = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    img = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,6 +100,12 @@ namespace MizeBazi.Migrations
                 column: "Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SecurityStamps_Id",
+                schema: "org",
+                table: "SecurityStamps",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tokens_Id",
                 schema: "org",
                 table: "Tokens",
@@ -102,12 +116,6 @@ namespace MizeBazi.Migrations
                 schema: "org",
                 table: "Users",
                 column: "UnicId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsersThumbnail_Id",
-                schema: "org",
-                table: "UsersThumbnail",
-                column: "Id");
         }
 
         /// <inheritdoc />
@@ -115,6 +123,10 @@ namespace MizeBazi.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Devices",
+                schema: "org");
+
+            migrationBuilder.DropTable(
+                name: "SecurityStamps",
                 schema: "org");
 
             migrationBuilder.DropTable(
@@ -128,17 +140,6 @@ namespace MizeBazi.Migrations
             migrationBuilder.DropTable(
                 name: "UsersThumbnail",
                 schema: "org");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "Date",
-                schema: "org",
-                table: "SecurityStamps",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(2025, 2, 28, 19, 56, 27, 935, DateTimeKind.Local).AddTicks(4802),
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldDefaultValue: new DateTime(2025, 2, 28, 20, 10, 3, 928, DateTimeKind.Local).AddTicks(3954));
         }
     }
 }

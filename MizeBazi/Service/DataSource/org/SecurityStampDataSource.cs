@@ -22,7 +22,7 @@ namespace MizeBazi.DataSource
                 var ett = await _orgContexts.SecurityStamps.Where(x =>
                     x.Phone == phone
                     && x.Date > date
-                ).OrderByDescending(o => o.Date).Take(Task).ToListAsync();
+                ).AsNoTracking().OrderByDescending(o => o.Date).Take(Task).ToListAsync();
 
                 var returnModel = MapList<SecurityStampDto, SecurityStamp>(ett) as List<SecurityStampDto>;
 
@@ -68,7 +68,7 @@ namespace MizeBazi.DataSource
             {
                 var ett = await _orgContexts.SecurityStamps.Where(x =>
                     x.Phone == phone
-                ).OrderByDescending(o => o.Date).FirstOrDefaultAsync();
+                ).AsNoTracking().OrderByDescending(o => o.Date).FirstOrDefaultAsync();
 
                 if (ett == null)
                     return Result<SecurityStampDto>.Successful(data: null);

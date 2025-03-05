@@ -17,4 +17,12 @@ public class AppStrings
 
     public static int AccessTokenTime
         =>int.Parse(Configuration.GetSection("Jwt:AccessTokenTime").Value!);
+
+
+    public static int AvatarSize
+        => int.Parse(Configuration.GetSection("File:AvatarSize").Value!);
+    public static int AvatarMaxWidth
+        => int.Parse(Configuration.GetSection("File:AvatarMaxWidth").Value!);
+    public static int AvatarMaxHeigh
+        => int.Parse(Configuration.GetSection("File:AvatarMaxHeigh").Value!);
 }

@@ -12,8 +12,8 @@ using MizeBazi.DataSource;
 namespace MizeBazi.Migrations
 {
     [DbContext(typeof(OrgContexts))]
-    [Migration("20250303060523_addIsvalidToken")]
-    partial class addIsvalidToken
+    [Migration("20250305073924_addorg")]
+    partial class addorg
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 3, 7, 5, 20, 537, DateTimeKind.Local).AddTicks(8077));
+                        .HasDefaultValue(new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(3705));
 
                     b.Property<string>("DeviceId")
                         .IsRequired()
@@ -66,7 +66,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 3, 7, 5, 20, 537, DateTimeKind.Local).AddTicks(6168));
+                        .HasDefaultValue(new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(2159));
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -119,7 +119,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 3, 7, 5, 20, 538, DateTimeKind.Local).AddTicks(590));
+                        .HasDefaultValue(new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(6201));
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(25)
@@ -154,17 +154,12 @@ namespace MizeBazi.Migrations
             modelBuilder.Entity("MizeBazi.Models.UserThumbnail", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<byte[]>("img")
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id");
 
                     b.ToTable("UsersThumbnail", "org");
                 });

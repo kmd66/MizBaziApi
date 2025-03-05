@@ -3,7 +3,7 @@
 افزودن ابزار
 dotnet tool install --global dotnet-ef --version 8.*
 
-dotnet ef migrations add [Migration Name] --context OrgContexts
+dotnet ef migrations add UserThumbnailAddKey --context OrgContexts
 dotnet ef database update --context OrgContexts
 
 --------------------------------

@@ -10,23 +10,23 @@ public static class HederHandling
         return services.AddSwaggerGen(options =>
         {
             options.OperationFilter<AddDIdHeaderParameter>();
-            options.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Description = "Authorization Heder",
-                Type = SecuritySchemeType.ApiKey
-            });
+            //options.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
+            //{
+            //    Name = "Authorization",
+            //    In = ParameterLocation.Header,
+            //    Description = "Authorization Heder",
+            //    Type = SecuritySchemeType.ApiKey
+            //});
 
-            options.AddSecurityDefinition("test", new OpenApiSecurityScheme
-            {
-                Name = "test",
-                In = ParameterLocation.Header,
-                Description = "test",
-                Type = SecuritySchemeType.ApiKey
-            });
+            //options.AddSecurityDefinition("test", new OpenApiSecurityScheme
+            //{
+            //    Name = "test",
+            //    In = ParameterLocation.Header,
+            //    Description = "test",
+            //    Type = SecuritySchemeType.ApiKey
+            //});
 
-            options.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
+            //options.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
         });
     }
 
@@ -66,5 +66,18 @@ partial class AddDIdHeaderParameter : IOperationFilter
                 Default = new OpenApiString("067a6307cc24ecdf3809125864da24ef")
             }
         });
+        operation.Parameters.Add(new OpenApiParameter
+        {
+            Name = "Auth",
+            In = ParameterLocation.Header,
+            Description = "Auth header",
+            Required = false,
+            Schema = new OpenApiSchema
+            {
+                Type = "string",
+                Default = new OpenApiString("SijxYoHyHLWXf+WDK3USD7aYoLRSyHc4oxxLjRswit1ZFR6zrXynjwqB3HJ9ijDcSYIAH7WeyQ6Wo9UVHUBtzuftvxkpFQNWtZ4HXk8s9kWzwX1ASlXcL3JpNyhPKDPiwyCGtla0J8W43HbjQfQsjgDYEVvZX7PmT+Ua71SCH0C3ZPatKoAiX1iC1ddFErUaDUH2xNEklcUVfGdXj9U2z111LesFu3PuXWl+rBeO81jwBKJJn3MfFlXJPOoB2vKD")
+            }
+        });
     }
 }
+// 

@@ -1,7 +1,4 @@
-﻿
-
-using Microsoft.Identity.Client;
-using MizeBazi.Models;
+﻿using MizeBazi.Models;
 using MizeBazi.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +24,7 @@ builder.Services.SwaggerHederHandling();
 
 AppStrings.Configuration = builder.Configuration;
 
+builder.Services.InjectionClass();
 
 var app = builder.Build();
 
@@ -54,4 +52,5 @@ app.MapControllerRoute(
 app.ExceptionHandling();
 
 app.Run();
+
 
