@@ -16,15 +16,15 @@ public class UserService : IService
     {
         var tokenDataSource = new DataSource.TokenDataSource();
         var tokenResult = await tokenDataSource.Get(_requestInfo.model.Id);
-        if (tokenResult.Data == null || tokenResult.Data.Hash != _requestInfo.Token.Md5())
+        if (tokenResult.data == null || tokenResult.data.Hash != _requestInfo.Token.Md5())
             return Result<UserDto>.Failure(code: 401, message: "401");
 
         var userDataSource = new DataSource.UserDataSource();
         var userResult = await userDataSource.Get(_requestInfo.model.UserId);
-        if (userResult.Data == null)
+        if (userResult.data == null)
             return Result<UserDto>.Failure(code: 401, message: "401");
 
-        return Result<UserDto>.Successful(data: userResult.Data);
+        return Result<UserDto>.Successful(data: userResult.data);
     }
 
     public async Task<Result> Edit(UserEdit model)
@@ -35,18 +35,18 @@ public class UserService : IService
         var userDataSource = new DataSource.UserDataSource();
 
         var userResult = await userDataSource.Get(_requestInfo.model.UserId);
-        if (userResult.Data == null)
+        if (userResult.data == null)
             return Result<UserDto>.Failure(code: 401, message: "401");
 
-        if (string.IsNullOrEmpty(userResult.Data.UserName))
+        if (string.IsNullOrEmpty(userResult.data.UserName))
         {
             validate.EditUserName(model);
             var uniqueUserName = await userDataSource.UniqueUserName(model.UserName);
-            if (!uniqueUserName.Success)
+            if (!uniqueUserName.success)
                 return uniqueUserName;
         }
 
-        await userDataSource.Edit(model, _requestInfo.model.UserId, string.IsNullOrEmpty(userResult.Data.UserName));
+        await userDataSource.Edit(model, _requestInfo.model.UserId, string.IsNullOrEmpty(userResult.data.UserName));
 
         return Result.Successful();
     }

@@ -21,17 +21,19 @@ public static class MizeBaziExceptionHandling
                            if (e.Error is MizeBaziException)
                            {
 
-                               var options = new JsonSerializerOptions
-                               {
-                                   PropertyNamingPolicy = new LowerCaseNamingPolicy(),
-                                   WriteIndented = true // برای خواناتر شدن خروجی
-                               };
+                               //var options = new JsonSerializerOptions
+                               //{
+                               //    PropertyNamingPolicy = new LowerCaseNamingPolicy(),
+                               //    WriteIndented = true // برای خواناتر شدن خروجی
+                               //};
 
                                context.Response.ContentType = context.Request.ContentType != null ? context.Request.ContentType : "application/json";
                                MizeBaziException ex = (MizeBaziException)e.Error;
                                context.Response.StatusCode = 200;
-                               string json = JsonSerializer.Serialize(ex.result, options);
+                               string json = JsonSerializer.Serialize(ex.result/*, options*/);
+                               
                                await context.Response.WriteAsync(json).ConfigureAwait(false);
+
                            }
                            else
                            {

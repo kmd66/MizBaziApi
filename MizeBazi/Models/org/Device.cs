@@ -18,11 +18,11 @@ public class DeviceValidate
         var deviceDataSource = new DataSource.DeviceDataSource();
         var listResult = await deviceDataSource.List(model2);
 
-        if (listResult.Data.Count > 1)
+        if (listResult.data.Count > 1)
         {
-            if(!listResult.Data.Any(x=> x.Phone == model.Phone))
+            if(!listResult.data.Any(x=> x.Phone == model.Phone))
             {
-                var phoneNumber = string.Join(", ", listResult.Data.Select(p => p.Phone));
+                var phoneNumber = string.Join(", ", listResult.data.Select(p => p.Phone));
                 throw MizeBaziException.Error(errors: new List<string> {
                     "محدودیت ورود",
                     $"لطفا با یکی از شمارههای {phoneNumber} وارد شوید",

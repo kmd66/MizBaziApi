@@ -14,7 +14,7 @@ public class SecurityStampValidate
         var securityStampDataSource = new DataSource.SecurityStampDataSource();
         var securityStampResult = await securityStampDataSource.ListByPhone(phone, DateTime.Now.AddDays(-1));
 
-        if(securityStampResult.Data?.Count >= 5)
+        if(securityStampResult.data?.Count >= 5)
             throw MizeBaziException.Error(errors: new List<string> {
                     "محدودیت ارسال پیامک.",
                     $"امکان ارسال بیش از 5 پیامک در روز وجود ندارد",
