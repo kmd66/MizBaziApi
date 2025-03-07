@@ -13,7 +13,7 @@ namespace MizeBazi.Controllers
             _service = service;
         }
 
-        [HttpPost, Route("GetUser")]
+        [AllowAnonymous, HttpPost, Route("GetUser")]
         public Task<Models.Result> SendSecurityStamp([FromBody] Models.SendSecurityStampDto model)
             => _service.SendSecurityStamp(model);
 

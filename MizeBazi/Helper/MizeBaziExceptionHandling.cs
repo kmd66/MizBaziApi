@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using MizeBazi.Models;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace MizeBazi.Helper;
 
 public static class MizeBaziExceptionHandling
@@ -17,10 +20,17 @@ public static class MizeBaziExceptionHandling
                        {
                            if (e.Error is MizeBaziException)
                            {
+
+                               var options = new JsonSerializerOptions
+                               {
+                                   PropertyNamingPolicy = new LowerCaseNamingPolicy(),
+                                   WriteIndented = true // برای خواناتر شدن خروجی
+                               };
+
                                context.Response.ContentType = context.Request.ContentType != null ? context.Request.ContentType : "application/json";
                                MizeBaziException ex = (MizeBaziException)e.Error;
                                context.Response.StatusCode = 200;
-                               var json = System.Text.Json.JsonSerializer.Serialize(ex.result);
+                               string json = JsonSerializer.Serialize(ex.result, options);
                                await context.Response.WriteAsync(json).ConfigureAwait(false);
                            }
                            else
@@ -34,4 +44,14 @@ public static class MizeBaziExceptionHandling
        );
     }
 
+}
+public class LowerCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name)
+    {
+        if (string.IsNullOrEmpty(name) || !char.IsUpper(name[0]))
+            return name;
+
+        return name.ToLower();
+    }
 }

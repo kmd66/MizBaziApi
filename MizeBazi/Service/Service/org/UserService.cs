@@ -51,7 +51,7 @@ public class UserService : IService
         return Result.Successful();
     }
 
-    public async Task<Result> AddAvatar(IFormFile file)
+    public async Task<Result> AddAvatar(IFormFile file, string contentType)
     {
         try
         {
@@ -62,10 +62,10 @@ public class UserService : IService
             file.CopyTo(target);
             var fileData = target.ToArray();
 
-            if (!FileHelper.Validate(file.FileName, file.ContentType, fileData,
+            if (!FileHelper.Validate(file.FileName, contentType, fileData,
                 FileExtensions.jpeg
                 | FileExtensions.jpg
-                | FileExtensions.png
+                //| FileExtensions.png
                 ))
                 return Result.Failure(message: "مجاز به آپلود این نوع فایل نیستید");
 

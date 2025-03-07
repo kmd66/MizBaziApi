@@ -22,17 +22,14 @@ public class LoginService : IService
 
         await new SecurityStampValidate().SendSecurityStamp(model.Phone);
 
-
-            var userDataSource = new DataSource.UserDataSource();
-            var userResult = await userDataSource.GetByPhone(model.Phone);
-
+        var userDataSource = new DataSource.UserDataSource();
+        var userResult = await userDataSource.GetByPhone(model.Phone);
 
         if (userResult.Data == null)
         {
             var addModel = new UserRegister(UnicId: Guid.NewGuid(), Phone: model.Phone);
             await userDataSource.Add(addModel);
         }
-
 
         var SecurityStampModel = new SecurityStampDto(Guid.NewGuid(), model.Phone, Helper.Hash.GetDigitsFromGuid(), 0, DateTime.Now);
 
@@ -50,9 +47,9 @@ public class LoginService : IService
         var result = await securityStamDataSource.GetLast(model.Phone);
 
         if (result.Data == null || result.Data.Count > 3)
-            return Result<string>.Failure(message:"محدودیت در بررسی otp. دوباره درخاست ارسال پیامک دهید");
+            return Result<string>.Failure(message: "محدودیت در بررسی otp. دوباره درخاست ارسال پیامک دهید");
 
-        if (result.Data.Date.AddSeconds(125) < DateTime.Now )
+        if (result.Data.Date.AddSeconds(125) < DateTime.Now)
             return Result<string>.Failure(message: "کد ارسالی منقضی شده است. دوباره درخاست ارسال پیامک دهید");
 
         if (result.Data.Stamp != model.Stamp)

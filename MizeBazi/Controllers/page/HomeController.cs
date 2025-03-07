@@ -13,7 +13,7 @@ namespace MizeBazi.Controllers
             return View();
         }
 
-
+        //[Helper.Authorize]
         [HttpPost, Route("api/CheckHost")]
         public Result<CheckHost> Get()
         {

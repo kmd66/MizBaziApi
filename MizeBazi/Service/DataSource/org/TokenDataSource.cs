@@ -40,7 +40,7 @@ namespace MizeBazi.DataSource
         {
             try
             {
-                var sqlQuery = $"UPDATE [org].[Tokens] SET IsValid = 0 WHERE [UserId] = {UserId}";
+                var sqlQuery = $"UPDATE [org].[Tokens] SET IsValid = 0 WHERE [UserId] = {UserId} AND IsValid = 1";
                 _orgContexts.Database.ExecuteSqlRaw(sqlQuery);
 
                 return Result.Successful();

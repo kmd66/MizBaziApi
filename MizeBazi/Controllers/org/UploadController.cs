@@ -20,13 +20,13 @@ namespace MizeBazi.Controllers
 
             try
             {
+                var contentType = Request.Headers["S-Type"].FirstOrDefault();
                 if (filelist.Count > 0)
                 {
                     var file = filelist[0];
-                    await userService.AddAvatar(file);
+                    return await userService.AddAvatar(file, contentType);
                 }
-                return Result.Successful();
-
+                return Result.Failure(message: "filelist.Count > 0");
             }
             catch (Exception e)
             {

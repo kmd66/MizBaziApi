@@ -16,7 +16,7 @@ public class Result
 
     public string Message
     {
-        get => _errors == null ? null : _errors.FirstOrDefault();
+        get => _errors == null || _errors.Count == 0 ? null : _errors.Count > 1? string.Join("\n", _errors): _errors.FirstOrDefault();
         set
         {
             if (_errors == null)
