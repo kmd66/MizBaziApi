@@ -68,6 +68,19 @@ public static class FileHelper
             }
         }
     }
+    public static byte[] ResizeImageWithAspectRatio(byte[] inputImageBytes, int size)
+    {
+        using (var image = Image.Load(inputImageBytes))
+        {
+            image.Mutate(x => x.Resize(size, size));
+
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                image.Save(memoryStream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+                return memoryStream.ToArray();
+            }
+        }
+    }
 
     public static bool Validate(string fileName, string fileContentType, byte[] fileData, FileExtensions validExtensions)
     {

@@ -69,7 +69,7 @@ public class UserService : IService
                 ))
                 return Result.Failure(message: "مجاز به آپلود این نوع فایل نیستید");
 
-            var data = FileHelper.ResizeImageWithAspectRatio(fileData, AppStrings.AvatarMaxWidth, AppStrings.AvatarMaxHeigh);
+            var data = FileHelper.ResizeImageWithAspectRatio(fileData, AppStrings.AvatarMaxWidth);
 
             var userDataSource = new DataSource.UserDataSource();
             await userDataSource.AddAvatar(new UserThumbnail { Id = _requestInfo.model.UserId, img = data });
