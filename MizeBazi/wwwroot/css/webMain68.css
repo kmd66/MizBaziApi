@@ -1,0 +1,7 @@
+﻿.fading-image {
+    background-image: url('../img/webHome/3.png');
+}
+
+    .fading-image::after {
+        background: radial-gradient(circle, #141e30b8 0%, var(--BackgroundColor) 100%)
+    }

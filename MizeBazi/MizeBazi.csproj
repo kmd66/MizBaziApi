@@ -22,4 +22,11 @@
 		<Folder Include="Service\DataScript\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="Views\Pages\Main45.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
 </Project>

@@ -1,22 +1,101 @@
-html {
-  font-size: 14px;
+﻿:root {
+    --BackgroundColor: rgb(20 30 48);
+    --BaseColor: rgb(0 71 91);
+    --TextColor: rgb(200 200 200);
+    /*const Color TextColor2 = Color.fromRGBO(207, 216, 236, 0.6);
+    const Color LinkColor = Color.fromRGBO(3, 218, 198, 1);
+    const Color BtnColor = Color.fromRGBO(66, 72, 101, 1.0);
+    Color BtnShadowColor({ double opacity = 0.3 })= > Color.fromRGBO(207, 216, 236, opacity);
+    const Color ErrorColor = Color.fromRGBO(207, 102, 121, 1);
+    const Color SuccessColor = Color.fromRGBO(76, 175, 80, 1);*/
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+::-webkit-scrollbar {
+    width: 3px; /* عرض اسکرول بار */
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+::-webkit-scrollbar-track {
+    background: #888; /* رنگ پس‌زمینه اسکرول بار */
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+::-webkit-scrollbar-thumb {
+    background: #555; /* رنگ اسکرول بار */
+    border-radius: 6px; /* گرد کردن گوشه‌های اسکرول بار */
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #101010; /* رنگ اسکرول بار هنگام هاور */
+    }
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+* {
+    margin: 0;
 }
 
 body {
-  margin-bottom: 60px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+input, button, textarea, select {
+    font: inherit;
+}
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+p {
+    text-wrap: pretty;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+}
+#root, #__next {
+    isolation: isolate;
+}
+body {
+    background: var(--BackgroundColor);
+    color: var(--TextColor);
+    direction: rtl;
+}
+a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+    a:hover {
+        color: #FFFFFF;
+    }
+.fixTest {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+}
+
+.gradient-bc1 {
+    background: linear-gradient(89deg, #ff000047, #10ff006b, #0037ff61);
+}
+.fading-image {
+    width: 100%;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    position: fixed;
+}
+
+    .fading-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, #141e30e6 0%, var(--BackgroundColor) 100%)
+    }
+.container {
+    position: relative;
+    padding: 20px 15px;
 }

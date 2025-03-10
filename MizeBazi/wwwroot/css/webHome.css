@@ -1,0 +1,29 @@
+﻿body{
+    color:white
+}
+.mainImg {
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
+}
+
+.divMain {
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+}
+
+.spanName {
+    padding: 3px 0 7px 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #69696966;
+}
+.spanName-rr {
+    color: red;
+}
