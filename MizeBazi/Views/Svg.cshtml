@@ -1,0 +1,41 @@
+﻿@model List<string>
+<style>
+    .iconsax svg {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+    }
+    .w{
+        padding: 5px;
+        margin: 5px;
+        background: #291f65;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .g {
+        display: block;
+    }
+</style>
+<div style="margin:20px">
+    <input type="type" name="name" value="" />
+</div>
+@foreach (var item in Model)
+{
+    <div class="w" data-name="@item">
+        <i class="iconsax" icon-name="@item"></i>  <i class="g">@item</i>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $("input").on("change paste keyup", function () {
+            var v = $(this).val();
+            if (v && v.length > 1) {
+                $(".w").css({ "display": "none" });
+                $(`[data-name*="${v}"]`).css({ "display": "block" });
+
+            }
+        });
+    </script>
+}

@@ -18,8 +18,8 @@ function init_iconsax() {
     });
 }
 
-function fUrlBack() {
-    window.flutter_inappwebview.callHandler('fUrlBack', '');
+function f_UrlBack() {
+    window.flutter_inappwebview.callHandler('f_urlBack', '');
 }
 $(window).on('popstate', function (e) {
     v

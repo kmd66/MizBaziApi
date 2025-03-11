@@ -1,8 +1,11 @@
-﻿$(".divMain").css({ "height": window.innerHeight / 4, "width": "100%" });
+﻿let _link;
+
+$(".divMain").css({ "height": window.innerHeight / 4, "width": "100%" });
+
 $(document).ready(function () {
     $('.divMain').on('click', function () {
-        var link = $(this).data('link');
-        if (link == 25)
+        _link = $(this).data('link');
+        if (_link == 25)
             $("#btnTestKhande").css({ "display": "block" });
         else
             $("#btnTestKhande").css({ "display": "none" });
@@ -12,4 +15,17 @@ $(document).ready(function () {
         //window.flutter_inappwebview.callHandler('onUrlLink', link);
     });
 });
+
+function f_UrlHelp() {
+    window.flutter_inappwebview.callHandler('f_urlHelp', _link);
+}
+function f_UrlMain() {
+    window.flutter_inappwebview.callHandler('f_urlMain', _link);
+}
+function f_testKhande() {
+    window.flutter_inappwebview.callHandler('f_testKhande');
+}
+function f_joinRoom() {
+    window.flutter_inappwebview.callHandler('f_joinRoom');
+}
 
