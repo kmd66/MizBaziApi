@@ -13,13 +13,29 @@ namespace MizeBazi.Controllers
 
         public ActionResult Home() => View();
 
-        public ActionResult Main25() => View();
+        public ActionResult Help(int? gameId)
+        {
+            switch (gameId)
+            {
+                case 25: return View($"~/Views/Pages/Help/{gameId}.cshtml");
+                case 45: return View($"~/Views/Pages/Help/{gameId}.cshtml");
+                case 68: return View($"~/Views/Pages/Help/{gameId}.cshtml");
+                case 89: return View($"~/Views/Pages/Help/{gameId}.cshtml");
+                default: return View("~/Views/Pages/Index.cshtml");
+            }
+        }
 
-        public ActionResult Main45() => View();
-
-        public ActionResult Main68() => View();
-
-        public ActionResult Main89() => View();
+        public ActionResult Main(int? gameId)
+        {
+            switch (gameId)
+            {
+                case 25: return View($"~/Views/Pages/Main/{gameId}.cshtml");
+                case 45: return View($"~/Views/Pages/Main/{gameId}.cshtml");
+                case 68: return View($"~/Views/Pages/Main/{gameId}.cshtml");
+                case 89: return View($"~/Views/Pages/Main/{gameId}.cshtml");
+                default: return View("~/Views/Pages/Index.cshtml");
+            }
+        }
 
 
     }
