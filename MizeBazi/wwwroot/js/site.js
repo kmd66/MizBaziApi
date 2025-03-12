@@ -18,7 +18,7 @@ function init_iconsax() {
     });
 }
 
-function f_UrlBack() {
+function f_urlBack() {
     window.flutter_inappwebview.callHandler('f_urlBack', '');
 }
 $(window).on('popstate', function (e) {
@@ -37,6 +37,5 @@ window.addEventListener('popstate', function (e) {
 });
 
 $(".close-modal, .modal-sandbox").click(function () {
-    dataModal = `#${$(this).attr("data-modal")}`;
-    $(dataModal).css({ "display": "none" });
+    $(this).parent().closest('.modal').css({ "display": "none" });
 });

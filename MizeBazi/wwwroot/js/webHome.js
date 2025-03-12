@@ -16,16 +16,21 @@ $(document).ready(function () {
     });
 });
 
-function f_UrlHelp() {
+function f_urlHelp() {
     window.flutter_inappwebview.callHandler('f_urlHelp', _link);
 }
-function f_UrlMain() {
+function f_urlMain() {
     window.flutter_inappwebview.callHandler('f_urlMain', _link);
 }
 function f_testKhande() {
-    window.flutter_inappwebview.callHandler('f_testKhande');
+    window.flutter_inappwebview.callHandler('f_testKhande', _link);
 }
-function f_joinRoom() {
-    window.flutter_inappwebview.callHandler('f_joinRoom');
+function createRoom() {
+    $("#menuGame").css({ "display": "none" });
+    $("#createRoom").css({ "display": "block" });
+}
+function joinRoom() {
+    $("#menuGame").css({ "display": "none" });
+    $("#joinRoom").css({ "display": "block" });
 }
 

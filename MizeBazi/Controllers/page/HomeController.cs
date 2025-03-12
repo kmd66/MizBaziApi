@@ -6,10 +6,9 @@ namespace MizeBazi.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
+        public ActionResult Index()=> View();
+
+        public ActionResult WheelFortune()=> View();
 
         //[Helper.Authorize]
         [HttpPost, Route("api/CheckHost")]

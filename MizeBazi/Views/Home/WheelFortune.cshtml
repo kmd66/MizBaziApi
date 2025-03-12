@@ -1,0 +1,215 @@
+﻿<style>
+    :where(.ui-wheel-of-fortune) {
+        --_items: 9;
+        all: unset;
+        aspect-ratio: 1 / 1;
+        container-type: inline-size;
+        direction: ltr;
+        display: grid;
+        position: relative;
+        color: #000;
+
+        &::after
+
+    {
+        aspect-ratio: 1/cos(30deg);
+        background-color: crimson;
+        clip-path: polygon(0 100%,0 0,100% 50%);
+        content: "";
+        height: 4cqi;
+        position: absolute;
+        place-self: center start;
+        scale: 1.4;
+    }
+
+
+    & > * {
+        position: absolute;
+    }
+
+    button {
+        aspect-ratio: 1 / 1;
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 5cqi;
+        place-self: center;
+        width: 20cqi;
+        background: var(--BaseColor);
+        color: var(--TextColor);
+    }
+
+    ul {
+        all: unset;
+        clip-path: inset(0 0 0 0 round 50%);
+        display: grid;
+        inset: 0;
+        place-content: center start;
+        li
+
+    {
+        align-content: center;
+        aspect-ratio: 1 / calc(2 * tan(180deg / var(--_items)));
+        background: hsl(calc(360deg / var(--_items) * calc(var(--_idx))), 100%, 75%);
+        clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+        display: grid;
+        font-size: 5cqi;
+        grid-area: 1 / -1;
+        padding-left: 1ch;
+        rotate: calc(360deg / var(--_items) * calc(var(--_idx) - 1));
+        transform-origin: center right;
+        user-select: none;
+        width: 50cqi;
+        &:nth-of-type(1)
+
+    {
+        --_idx: 1;
+    }
+
+    &:nth-of-type(2) {
+        --_idx: 2;
+    }
+
+    &:nth-of-type(3) {
+        --_idx: 3;
+    }
+
+    &:nth-of-type(4) {
+        --_idx: 4;
+    }
+
+    &:nth-of-type(5) {
+        --_idx: 5;
+    }
+
+    &:nth-of-type(6) {
+        --_idx: 6;
+    }
+    
+    &:nth-of-type(7) {
+        --_idx: 7;
+    }
+
+    &:nth-of-type(8) {
+        --_idx: 8;
+    }
+
+    &:nth-of-type(9) {
+        --_idx: 9;
+    }
+
+
+    }
+    }
+    }
+
+    /* for demo */
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: system-ui, sans-serif;
+        padding: 5cqi;
+    }
+
+    fieldset{
+        width:300px;
+        margin:auto
+    }
+</style>
+<fieldset class="ui-wheel-of-fortune">
+    <ul id="wheel">
+        <li>$1000</li>
+        <li>$2000</li>
+        <li>$3000</li>
+        <li>$4000</li>
+        <li>$5000</li>
+        <li>$6000</li>
+        <li>$7000</li>
+        <li>$8000</li>
+        <li>$9000</li>
+    </ul>
+    <button type="button" onclick="rotateElement()">چرخش</button>
+</fieldset>
+
+<script>
+    var currentRotation = 180 / 9;
+    // t = t + 90;
+    var count = 72;
+    const element = document.getElementById('wheel');
+    element.style.transform = `rotate(${currentRotation}deg)`;
+
+    function rotateElement() {
+
+        const element = document.getElementById('wheel');
+        let dor = Math.floor(Math.random() * (8 - 3 + 1)) + 3;
+        dor = (dor * 360) + 1080;
+        let min = 1;
+        let max = 359;
+        let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+        dor += randomNumber;
+        const newRotation = currentRotation + dor;
+
+        animation = wheel.animate([
+            { transform: `rotate(${newRotation}deg)` }
+        ], {
+            duration: 10000,
+            direction: 'normal',
+            easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
+            fill: 'forwards',
+            iterations: 1
+        });
+
+        animation.onfinish = () => {
+            element.style.transform = `rotate(${newRotation}deg)`;
+
+            let i = Math.ceil(randomNumber / 40) - 9;
+            var t = $('ul').children('li')[Math.abs(i)];
+            $('button').text(t.innerText);
+        };
+    }
+
+    function rotateElement2() {
+
+        const element = document.getElementById('wheel');
+
+        let currentRotation = 0;
+        const transform = element.style.transform;
+        if (transform) {
+            const match = transform.replace(/[^\d.]/g, '');
+            if (match) {
+                currentRotation = parseInt(match);
+            }
+        }
+        const newRotation = currentRotation + 5;
+
+        animation = wheel.animate([
+            { transform: `rotate(${newRotation}deg)` }
+        ], {
+            duration: 30,
+            direction: 'normal',
+            easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
+            fill: 'forwards',
+            iterations: 1
+        });
+
+        animation.onfinish = () => {
+            element.style.transform = `rotate(${newRotation}deg)`;
+            count--;
+            if (count == 0) {
+                count = 72;
+            }
+
+            let i = Math.ceil(count / 8) - 1;
+            var t = $('ul').children('li')[i];
+            $('button').text(t.innerText);
+            rotateElement();
+        };
+    }
+
+
+    // Usage
+    // document.querySelectorAll('.ui-wheel-of-fortune').forEach(el => wheelOfFortune(el))
+    // wheelOfFortune('.ui-wheel-of-fortune');
+</script>
