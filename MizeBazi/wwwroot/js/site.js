@@ -1,4 +1,6 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+﻿publicToken = 'a';
+publicDeviceId = '4';
+document.addEventListener("DOMContentLoaded", () => {
     init_iconsax();
 });
 

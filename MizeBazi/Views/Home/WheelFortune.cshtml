@@ -1,6 +1,6 @@
 ﻿<style>
-    :where(.ui-wheel-of-fortune) {
-        --_items: 9;
+    .ui-wheel-of-fortune {
+        --_items: 18;
         all: unset;
         aspect-ratio: 1 / 1;
         container-type: inline-size;
@@ -8,129 +8,73 @@
         display: grid;
         position: relative;
         color: #000;
-    &::after
-
-    {
-        aspect-ratio: 1/cos(30deg);
-        background-color: crimson;
-        clip-path: polygon(0 100%,0 0,100% 50%);
-        content: "";
-        height: 4cqi;
-        position: absolute;
-        place-self: center start;
-        scale: 1.4;
     }
 
+        .ui-wheel-of-fortune::after { 
+            background-color: crimson;
+            clip-path: polygon(0 100%, 0 0, 100% 50%);
+            content: "";
+            height: 1rem;
+            width: 1rem;
+            left: 0;
+            top: calc(50% - .5rem);
+            position: absolute;
+        }
 
-    & > * {
-        position: absolute;
-    }
-
-    button {
-        aspect-ratio: 1 / 1;
-        border: 0;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 5cqi;
-        place-self: center;
-        width: 20cqi;
-        background: var(--BaseColor);
-        color: var(--TextColor);
-    }
-
-    ul {
-        all: unset;
-        clip-path: inset(0 0 0 0 round 50%);
-        display: grid;
-        inset: 0;
-        place-content: center start;
-        li
-
-    {
-        align-content: center;
-        aspect-ratio: 1 / calc(2 * tan(180deg / var(--_items)));
-        background: hsl(calc(360deg / var(--_items) * calc(var(--_idx))), 100%, 75%);
-        clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
-        display: grid;
-        font-size: 5cqi;
-        grid-area: 1 / -1;
-        padding-left: 1ch;
-        rotate: calc(360deg / var(--_items) * calc(var(--_idx) - 1));
-        transform-origin: center right;
-        user-select: none;
-        width: 50cqi;
-        &:nth-of-type(1)
-
-    {
-        --_idx: 1;
-    }
-
-    &:nth-of-type(2) {
-        --_idx: 2;
-    }
-
-    &:nth-of-type(3) {
-        --_idx: 3;
-    }
-
-    &:nth-of-type(4) {
-        --_idx: 4;
-    }
-
-    &:nth-of-type(5) {
-        --_idx: 5;
-    }
-
-    &:nth-of-type(6) {
-        --_idx: 6;
-    }
-
-    &:nth-of-type(7) {
-        --_idx: 7;
-    }
-
-    &:nth-of-type(8) {
-        --_idx: 8;
-    }
-
-    &:nth-of-type(9) {
-        --_idx: 9;
-    }
-
-    }
-    }
-    }
+        .ui-wheel-of-fortune button {
+            position: absolute;
+            aspect-ratio: 1 / 1;
+            border: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 5cqi;
+            place-self: center;
+            width: 20cqi;
+            background: var(--BaseColor);
+            color: var(--TextColor);
+        }
 
     .ui-wheel-of-fortune {
-        width: 300px;
+        width: 310px;
+        height 310px;
         margin: 30px auto
     }
 </style>
 <fieldset class="ui-wheel-of-fortune">
-    <ul id="wheel">
-        <li>$1000</li>
-        <li>$2000</li>
-        <li>$3000</li>
-        <li>$4000</li>
-        <li>$5000</li>
-        <li>$6000</li>
-        <li>$7000</li>
-        <li>$8000</li>
-        <li>$9000</li>
-    </ul>
+    <img id="wheel" src="~/img/WheelFortune.jpg" />
     <button type="button" onclick="rotateElement()">چرخش</button>
 </fieldset>
 
 <script>
-    var currentRotation = 180 / 9;
+    var currentRotation = 180 / 18;
     const element = document.getElementById('wheel');
+    var l = [
+        "$10",
+        "$15",
+        "$110",
+        "$10",
+        "$20",
+        "$15",
+        "$20",
+        "$10",
+        "$200",
+        "$10",
+        "$15",
+        "$70",
+        "$15",
+        "$10",
+        "$100",
+        "$15",
+        "$10",
+        "$50"
+    ]
     element.style.transform = `rotate(${currentRotation}deg)`;
 
     function rotateElement() {
 
         const element = document.getElementById('wheel');
         let dor = Math.floor(Math.random() * (8 - 3 + 1)) + 3;
-        dor = (dor * 360) + 1080;
+        dor = (dor * 360) + 1800;
         let min = 1;
         let max = 359;
         let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -140,7 +84,7 @@
         animation = wheel.animate([
             { transform: `rotate(${newRotation}deg)` }
         ], {
-            duration: 7000,
+            duration: 15000,
             direction: 'normal',
             easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
             fill: 'forwards',
@@ -150,9 +94,9 @@
         animation.onfinish = () => {
             element.style.transform = `rotate(${newRotation}deg)`;
 
-            let i = Math.ceil(randomNumber / 40) - 9;
-            var t = $('ul').children('li')[Math.abs(i)];
-            $('button').text(t.innerText);
+            let i = Math.ceil(randomNumber / 20) - 18;
+            var t = l[Math.abs(i)];
+            $('button').text(t);
         };
     }
 

@@ -1,1 +1,10 @@
-﻿25
+﻿<button onclick="showdialog()">test</button>
+
+<script>
+    function showdialog() {
+        alert(`${publicToken} * ${publicDeviceId}`)
+    }
+    function setToken(t) {
+        publicToken = t;
+    }
+</script>
