@@ -156,42 +156,4 @@
         };
     }
 
-    function rotateElement2() {
-
-        const element = document.getElementById('wheel');
-
-        let currentRotation = 0;
-        const transform = element.style.transform;
-        if (transform) {
-            const match = transform.replace(/[^\d.]/g, '');
-            if (match) {
-                currentRotation = parseInt(match);
-            }
-        }
-        const newRotation = currentRotation + 5;
-
-        animation = wheel.animate([
-            { transform: `rotate(${newRotation}deg)` }
-        ], {
-            duration: 30,
-            direction: 'normal',
-            easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
-            fill: 'forwards',
-            iterations: 1
-        });
-
-        animation.onfinish = () => {
-            element.style.transform = `rotate(${newRotation}deg)`;
-            count--;
-            if (count == 0) {
-                count = 72;
-            }
-
-            let i = Math.ceil(count / 8) - 1;
-            var t = $('ul').children('li')[i];
-            $('button').text(t.innerText);
-            rotateElement();
-        };
-    }
-
 </script>
