@@ -8,8 +8,7 @@
         display: grid;
         position: relative;
         color: #000;
-
-        &::after
+    &::after
 
     {
         aspect-ratio: 1/cos(30deg);
@@ -85,7 +84,7 @@
     &:nth-of-type(6) {
         --_idx: 6;
     }
-    
+
     &:nth-of-type(7) {
         --_idx: 7;
     }
@@ -98,24 +97,13 @@
         --_idx: 9;
     }
 
-
     }
     }
     }
 
-    /* for demo */
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: system-ui, sans-serif;
-        padding: 5cqi;
-    }
-
-    fieldset{
-        width:300px;
-        margin:auto
+    .ui-wheel-of-fortune {
+        width: 300px;
+        margin: 30px auto
     }
 </style>
 <fieldset class="ui-wheel-of-fortune">
@@ -135,8 +123,6 @@
 
 <script>
     var currentRotation = 180 / 9;
-    // t = t + 90;
-    var count = 72;
     const element = document.getElementById('wheel');
     element.style.transform = `rotate(${currentRotation}deg)`;
 
@@ -154,7 +140,7 @@
         animation = wheel.animate([
             { transform: `rotate(${newRotation}deg)` }
         ], {
-            duration: 10000,
+            duration: 7000,
             direction: 'normal',
             easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
             fill: 'forwards',
@@ -208,8 +194,4 @@
         };
     }
 
-
-    // Usage
-    // document.querySelectorAll('.ui-wheel-of-fortune').forEach(el => wheelOfFortune(el))
-    // wheelOfFortune('.ui-wheel-of-fortune');
 </script>
