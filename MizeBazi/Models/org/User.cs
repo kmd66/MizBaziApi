@@ -52,9 +52,39 @@ public class UserValidate
 }
 
 [Keyless]
-public class PostView : User
+public class UserView : User
 {
-    public byte[] img { get; set; }
+    public byte[] Img { get; set; }
+
+    public void SafeData()
+    {
+        Phone = "";
+        Type = 0;
+        Id = 0;
+    }
+    public static IEnumerable<object> SafeDictionary(Dictionary<string, UserView> initUser)
+        => initUser.Select(x => new
+        {
+            connectionId = x.Key,
+            name = $"{x.Value.FirstName} {x.Value.LastName}",
+            userName = x.Value.UserName
+        });
+    public object SafeModel()
+        => new
+        {
+            name = $"{FirstName} {LastName}",
+            userName = UserName,
+            date = Date,
+            img = Img
+        };
+    public object SafeModelwithoutImg()
+        => new
+        {
+            id= Id,
+            name = $"{FirstName} {LastName}",
+            userName = UserName,
+            date = Date
+        };
 }
 public class User : BaseModel
 {

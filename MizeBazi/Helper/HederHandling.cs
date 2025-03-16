@@ -75,7 +75,7 @@ partial class AddDIdHeaderParameter : IOperationFilter
             Schema = new OpenApiSchema
             {
                 Type = "string",
-                Default = new OpenApiString("SijxYoHyHLWXf+WDK3USD7aYoLRSyHc4oxxLjRswit1ZFR6zrXynjwqB3HJ9ijDcSYIAH7WeyQ6Wo9UVHUBtzuftvxkpFQNWtZ4HXk8s9kWzwX1ASlXcL3JpNyhPKDPiwyCGtla0J8W43HbjQfQsjgDYEVvZX7PmT+Ua71SCH0C3ZPatKoAiX1iC1ddFErUaDUH2xNEklcUVfGdXj9U2z111LesFu3PuXWl+rBeO81jwBKJJn3MfFlXJPOoB2vKD")
+                Default = new OpenApiString("jWpQ1r8wP7IyAs53SML9Z0iS72/XJuxKDaLcSyguCEeeoDzVrVl6dl6z6A37WkQ2tcBatH07HG5HFxCOgCvUct67uw0rhLSIb/y93ODfqRhi0PMF3o2hDoc9nsLlXyq3A9KgGwGgBmN1YLNMv8lo79xcosK9CMrnKylv5BPZce7gS4yQdxVgowEKCscIdZeyQoB646DKJeckX2KP1rg3ShTSjZDxb+RyPD9If7F24xH9WIqj1eUjVE3LlObcWQPQ")
             }
         });
     }

@@ -24,5 +24,13 @@ namespace MizeBazi.Controllers
         public Task<Models.Result<byte[]>> GetAvatar()
             => _service.GetAvatar();
 
+        [HttpPost, Route("GetViwe")]
+        public Task<Models.Result<Models.UserView>> GetViwe()
+            => _service.GetViwe();
+
+        [HttpPost, Route("ListViweById")]
+        public Task<Models.Result<List<Models.UserView>>> ListViweById(List<long> ids)
+            => _service.ListViweById(ids);
+
     }
 }

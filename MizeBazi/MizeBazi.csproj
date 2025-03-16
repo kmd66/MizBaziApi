@@ -7,23 +7,37 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Views\Pages\Room\main.html" />
+	  <None Remove="Views\Pages\Room\room.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Views\Pages\Room\main.html" />
+	  <Content Include="Views\Pages\Room\room.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Scrutor" Version="6.0.1" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Migrations\" />
-		<Folder Include="Service\DataScript\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Update="Views\Home\WheelFortune.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="wwwroot\css\room.css">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>

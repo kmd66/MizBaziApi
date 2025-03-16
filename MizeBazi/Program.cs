@@ -1,5 +1,6 @@
 ﻿using MizeBazi.Models;
 using MizeBazi.Helper;
+using MessagePack;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.SwaggerHederHandling();
+
+builder.Services.AddSignalR()
+                .AddMessagePackProtocol(options =>
+                {
+                    options.SerializerOptions = MessagePackSerializerOptions.Standard
+                        .WithResolver(MessagePack.Resolvers.StandardResolver.Instance);
+                });
 
 AppStrings.Configuration = builder.Configuration;
 
@@ -48,6 +55,10 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<MizeBazi.HubControllers.TestHub>("/testHub");
+app.MapHub<MizeBazi.HubControllers.NabardKhandeHub>("/nabardkhandehub");
+app.MapHub<MizeBazi.HubControllers.RoomHub>("/room");
 
 app.ExceptionHandling();
 

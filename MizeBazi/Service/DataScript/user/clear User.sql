@@ -1,0 +1,5 @@
+delete [org].[Devices]
+delete [org].[SecurityStamps]
+--delete[org].[Tokens]
+--delete[org].[UsersThumbnail]
+--delete[org].[Users]

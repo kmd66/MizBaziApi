@@ -6,16 +6,23 @@ namespace MizeBazi.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()=> View();
+        public ActionResult Index()
+            => View();
 
-        public ActionResult WheelFortune()=> View();
+        public ActionResult WheelFortune()
+            => View();
+
+        public ActionResult Room()
+            => View("~/Views/Pages/Room/Room.cshtml");
 
         //[Helper.Authorize]
         [HttpPost, Route("api/CheckHost")]
         public Result<CheckHost> Get()
-        {
-            return Result<CheckHost>.Successful(data: new CheckHost ());
-        }
+            => Result<CheckHost>.Successful(data: new CheckHost());
+        
+        [HttpGet, Route("api/getCheckHost")]
+        public Result<CheckHost> GetCheckHost()
+            => Result<CheckHost>.Successful(data: new CheckHost());
 
     }
 }

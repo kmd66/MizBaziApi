@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "room";
+    var htmlMain = System.IO.File.ReadAllText("./Views/Pages/Room/main.html");
+    var htmlRoom= System.IO.File.ReadAllText("./Views/Pages/Room/room.html");
+}
+@section css {
+    <link rel="stylesheet" href="~/css/room.css" />
+}
+@section Scripts2 {
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="~/lib/msgpack.min.js"></script>
+    <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
+}
+@section Scripts {
+    <script src="~/js/room.js"></script>
+}
+
+<div class="fading-image"></div>
+
+<div class="container">
+    @Html.Raw(htmlMain)
+    @Html.Raw(htmlRoom)
+</div>

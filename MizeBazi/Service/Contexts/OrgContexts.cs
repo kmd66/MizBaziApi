@@ -61,10 +61,10 @@ public class OrgContexts : DbContext
         modelBuilder.Entity<User>()
             .Property(b => b.Type).HasDefaultValue(1);
         modelBuilder
-               .Entity<PostView>(eb =>
+               .Entity<UserView>(eb =>
                {
                    eb.HasNoKey();
-                   eb.ToView("PostView");
+                   eb.ToView("UserView");
                });
     }
     private void UsersThumbnailConfig(ref ModelBuilder modelBuilder)
@@ -82,7 +82,7 @@ public class OrgContexts : DbContext
     public DbSet<Device> Devices { get; set; }
     public DbSet<Token> Tokens { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<PostView> PostViews { get; set; }
+    public DbSet<UserView> UsersView { get; set; }
     public DbSet<UserThumbnail> UsersThumbnail { get; set; }
     //public DbSet<UserThumbnail2> UsersThumbnail2 { get; set; }
 

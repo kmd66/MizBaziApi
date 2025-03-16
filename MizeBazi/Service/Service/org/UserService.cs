@@ -1,5 +1,7 @@
 ﻿using MizeBazi.Helper;
 using MizeBazi.Models;
+using System.IO;
+using System.IO.Compression;
 
 namespace MizeBazi.Service;
 
@@ -70,7 +72,6 @@ public class UserService : IService
                 return Result.Failure(message: "مجاز به آپلود این نوع فایل نیستید");
 
             var data = FileHelper.ResizeImageWithAspectRatio(fileData, AppStrings.AvatarMaxWidth);
-
             var userDataSource = new DataSource.UserDataSource();
             await userDataSource.AddAvatar(new UserThumbnail { Id = _requestInfo.model.UserId, img = data });
             return Result.Successful();
@@ -86,6 +87,29 @@ public class UserService : IService
     {
         var userDataSource = new DataSource.UserDataSource();
         return await userDataSource.GetAvatar(_requestInfo.model.UserId);
+    }
+
+    public async Task<Result<UserView>> GetViwe(long id = 0)
+    {
+        var userDataSource = new DataSource.UserDataSource();
+        var result = await userDataSource.GetViwe(id == 0 ? _requestInfo.model.UserId : id);
+        if (!result.success)
+            return Result<UserView>.Failure(message: result.message);
+        if (result.data != null && id != 0)
+            result.data.SafeData();
+        return Result<UserView>.Successful(data: result.data);
+    }
+
+    public async Task<Result<List<UserView>>> ListViweById(List<long> ids)
+    {
+        var userDataSource = new DataSource.UserDataSource();
+
+        var result = await userDataSource.ListViweById(ids);
+        if (!result.success)
+            return Result<List<UserView>>.Failure(message: result.message);
+        foreach(var obj in result.data)
+            obj.SafeData();
+        return Result<List<UserView>>.Successful(data: result.data);
     }
 }
 

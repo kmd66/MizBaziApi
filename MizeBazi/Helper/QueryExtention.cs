@@ -11,8 +11,8 @@ public static class QueryExtention
     public static string JsonQuery(this string s)
     {
         if (string.IsNullOrEmpty(s))
-            return "[]";
-        return s;
+            return "'[]'";
+        return $"'{s}'";
     }
     public static string Query(this int? i)
     {

@@ -13,7 +13,7 @@ namespace MizeBazi.Controllers
 
         public ActionResult Home() => View();
 
-        public ActionResult Help(int? gameId)
+        public ActionResult Help(byte? gameId)
         {
             switch (gameId)
             {
@@ -25,7 +25,7 @@ namespace MizeBazi.Controllers
             }
         }
 
-        public ActionResult Main(int? gameId)
+        public ActionResult Main(byte? gameId)
         {
             switch (gameId)
             {

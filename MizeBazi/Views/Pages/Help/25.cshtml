@@ -8,3 +8,82 @@
         publicToken = t;
     }
 </script>
+><div><input id="i"/></div>
+<button onclick="sendOffer()">sendOffer</button>
+<br />
+<button onclick="sendAnswer()">sendAnswer</button>
+<br />
+<button onclick="sendBinaryData()">sendBinaryData</button>
+<br />
+<div id="d"></div>
+@section Scripts2 {
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="~/lib/msgpack.min.js"></script>
+    <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
+}
+
+@section Scripts {
+    <script>
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/testHub", {
+                // transport: signalR.HttpTransportType.LongPolling,
+                headers: {
+                    "Auth": "Bessssssssssarer your-token",
+                    "D-Id": "Custom debugger Value"
+                }
+            })
+            .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+            .build();
+
+
+        connection.on("OfferReceive", (json)=> {
+            $('#d').append(`<div>${json}</div>`);
+        });
+
+        connection.on("AnswerReceive", (connectionId, v1, v2) => {
+            // var obj = JSON.parse(json);
+            console.log(v1)
+            console.log(v2)
+            alert(v1)
+
+        });
+
+        connection.on("ReceiveBinaryData", (data) => {
+            debugger
+            console.log("Received binary data:", data);
+        });
+
+        function startConnection() {
+            connection.start().then(() => {
+                console.log("Connected to SignalR");
+            }).catch(err => console.error(err.toString()));
+        }
+        connection.onclose((error) => {
+            console.log("Connection closed.");
+            if (error) {
+                console.error("Error details: ", error);
+            }
+            // تلاش مجدد پس از 5 ثانیه
+            // setTimeout(startConnection, 5000);
+        });
+
+        startConnection();
+
+        function sendOffer() {
+            var v = $('#i').val();
+            connection.invoke("Offer", connection.connectionId, v);
+        }
+
+        function sendAnswer() {
+            var v = $('#i').val();
+            connection.invoke("Answer", connection.connectionId, v, "2");
+        }
+
+        function sendBinaryData() {
+            debugger
+            const binaryData = new Uint8Array([0x01, 0x02, 0x03, 0x04]);
+            connection.invoke("SendBinaryData", binaryData);
+        }
+    </script>
+}

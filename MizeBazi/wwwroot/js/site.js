@@ -1,5 +1,10 @@
-﻿publicToken = 'a';
-publicDeviceId = '4';
+﻿publicDeviceId = '';
+publicToken = '';
+(() => {
+    publicDeviceId = localStorage.getItem("publicDeviceId");
+    publicToken = localStorage.getItem("publicToken");
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
     init_iconsax();
 });
@@ -41,3 +46,19 @@ window.addEventListener('popstate', function (e) {
 $(".close-modal, .modal-sandbox").click(function () {
     $(this).parent().closest('.modal').css({ "display": "none" });
 });
+function soketStart(connection, callback) {
+    function startConnection() {
+        connection.start().then(() => {
+            if (callback)
+                callback();
+        }).catch(err => console.error(err.toString()));
+    }
+    connection.onclose((error) => {
+        console.log("Connection closed.");
+        if (error) {
+            console.log("Error details: " + error);
+        }
+        // setTimeout(startConnection, 5000);
+    });
+    startConnection();
+}

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using MizeBazi.Helper;
 using MizeBazi.Models;
+using System.Threading;
 
 namespace MizeBazi.DataSource
 {
@@ -38,35 +39,50 @@ namespace MizeBazi.DataSource
 
         }
 
-        //public async Task<Result<UserDto>> GetViwe(long id)
-        //{
-        //    try
-        //    {
-        //        var query = $"cnt.SpGetPosts"
-        //            + $" @Title = {model.Title.Query()}"
-        //            + $", @Alias = {model.Alias.Query()}"
-        //            + $", @Special = {model.Special.Query()}"
-        //            + $", @Published = {model.Published.Query()}"
-        //            + $", @IsProduct = {model.IsProduct.Query()}"
-        //            + $", @MenuId = {model.MenuId.Query()}"
-        //            + $", @PageSize = {model.PageSize.Query()}"
-        //            + $", @PageIndex = {model.PageIndex.Query()}";
-        //        var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+        public async Task<Result<UserView>> GetViwe(long id)
+        {
+            try
+            {
+                var query = System.Runtime.CompilerServices.FormattableStringFactory.Create($"org.SpGetUser @Id = {id.Query()}");
+                var ett = await _orgContexts.UsersView.FromSql(query).ToListAsync();//.FirstOrDefaultAsync();
 
-        //        var returnMOdel = MapList<Post, Dal.DbModel.PostDto>(ett);
+                return Result<UserView>.Successful(data: ett.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                throw MizeBaziException.Error(message: ex.Message);
+            }
+            finally
+            {
+                _orgContexts.ChangeTracker.Clear();
+            }
 
-        //        return Result<IEnumerable<Post>>.Successful(data: returnMOdel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw MizeBaziException.Error(message: ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        _orgContexts.ChangeTracker.Clear();
-        //    }
+        }
 
-        //}
+        public async Task<Result<List<UserView>>> ListViweById(List<long> ids)
+        {
+            try
+            {
+                if(ids.Count < 1)
+                    return Result<List<UserView>>.Successful(data: new List<UserView>());
+
+                var _ids = System.Text.Json.JsonSerializer.Serialize(ids);
+                var query = $"org.ListUser @Count = {ids.Count.Query()}" +
+                    $", @Json = {_ids.JsonQuery()}";
+                var ett = await _orgContexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                return Result<List<UserView>>.Successful(data: ett);
+            }
+            catch (Exception ex)
+            {
+                throw MizeBaziException.Error(message: ex.Message);
+            }
+            finally
+            {
+                _orgContexts.ChangeTracker.Clear();
+            }
+
+        }
 
         public async Task<Result<UserDto>> GetByPhone(string phone)
         {
@@ -118,12 +134,12 @@ namespace MizeBazi.DataSource
                 var ett = await _orgContexts.Users.Where(x =>
                     x.Id == id
                 ).Take(1).FirstOrDefaultAsync();
-                if(ett == null)
+                if (ett == null)
                     throw MizeBaziException.Error(message: "Edit ett null");
 
                 ett.FirstName = model.FirstName;
                 ett.LastName = model.LastName;
-                if(userNameEdit)
+                if (userNameEdit)
                     ett.UserName = model.UserName;
 
                 _orgContexts.Update<User>(ett);
@@ -148,7 +164,7 @@ namespace MizeBazi.DataSource
                     x.UserName == userName
                 ).AsNoTracking().Take(1).FirstOrDefaultAsync();
 
-                if(ett == null)
+                if (ett == null)
                     return Result<UserDto>.Successful();
                 return Result<UserDto>.Failure(message: "این نام کاربری قبلا ثبت شده اشت");
             }
@@ -193,7 +209,7 @@ namespace MizeBazi.DataSource
                     x.Id == id
                 ).AsNoTracking().Take(1).FirstOrDefaultAsync();
 
-                return Result<byte[]>.Successful(data:ett?.img);
+                return Result<byte[]>.Successful(data: ett?.img);
             }
             catch (Exception ex)
             {
