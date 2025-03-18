@@ -25,6 +25,11 @@ function init_iconsax() {
             });
     });
 }
+async function iconsaxByName(iconName) {
+    const response = await fetch("../icons/" + iconName + ".svg");
+    var data = await response.text();
+    return data;
+}
 function inputs() {
     $("input").attr("autocomplete", `off`)
     $(".form__field").each(function () {
@@ -142,4 +147,10 @@ function getRandomPastelColor() {
     const b = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
     const toHex = (value) => value.toString(16).padStart(2, '0');
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+} function uint8ArrayToBase64(uint8Array) {
+    let binaryString = '';
+    uint8Array.forEach(byte => {
+        binaryString += String.fromCharCode(byte);
+    });
+    return btoa(binaryString);
 }

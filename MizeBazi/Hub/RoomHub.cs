@@ -54,7 +54,8 @@ public class RoomModel
             name = Name,
             kay = Key,
             date = Date,
-            count = initUser.Count
+            count = Count,
+            userCount = initUser.Count
         };
 
 }
@@ -196,6 +197,7 @@ public class RoomHub : Hub
         {
             if (room.initUser.ContainsKey(connectionId))
             {
+                await Clients.Caller.SendAsync("ExitReceive");
                 await updateUser(false, connectionId, room, false);
             }
         }

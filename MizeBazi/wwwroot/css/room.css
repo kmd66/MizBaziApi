@@ -74,6 +74,7 @@
     border-radius: 50%;
     border: 1px solid var(--TextColor);
     text-align: center;
+    overflow:hidden
 }
     .roomTopUserImg .iconsax svg {
         width: 16px;
@@ -100,7 +101,7 @@
 .roomListUserMess {
     text-align: center;
     align-content: center;
-    margin: 05px;
+    margin: 5px 12px;
     font-size: .8rem;
     color: var(--TextColor3);
 }
@@ -164,4 +165,9 @@
     background-color: #00ceff2e;
     left: -0.99rem;
     right: unset;
+}
+.modal-body .roomListUserImg {
+    justify-content: start;
+    border-bottom: 1px solid var(--TextColor2);
+    padding: 10px;
 }

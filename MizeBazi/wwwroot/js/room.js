@@ -19,6 +19,8 @@ function initSoket() {
 
     connection.on("UpdateReceive", UpdateReceive);
 
+    connection.on("ExitReceive", callbackSoketStart);
+
     connection.on("InitGameReceive", () => {
     });
 
@@ -27,10 +29,10 @@ function initSoket() {
 }
 
 function callbackSoketStart() {
+    state = 'main';
     $("#thisRoom").css("display", "none");
     $("#mainRoom").css("display", "block");
     mainSearch();
-    updateRoom();
 }
 document.addEventListener("DOMContentLoaded", () => {
     initSoket();
@@ -88,6 +90,8 @@ function JoinReceive(b, roomJson, usersJson, imgs) {
         $('#insertPasswordErro').html(roomJson);
         return;
     }
+
+    $("#insertPassword").css("display", "none");
     roomInfo = JSON.parse(roomJson);
     let date = new Date(roomInfo.date);
     roomInfo.diffMinutes = diffMinutes(date);
@@ -96,16 +100,20 @@ function JoinReceive(b, roomJson, usersJson, imgs) {
     usersInfo = JSON.parse(usersJson);
     usersInfo.forEach((item, index, arr) => {
         usersInfo[index].img = imgs[index];
+        usersInfo[index].imgBbase64= uint8ArrayToBase64(imgs[index]);
     });
-    updateRoom();
+
+    let userIndex = usersInfo.findIndex(x => x.connectionId == connection.connectionId);
+    updateRoom(true, usersInfo[userIndex]);
 }
 
 function UpdateReceive(b, connectionId, json, img) {
 
+    var user = JSON.parse(json);
+    user.connectionId = connectionId;
+    user.img = img;
+    user.imgBbase64 = uint8ArrayToBase64(img);
     if (b) {
-        var user = JSON.parse(json);
-        user.connectionId = connectionId;
-        user.img = img;
         usersInfo.push(user);
     }
     else {
@@ -115,12 +123,11 @@ function UpdateReceive(b, connectionId, json, img) {
             usersInfo.splice(rem, 1);
         }
     }
-    updateRoom();
+
+    updateRoom(b, user);
 }
 
-$("#mainSearch").on("click", mainSearch);
-
-$(".mainTopItem").on("click", function () {
+function mainTopItem() {
     var info = $(this).attr('info');
     if (info == 'createRoom') {
         $("#inpRoomName").val('');
@@ -135,7 +142,7 @@ $(".mainTopItem").on("click", function () {
         $('#inpMain').val('');
         mainSearch();
     }
-});
+}
 function createRoom() {
     $("#createRoomErro").css("display", "none");
     var inpPassword = $('#inpPassword').val();
@@ -172,13 +179,56 @@ function joinRoom() {
     connection.invoke("Join", publicToken, publicDeviceId, joinItem.id, inpInsertPassword);
 }
 
-function updateRoom() {
-    if (state == 'main') {
-        $("#thisRoom").css("display", "block");
-        $("#mainRoom").css("display", "none");
-        state = 'room';
+function updateRoom(b, user) {
+    checkState();
+    setUsers();
+    userNotif();
+    function checkState() {
+        if (state == 'main') {
+            $("#roomTopTrash").css("display", "none");
+            $("#thisRoom").css("display", "block");
+            $("#mainRoom").css("display", "none");
+            state = 'room';
+            if (roomInfo.creator) {
+                $("#roomTopTrash").css("display", "block");
+                $("#roomTopTrashName").css("display", "none");
+            } else {
+                
+                $("#roomTopTrash").css("display", "none");
+                $("#roomTopTrashName").css("display", "block");
+                $("#roomTopTrashName").html(`<div>ایجاد شده توسط</div><div>${roomInfo.createName}</div>`)
+            }
+        }
     }
-    setIconColor();
+    async function setUsers() {
+        var icon = await iconsaxByName("user-2");
+        let elRoomTopUserList = ''
+        for (let i = 0; i < roomInfo.count; i++) {
+            if (usersInfo.length > i) {
+                elRoomTopUserList += `<div class="roomTopUserImg"><img src="data:image/png;base64,${usersInfo[i].imgBbase64}" /></div>`;
+
+            } else {
+                elRoomTopUserList += `<div class="roomTopUserImg"><i class="iconsax" icon-name="user-2">${icon}</i></div>`;
+            }
+
+        }
+        $("#roomTopUserList").html(elRoomTopUserList);
+
+        let elRoomUserListBody = '';
+        usersInfo.map((x) => {
+            elRoomUserListBody += `<div class="roomListUserImg"><div class="roomTopUserImg"><img src="data:image/png;base64,${x.imgBbase64}" /></div>`
+                + `<div class="roomListUserMess"><div>${x.userName}</div><div>${x.name}</div></div></div>`;
+        });
+
+        $("#roomUserListBody").html(elRoomUserListBody);
+
+        $("#mainTopCount").html(`اعضای حاضر ${usersInfo.length} از ${roomInfo.count}`);
+
+        setTimeout(() => {
+            setIconColor();
+        }, "500");
+    }
+
     function setIconColor() {
         var svgs = $('.roomTopUserImg svg');
         svgs.each(function () {
@@ -186,4 +236,76 @@ function updateRoom() {
             $(this).attr("fill", `${c}`)
         });
     }
+
+    function userNotif() {
+        if (user) {
+            var el = '<div class="roomListUser"><div class="roomListUserImg">'
+                + `<div class="roomTopUserImg"><img src="data:image/png;base64,${user.imgBbase64}" /></div>`
+                + `<div class="roomListUserMess">${user.userName}</div></div><div class="roomListUserMess">`
+                + `کاربر ${user.name} <span style="color: ${b == true ? "var(--SuccessColor)" : "var(--ErrorColor)"}; font-weight: bold;">${b == true ? "وارد" : "خارج" }</span> شد</div></div>`;
+
+            $("#roomList").append(el);
+
+
+            setTimeout(() => {
+                scroll();
+            }, "500");
+            function scroll() {
+                var outerHeight = $('#roomList').outerHeight(true);
+                var scrollTop = $('#roomList').scrollTop();
+                var scrollHeight = $('#roomList')[0].scrollHeight;
+                var h2_3 = outerHeight - (outerHeight / 5);
+                var outerscrollTop = outerHeight + scrollTop;
+
+                var t = scrollHeight - outerscrollTop;
+                if (t < h2_3) {
+                    $('#roomList').animate({
+                        scrollTop: scrollHeight
+                    }, 1000);
+                }
+            }
+
+        }
+    }
 }
+
+function sendMessage() {
+    var outerHeight = $('#roomList').outerHeight(true);
+    var scrollTop = $('#roomList').scrollTop();
+    var scrollHeight = $('#roomList')[0].scrollHeight;
+    var h2_3 = outerHeight - (outerHeight / 3 );
+    var outerscrollTop = outerHeight + scrollTop;
+
+    var t = scrollHeight - outerscrollTop;
+    console.log(`${t} - ${h2_3} - ${t < h2_3}`);
+    if (t < h2_3) {
+            $('#roomList').animate({
+                scrollTop: scrollHeight
+            }, 1000);
+    }
+}
+function exitRoom() {
+    connection.invoke("Exit", roomInfo.kay);
+}
+function mainTopCount() {
+    $("#roomUserList").css("display", "block");
+}
+
+function roomTopTrash() {
+    $("#roomTrash").css("display", "block");
+}
+function trashRoom() {
+    debugger
+}
+
+$("#mainSearch").on("click", mainSearch);
+
+$(".mainTopItem").on("click", mainTopItem);
+
+$("#sendMessage").on("click", sendMessage);
+
+$("#exitRoom").on("click", exitRoom);
+
+$("#mainTopCount").on("click", mainTopCount);
+
+$("#roomTopTrash").on("click", roomTopTrash);
