@@ -30,7 +30,7 @@ namespace MizeBazi.Helper
 
         public static string EnumToString<T>(this T enumValue) where T : Enum
         {
-
+            var t = enumValue.ToString();
             return enumValue.ToString().Replace("_"," ");
         }
 

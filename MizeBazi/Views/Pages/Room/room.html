@@ -1,5 +1,117 @@
 ﻿
 <div id="thisRoom" style="display:none">
 
-    <div style="width:50px;text-align:center"><i class="iconsax" icon-name="send-1"></i></div>
+    <div class="mainTop d-flex">
+        <div class="mainTopItem" info="exitRoom">
+            <i class="iconsax" icon-name="logout-1"></i>
+            <div class="text">خروج ازاتاق</div>
+        </div>
+        <div id="mainTopCount" class="text">اعضای حاضر 0 از 10</div>
+        <div class="mainTopItem" id="roomTopTrash" info="back" style="display:block">
+            <i class="iconsax" icon-name="trash"></i>
+            <div class="text">حذف اتاق</div>
+        </div>
+    </div>
+
+    <div class="d-flex" id="roomTopUserList" style="margin: 5px 7px;">
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+        <div class="roomTopUserImg"><i class="iconsax" icon-name="user-2"></i></div>
+    </div>
+
+    <div id="roomList">
+
+        <div class="roomListUser">
+            <div class="roomListUserImg">
+                <div class="roomTopUserImg"><img src="https://localhost:7230/img/webHome/1.png" /></div>
+                <div class="roomListUserMess">نام کاربری</div>
+            </div>
+            <div class="roomListUserMess"> کاربر اسم <span style="color: var(--ErrorColor); font-weight: bold;">خارج</span> شد</div>
+        </div>
+
+        <div class="roomListUser">
+            <div class="roomListUserImg">
+                <div class="roomTopUserImg"><img src="https://localhost:7230/img/webHome/1.png" /></div>
+                <div class="roomListUserMess">نام کاربری</div>
+            </div>
+            <div class="roomListUserMess"> کاربر اسم <span style="color: var(--SuccessColor);font-weight: bold;">وارد</span> شد</div>
+        </div>
+
+        <div class="roomListUser">
+            <div class="roomListUserImg">
+                <div class="roomTopUserImg"><img src="https://localhost:7230/img/webHome/1.png" /></div>
+                <div class="roomListUserMess">نام کاربری</div>
+            </div>
+            <div class="roomListUserMess"> کاربر اسم <span style="color: var(--ErrorColor); font-weight: bold;">خارج</span> شد</div>
+        </div>
+
+        <div class="chatMain d-flex">
+            <div class="chatImg">
+                <div class="roomListUserImg">
+                    <div class="roomTopUserImg"><img src="https://localhost:7230/img/webHome/1.png" /></div>
+                </div>
+            </div>
+            <div class="chatText">
+                <div class="chatBox">
+                    <div class="chatInfo">test <br /> test</div>
+                    <div class="chatMsg">xzsd sfs sf sdf</div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="chatMain myText d-flex">
+            <div class="chatText">
+                <div class="chatBox">
+                    <div class="chatInfo">test <br /> test</div>
+                    <div class="chatMsg">xzsd sfs sf sdf</div>
+                </div>
+            </div>
+            <div class="chatImg">
+                <div class="roomListUserImg">
+                    <div class="roomTopUserImg"><img src="https://localhost:7230/img/webHome/1.png" /></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mainBottom inputText-group">
+        <div class="label" id="sendMessage"><i class="iconsax" icon-name="send-1"></i></div>
+        <input id="inpMessage" class="inputText" placeholder="ارسال پیام" />
+
+    </div>
+</div>
+
+<div class="modal" id="roomUserList">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="close-modal" data-modal="menuGame">&#10006;</div>
+            <div class="title">حاضرین در اتاق</div>
+        </div>
+        <div class="modal-body">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="roomTrash">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="close-modal" data-modal="menuGame">&#10006;</div>
+            <div class="title">حاضرین در اتاق</div>
+        </div>
+        <div class="modal-body">
+
+        </div>
+    </div>
 </div>

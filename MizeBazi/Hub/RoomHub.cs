@@ -10,11 +10,12 @@ namespace MizeBazi.HubControllers;
 
 public class RoomModel
 {
-    public RoomModel(Guid id, long createUserId, string name, string password, GameType type)
+    public RoomModel(Guid id, long createUserId, string createName, string name, string password, GameType type)
     {
         Id = id;
 
         CreateUserId = createUserId;
+        CreateName = createName;
         Name = name;
         Password = password;
         Type = type;
@@ -33,6 +34,7 @@ public class RoomModel
 
     public Guid Id { get; set; }
     public long CreateUserId { get; set; }
+    public string CreateName { get; set; }
     public string Name { get; set; }
     public string Password { get; set; }
     public GameType Type { get; private set; }
@@ -47,50 +49,25 @@ public class RoomModel
         {
             creator = create,
             id = Id,
-            CreateUserId = Id,
+            createUserId = CreateUserId,
+            createName = CreateName,
             name = Name,
             kay = Key,
             date = Date,
+            count = initUser.Count
         };
 
 }
 
 public class RoomHub : Hub
 {
+    static DateTime removeTime = DateTime.Now;
     static List<RoomModel> list = new List<RoomModel>();
 
-    public async Task Search(string name)
-    {
-        name = name.Replace(" ", "-");
-
-        await removeInSearch();
-
-        var model = list.Where(x => string.IsNullOrEmpty(name) || x.Name.Contains(name)).TakeLast(50)
-            .Select(x => new {
-                id = x.Id,
-                name = x.Name.Replace("-", " "),
-                type = x.Type,
-                typeString = x.Type.EnumToString(),
-                date = x.Date.ToString(),
-            }).ToList();
-        await Clients.Caller.SendAsync("SearchReceive", list.Count, model.ToJson());
-    }
-
-    async Task removeInSearch()
-    {
-        var model = list.Where(x => x.Date < DateTime.Now).ToList();
-        foreach (var item in model)
-        {
-            var keys = item.initUser.Keys.ToList();
-            if (keys.Count > 0)
-                await Clients.Clients(keys).SendAsync("DestroyReceive");
-        }
-    }
-    
     public override async Task OnDisconnectedAsync(Exception exception)
     {
         var connectionId = Context.ConnectionId;
-        foreach(var room in list)
+        foreach (var room in list)
         {
             //var keyToRemove = initUser.Where(x => x.Value.Id == initUser[connectionId].Id).Select(x => x.Key).ToList();
             // اصلاح
@@ -101,36 +78,62 @@ public class RoomHub : Hub
 
             if (room.initUser.ContainsKey(connectionId))
             {
-                room.initUser.Remove(connectionId);
-                await updateUser(room);
+                await updateUser(false, connectionId, room, false);
             }
         }
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task Exit(Guid roomKey)
+    public async Task Search(string name)
     {
-        var connectionId = Context.ConnectionId;
-        var room = list.FirstOrDefault(x => x.Key == roomKey);
-        if (room != null)
+        name = name.Replace(" ", "-");
+
+        await removeInSearch();
+
+        var model = list.Where(x => string.IsNullOrEmpty(name) || x.Name.Contains(name)).TakeLast(40)
+            .Select(x => new {
+                id = x.Id,
+                name = x.Name.Replace("-", " "),
+                createName = x.CreateName,
+                type = x.Type,
+                typeString = x.Type.EnumToString(),
+                date = x.Date,
+                count= x.initUser.Count
+            }).ToList();
+        await Clients.Caller.SendAsync("SearchReceive", model.ToJson());
+    }
+
+    async Task removeInSearch()
+    {
+        if (DateTime.Now < removeTime)
+            return;
+        removeTime = DateTime.Now.AddMinutes(2);
+
+        var model = list.Where(x => x.Date < DateTime.Now).ToList();
+        foreach (var item in model)
         {
-            if (room.initUser.ContainsKey(connectionId))
-            {
-                room.initUser.Remove(connectionId);
-                await updateUser(room);
-            }
+            var keys = item.initUser.Keys.ToList();
+            if (keys.Count > 0)
+                await Clients.Clients(keys).SendAsync("DestroyReceive");
         }
+        if (model.Count > 0)
+            list = list.Where(x => x.Date > DateTime.Now).ToList();
     }
 
     public async Task Create(string auth, string dId, string name, string password, GameType type)
-    {
+        {
 
         name = name.Replace(" ", "-");
 
+        if (type == GameType.Unknown)
+        {
+            await Clients.Caller.SendAsync("CreateReceive", false, "نوع انتخاب نشده");
+            return;
+        }
 
         if (string.IsNullOrEmpty(password) || password.Length < 3 || password.Length > 25)
         {
-            await Clients.Caller.SendAsync("CreateReceive", false, "پسورد را صحیح وارد کنید");
+            await Clients.Caller.SendAsync("CreateReceive", false, "رمز عبور را صحیح وارد کنید");
             return;
         }
 
@@ -158,21 +161,44 @@ public class RoomHub : Hub
             throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
 
-        if (list.Any(x => x.CreateUserId == jwtModel.UserId))
+        var userDataSource = new DataSource.UserDataSource();
+        var userResult = await userDataSource.GetViwe(jwtModel.UserId);
+        if (userResult.data == null)
         {
-            var f = list.First(x => x.CreateUserId == jwtModel.UserId);
-            await Clients.Caller.SendAsync("CreateReceive", false,
-                $"شما قبلا یک اتاق با نام {f.Name} برای {f.Type.EnumToString()} ایجاد کرده اید"
-            );
-            return;
+            Context.Abort();
+            throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
 
+        // اصلاح
+        //if (list.Any(x => x.CreateUserId == jwtModel.UserId))
+        //{
+        //    var f = list.First(x => x.CreateUserId == jwtModel.UserId);
+        //    await Clients.Caller.SendAsync("CreateReceive", false,
+        //        $"شما قبلا یک اتاق با نام {f.Name} برای {f.Type.EnumToString()} ایجاد کرده اید"
+        //    );
+        //    return;
+        //}
+
+        var createName = $"{userResult.data.FirstName} {userResult.data.LastName}";
         var id = Guid.NewGuid();
-        RoomModel model = new RoomModel(id, jwtModel.UserId, name, password, type);
+        RoomModel model = new RoomModel(id, jwtModel.UserId, createName, name, password, type);
         list.Add(model);
         await Clients.Caller.SendAsync("CreateReceive", true, model.SafeModel(true).ToJson());
 
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
+    }
+
+    public async Task Exit(Guid roomKey)
+    {
+        var connectionId = Context.ConnectionId;
+        var room = list.FirstOrDefault(x => x.Key == roomKey);
+        if (room != null)
+        {
+            if (room.initUser.ContainsKey(connectionId))
+            {
+                await updateUser(false, connectionId, room, false);
+            }
+        }
     }
 
     public async Task Destroy(string auth, string dId, string name)
@@ -207,17 +233,16 @@ public class RoomHub : Hub
 
     public async Task Join(string auth, string dId, Guid roomId, string password)
     {
-
         var room = list.FirstOrDefault(x => x.Id == roomId);
         if (room == null)
         {
-            await Clients.Caller.SendAsync("JoinReceive", false, "اتاقی وجود ندارد . ممکن است اعضای اتاق وارد بازی شده باشند");
+            await Clients.Caller.SendAsync("JoinReceive", false, "اتاقی وجود ندارد . ممکن است اعضای اتاق وارد بازی شده باشند", null, null);
             return;
         }
 
         if (room.Password != password)
         {
-            await Clients.Caller.SendAsync("JoinReceive", false, "رمز عبور اشتباه است");
+            await Clients.Caller.SendAsync("JoinReceive", false, "رمز عبور اشتباه است", null, null);
             return;
         }
 
@@ -257,7 +282,7 @@ public class RoomHub : Hub
 
         if (room == null || room.initUser.Count >= room.Count)
         {
-            await Clients.Caller.SendAsync("JoinReceive", false, "اتاقی وجود ندارد . ممکن است اعضای اتاق وارد بازی شده باشند");
+            await Clients.Caller.SendAsync("JoinReceive", false, "اتاقی وجود ندارد . ممکن است اعضای اتاق وارد بازی شده باشند", null, null);
             return;
         }
 
@@ -276,8 +301,7 @@ public class RoomHub : Hub
         }
         else
         {
-            await updateUser(room);
-            await Clients.Clients(connectionId).SendAsync("JoinReceive", user.Id, room.SafeModel(room.CreateUserId == user.Id).ToJson());
+            await updateUser(true, connectionId, room, room.CreateUserId == user.Id);
 
         }
 
@@ -290,14 +314,21 @@ public class RoomHub : Hub
         list.Remove(model);
         await Clients.Clients(keys).SendAsync("InitGameReceive");
     }
-    private async Task updateUser(RoomModel room)
+    private async Task updateUser(bool join, string connectionId, RoomModel room, bool createUserId)
     {
+        if (join)
+        {
+            var users = UserView.SafeDictionary(room.initUser);
+            var imgs = room.initUser.Values.Select(x => x.Img).ToList();
+            await Clients.Caller.SendAsync("JoinReceive", true, room.SafeModel(createUserId).ToJson(), users.ToJson(), imgs);
+        }
         if (room.initUser.Count > 0)
         {
-            var keys = room.initUser.Keys.ToList();
-            var users = room.initUser.Values.Select(x => x.SafeModelwithoutImg());
-            var imgs = room.initUser.Values.Select(x => x.Img);
-            await Clients.Clients(keys).SendAsync("UpdateReceive", true, users.ToJson(), imgs);
+            var user = room.initUser[connectionId];
+            var keys = room.initUser.Keys.Where(x => x != connectionId).ToList();
+            if(!join)
+                room.initUser.Remove(connectionId);
+            await Clients.Clients(keys).SendAsync("UpdateReceive", join, connectionId, user.SafeModelwithoutImg().ToJson(), user.Img);
         }
     }
 

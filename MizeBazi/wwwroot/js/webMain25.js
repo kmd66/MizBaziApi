@@ -1,14 +1,4 @@
 ﻿var connection;
-function getRandomPastelColor() {
-    // تولید مقادیر تصادفی برای RGB با روشنایی بالا
-    const r = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
-    const g = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
-    const b = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
-
-    // تبدیل به فرمت HEX
-    const toHex = (value) => value.toString(16).padStart(2, '0');
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()

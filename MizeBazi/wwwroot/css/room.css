@@ -8,7 +8,7 @@
     padding: 0;
     overflow: hidden;
 }
-#mainRoom {
+#mainRoom, #thisRoom {
     width: 100%;
     height: 100vh;
     overflow: hidden;
@@ -20,7 +20,7 @@
     background: var(--BaseColor);
     align-items: center;
 }
-#mainList{
+#mainList, #roomList {
     height: calc(100% - 140px);
     overflow-y: auto;
     padding: 14px;
@@ -36,7 +36,132 @@
     text-align: center;
     padding: 5px 7px;
 }
-.mainTopItem span {
-    margin:0 5px;
-    font-size: 0.7rem
+    .mainTopItem span, .mainTop .text {
+        margin: 0 5px;
+        font-size: 0.7rem
+    }
+.mainRoomItem {
+    background: var(--BackgroundColor);
+    border-radius: 14px;
+    box-shadow: rgb(207 216 236 / 35%) 0px 9px 20px -10px;
+    overflow: hidden;
+    margin: 25px 14px;
+}
+.mainRoomHeder {
+    text-align: center;
+    background: var(--BaseColor);
+    padding: 5px;
+    color: var(--TextColor3);
+}
+.mainRoomName, .createName {
+    padding: 5px 7px;
+}
+.mainRoomCount {
+    text-align: center;
+    font-size: .8rem;
+    border-top: 1px solid #2e6f81;
+    padding: 5px 12px;
+    color: var(--TextColor2);
+}
+    .mainRoomCount .iconsax svg {
+        display: block;
+        width: 1rem;
+        height: 1rem;
+    }
+.roomTopUserImg {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--TextColor);
+    text-align: center;
+}
+    .roomTopUserImg .iconsax svg {
+        width: 16px;
+        height: 16px;
+    }
+#roomList {
+    height: calc(100% - 180px);
+}
+.roomListUserImg {
+    /* text-align: center; */
+    display: flex !important;
+    -webkit-box-pack: justify !important;
+    -ms-flex-pack: justify !important;
+    justify-content: center;
+    /* align-content: center; */
+}
+    .roomListUserImg .roomTopUserImg {
+        height: 50px;
+        width: 50px;
+        overflow: hidden;
+        box-shadow: rgb(255 255 255 / 35%) 0px 5px 15px;
+        border: 0;
+    }
+.roomListUserMess {
+    text-align: center;
+    align-content: center;
+    margin: 05px;
+    font-size: .8rem;
+    color: var(--TextColor3);
+}
+.roomTopUserImg .iconsax svg [fill] {
+    fill: unset !important;
+}
+.roomListUser {
+    margin: 10px -14px;
+    padding: 7px 0 5px 0;
+    background: #f0f8ff0f;
+}
+.chatMain{
+    margin-top:20px;
+    justify-content: start !important;
+}
+.chatInfo {
+    color: var(--TextColor3);
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+.chatImg {
+    width: 60px;
+    align-content: center;
+}
+.chatText {
+    max-width: 100%;
+    padding: 0 20px 0 0;
+    align-content: center;
+}
+.chatBox {
+    border-radius: 14px;
+    background: #00ff162e;
+    padding: 14px;
+    text-align: justify;
+    position: relative;
+}
+.myText .chatText {
+    padding: 0 0 0 20px;
+}
+.myText .chatBox {
+    background: #00ceff2e;
+}
+.myText .chatInfo {
+   text-align:left;
+}
+.myText {
+    justify-content: end !important;
+}
+.chatBox::after {
+    background-color: #00ff162e;
+    clip-path: polygon(0 100%, 0 0, 100% 50%);
+    content: "";
+    height: 1rem;
+    width: 1rem;
+    top: calc(50% - .5rem);
+    position: absolute;
+    right: -0.99rem;
+}
+.myText .chatBox::after {
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+    background-color: #00ceff2e;
+    left: -0.99rem;
+    right: unset;
 }

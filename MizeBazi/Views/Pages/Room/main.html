@@ -13,11 +13,13 @@
             <i class="iconsax" icon-name="sidebar-left"></i>
         </div>
     </div>
+
     <div id="mainList">
     </div>
+
     <div class="mainBottom inputText-group">
         <div class="label" id="mainSearch"><i class="iconsax" icon-name="search-normal-2"></i></div>
-        <input id="inpMain" class="inputText" />
+        <input id="inpMain" class="inputText" placeholder="جستجو" />
 
     </div>
 </div>
@@ -30,6 +32,55 @@
             <div class="title">ایجاد اتاق</div>
         </div>
         <div class="modal-body">
+            <div>یک نام و رمز عبور با طول رشته 3-25 انتخاب کنید</div>
+            <div id="createRoomErro" style="color: var(--ErrorColor)"></div>
+            <div class="form__group">
+                <input id="inpRoomName" class="form__field" placeholder="نام اتاق">
+            </div>
+            <div class="form__group">
+                <input type="password" id="inpPassword" class="form__field" placeholder="رمز عبور">
+            </div>
+            <div class="selectBtn btn w100" inputId="inpType" icon="chevron-down" placeholder="انتخاب نوع"
+                 style="margin-top:20px"
+                 data="[
+                    {'text': 'نبرد خنده', 'value': 25},
+                    {'text': 'رنگ و راز', 'value': 45},
+                    {'text': 'آفسون واژه', 'value': 68},
+                    {'text': 'مافیا', 'value': 89}
+                ]"></div>
+
+            <div id="creatRoomfotter" style="margin:20px 0 0">
+                <div class="d-flex">
+                    <button class="btn btn-green" onclick="createRoom()">ایجاد</button>
+                    <button class="btn btn-line close-modal">انصراف</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="insertPassword">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="close-modal" data-modal="menuGame">&#10006;</div>
+            <div class="title">ورود به اتاق <span id="insertName"></span></div>
+        </div>
+        <div class="modal-body">
+            <div>رمز عبور را وارد کنید</div>
+            <div id="insertPasswordErro" style="color: var(--ErrorColor)"></div>
+            <div class="form__group">
+                <input type="password" id="inpInsertPassword" class="form__field" placeholder="رمز عبور">
+            </div>
+            
+            <div id="creatRoomfotter" style="margin:20px 0 0">
+                <div class="d-flex">
+                    <button class="btn btn-green" onclick="joinRoom()">ورود</button>
+                    <button class="btn btn-line close-modal">انصراف</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

@@ -173,17 +173,17 @@ a {
 }
 
 .modal-header {
-    padding: 20px 40px;
+    padding: 14px;
     background: var(--BaseColor);
     color: #ffffff;
 }
 
 .modal-body {
     background: var(--BackgroundColor);
-    padding: 60px 40px;
+    padding: 14px;
 }
 
-.close-modal {
+.close-modal, .closeSelectItem {
     position: absolute;
     left: -12px;
     top: -12px;
@@ -196,8 +196,12 @@ a {
     background: var(--BaseColor);
     box-shadow: 0px 0px 20px 0px #ffffff6e;
 }
+.closeSelectItem {
+    left: 40px;
+    top: 40px;
+}
 .title {
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 /* Animation */
 @-webkit-keyframes modalbox {
@@ -264,6 +268,12 @@ a {
 .btn-Greenlight {
     background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
 }
+.btn-red {
+    background-color: var(--ErrorColor);
+}
+.btn-green {
+    background: rgb(14 109 18);
+}
 .btn .iconsax {
     line-height: 1.2rem;
     float: right;
@@ -272,6 +282,13 @@ a {
         width: 1.2rem;
         height: 1.2rem;
     }
+
+.btn.close-modal {
+    position: unset;
+    width: unset;
+    height: unset;
+    line-height: unset;
+}
 /*----------btn------*/
 
 /*----------inp------*/
@@ -312,6 +329,87 @@ a {
 .inputText:focus, inputText-group input:focus {
     border: 1px solid var(--LinkColor);
     outline: 0
+}
+
+.form__group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+}
+
+    .form__group label {
+        color: var(--TextColor2);
+    }
+
+.form__field {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border: 1px solid var(--TextColor2);
+    color: var(--TextColor);
+    outline: 0;
+    font-size: 16px;
+    padding: 7px 5px;
+    background: var(--BackgroundColor);
+    border-radius: 7px;
+    transition: border-color 0.2s;
+}
+
+    .form__field::placeholder {
+        color: transparent;
+    }
+
+    .form__field:placeholder-shown ~ .form__label {
+        font-size: 16px;
+        cursor: text;
+        top: 22px;
+        margin: 0 12px;
+    }
+
+    label,
+    .form__field:focus ~ .form__label {
+        position: absolute;
+        top: 7px;
+        margin: 0 12px;
+        display: block;
+        transition: 0.2s;
+        font-size: 0.7rem;
+        background: var(--BackgroundColor);
+        padding: 0 5px;
+    }
+
+
+    .form__field:focus {
+        border: 1px solid var(--LinkColor);
+    }
+
+
+.modelItems ul {
+    position: fixed;
+    list-style: none;
+    margin: 0;
+    padding: 14px;
+    background: var(--BtnColor);
+    left: 50px;
+    top: 50px;
+    right: 50px;
+    bottom: 50px;
+    overflow: auto
+}
+
+.modelItems .modelItem {
+    padding: 20px;
+    margin: 5px 0 0 0;
+    border-bottom: 1px solid;
+}
+.modelItems {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, .5);
+    z-index: 1001;
 }
 /*----------inp------*/
 

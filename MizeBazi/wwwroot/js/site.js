@@ -6,9 +6,10 @@ publicToken = '';
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
+    selectBtn();
     init_iconsax();
+    inputs();
 });
-
 function init_iconsax() {
     document.querySelectorAll(".iconsax").forEach(iconsax => {
         var TuT = iconsax.getAttribute("icon-name").toLowerCase().trim();
@@ -22,6 +23,59 @@ function init_iconsax() {
                     iconsax.innerHTML = "";
                 }
             });
+    });
+}
+function inputs() {
+    $("input").attr("autocomplete", `off`)
+    $(".form__field").each(function () {
+        $(this).after(`<label class="form__label">${$(this).attr('placeholder')}</label>`);
+    });
+    $(".form__label").on("click", function () {
+        var p = $(this).parent();
+        $(p).find('input:first')[0].focus();
+    });
+}
+function selectBtn() {
+    $(".selectBtn").each(function () {
+        var id = 'itms' + Math.random().toString(36).replace(/[^A-Za-z0-9]+/g, '').substr(2, 10);
+
+        var attr = $(this).attr(`data`);
+        var attr = $(this).attr(`data`);
+        var attr = $(this).attr(`data`);
+        $(this).html(`<input id="${$(this).attr('inputId')}" type="hidden"/><div style="text-align: center;"><span>${$(this).attr('placeholder') }</span> <i class="iconsax" icon-name="${$(this).attr('icon')}"></i></div>`);
+
+        $(this).attr(`fromItems`, id);
+        var attr = $(this).attr(`data`);
+        attr = attr.replace(/'/g, '"')
+        el = `<div id="${id}" class="modelItems" style="display:none"><ul>`;
+        JSON.parse(attr).map((x) => {
+            if (!x.value)
+                x.value = x.text;
+            el += `<li class="modelItem"  fromItems="${id}" value="${x.value}">${x.text}</li>`
+        });
+        el += `</ul><div class="closeSelectItem" fromItems="${id}" data-modal="menuGame">✖</div></div>`;
+        $('body').append(el);
+
+        clicBtn(this)
+    });
+    function clicBtn(e) {
+        $(e).on("click", function () {
+            var id = "#"+$(this).attr(`fromItems`);
+            $(id).css("display", "block");
+        });
+    }
+    $('.closeSelectItem').on("click", function () {
+        var id = "#" + $(this).attr(`fromItems`);
+        $(id).css("display", "none");
+    });
+    $('.modelItem').on("click", function () {
+        var value = $(this).attr(`value`);
+        var text = $(this).text();
+        var id = $(this).attr(`fromItems`);
+        $("#" + id).css("display", "none");
+        var t = $(`.selectBtn[fromItems='${id}'] input`)[0];
+        $(t).val(value)
+        $(`.selectBtn[fromItems='${id}'] span`).text(text)
     });
 }
 
@@ -61,4 +115,31 @@ function soketStart(connection, callback) {
         // setTimeout(startConnection, 5000);
     });
     startConnection();
+}
+function isOnlyLatin(input) {
+    const regex = /^[A-Za-z0-9]+$/;
+    return regex.test(input);
+} function isOnlyDigits(input) {
+    const regex = /^\d+$/;
+    return regex.test(input);
+} function isNullOrEmpty(input) {
+    if (!input || input == '')
+        return true;
+    return false;
+} function ticksToDate(ticks) {
+    const ticksPerSecond = 1e7;
+    const epoch = new Date(1900, 0, 1);
+    const date = new Date(epoch.getTime() + (ticks / ticksPerSecond));
+    return date;
+} function diffMinutes(date) {
+    let datenew = new Date();
+    let differenceInMilliseconds = date - datenew;
+    return Math.floor(Math.floor(differenceInMilliseconds / 1000) / 60);
+}
+function getRandomPastelColor() {
+    const r = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
+    const g = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
+    const b = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
+    const toHex = (value) => value.toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
