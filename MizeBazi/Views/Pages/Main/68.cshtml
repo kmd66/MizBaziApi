@@ -1,14 +1,39 @@
 ﻿@{
     ViewData["Title"] = "Pages / Main 68";
+    var htmlMain = System.IO.File.ReadAllText("./Views/Pages/Main/main.html");
 }
 @section css {
-    <link rel="stylesheet" href="~/css/webMain68.css" />
+    <style>
+        .fading-image {
+            background-image: url('../img/webHome/3.png');
+        }
+
+            .fading-image::after {
+                background: radial-gradient(circle, #141e30b8 0%, var(--BackgroundColor) 100%)
+            }
+    </style>
+    <link rel="stylesheet" href="~/css/webMain.css" />
+}
+@section Scripts2 {
+    <script>
+        const connectionLink = "/afsonvajehhub";
+        var gameCount = 8;
+    </script>
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="~/lib/msgpack.min.js"></script>
+    <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
 }
 @section Scripts {
-    <script src="~/js/Main68.js"></script>
+    <script src="~/js/webMain.js"></script>
 }
-
 <div class="fading-image"></div>
-<div class="container">
-    <button class="btn btn-primary" onclick="f_urlBack()">بازگشت</button>
+
+<div id="comment" style="display:none">
+    <span>jsj 1</span>
+    <span>jsj 2</span>
+    <span>jsj 3</span>
+    <span>jsj 4</span>
+    <span>jsj 5</span>
 </div>
+
+@Html.Raw(htmlMain)

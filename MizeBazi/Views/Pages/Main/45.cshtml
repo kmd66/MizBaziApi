@@ -1,14 +1,39 @@
 ﻿@{
     ViewData["Title"] = "Pages / Main 45";
+    var htmlMain = System.IO.File.ReadAllText("./Views/Pages/Main/main.html");
 }
 @section css {
-    <link rel="stylesheet" href="~/css/webMain45.css" />
+    <style>
+        .fading-image {
+            background-image: url('../img/webHome/2.png');
+        }
+
+        .d-flex {
+            justify-content: space-around !important;
+        }
+    </style>
+    <link rel="stylesheet" href="~/css/webMain.css" />
+}
+@section Scripts2 {
+    <script>
+        const connectionLink = "/rangrazhub";
+        var gameCount = 5;
+    </script>
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="~/lib/msgpack.min.js"></script>
+    <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
 }
 @section Scripts {
-    <script src="~/js/Main45.js"></script>
+    <script src="~/js/webMain.js"></script>
 }
-
 <div class="fading-image"></div>
-<div class="container">
-    <button class="btn btn-primary" onclick="f_urlBack()">بازگشت</button>
+
+<div id="comment" style="display:none">
+    <span>jsj 1</span>
+    <span>jsj 2</span>
+    <span>jsj 3</span>
+    <span>jsj 4</span>
+    <span>jsj 5</span>
 </div>
+
+@Html.Raw(htmlMain)

@@ -2,16 +2,17 @@
 <div id="thisRoom" style="display:none">
 
     <div class="mainTop d-flex">
-        <div class="mainTopItem" id="exitRoom">
+        <div class="mainTopItem" info="exitRoom">
             <i class="iconsax" icon-name="logout-1"></i>
             <div class="text">خروج ازاتاق</div>
         </div>
-        <div id="mainTopCount" class="text">اعضای حاضر 0 از 10</div>
-        
-        <div id="roomTopTrashName" class="text" style=" text-align: center; display: none">
+        <div class="mainTopItem text" info="mainTopCount">
         </div>
 
-        <div class="mainTopItem" id="roomTopTrash" style="display:none">
+        <div id="roomTopTrashName" class="mainTopItem text" style=" text-align: center; display: none">
+        </div>
+
+        <div class="mainTopItem" info="roomTopTrash" style="display:none">
             <i class="iconsax" icon-name="trash"></i>
             <div class="text">حذف اتاق</div>
         </div>
@@ -32,7 +33,6 @@
                 <div class="chatBox">
                     <div class="chatInfo">test <br /> test</div>
                     <div class="chatMsg">xzsd sfs sf sdf</div>
-
                 </div>
             </div>
         </div>
@@ -90,6 +90,20 @@
                     <button class="btn btn-line close-modal">انصراف</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="destroyRoom">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="close-modal" data-modal="menuGame">&#10006;</div>
+            <div class="title">حذف اتاق</div>
+        </div>
+        <div class="modal-body">
+            <div>این اتاق حذف شده است</div>
+            <button class="btn btn-green w100" onclick="callbackSoketStart()">متوجه شدم</button>
         </div>
     </div>
 </div>

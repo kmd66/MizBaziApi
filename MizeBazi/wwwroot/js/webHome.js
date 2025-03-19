@@ -25,12 +25,4 @@ function f_urlMain() {
 function f_testKhande() {
     window.flutter_inappwebview.callHandler('f_testKhande', _link);
 }
-function createRoom() {
-    $("#menuGame").css({ "display": "none" });
-    $("#createRoom").css({ "display": "block" });
-}
-function joinRoom() {
-    $("#menuGame").css({ "display": "none" });
-    $("#joinRoom").css({ "display": "block" });
-}
 

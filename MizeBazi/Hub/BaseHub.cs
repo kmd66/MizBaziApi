@@ -11,11 +11,13 @@ public abstract class MainHub : Hub
     protected abstract Task start();
 
     readonly JwtHelper _jwt;
+    protected GameType _type = 0;
     protected byte _count = 0;
 
-    public MainHub(byte count)
+    public MainHub(GameType type)
     {
-        _count = count;
+        _type = type;
+        _count = type.HubCount();
         _jwt = new JwtHelper();
     }
 

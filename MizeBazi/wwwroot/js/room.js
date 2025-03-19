@@ -21,6 +21,10 @@ function initSoket() {
 
     connection.on("ExitReceive", callbackSoketStart);
 
+    connection.on("DestroyReceive", () => { $("#destroyRoom").css("display", "block"); });
+
+    connection.on("MessageReceive", MessageReceive);
+
     connection.on("InitGameReceive", () => {
     });
 
@@ -30,6 +34,8 @@ function initSoket() {
 
 function callbackSoketStart() {
     state = 'main';
+    $(".modal").css("display", "none");
+    $("#destroyRoom").css("display", "none");
     $("#thisRoom").css("display", "none");
     $("#mainRoom").css("display", "block");
     mainSearch();
@@ -39,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function mainSearch() {
-    var info = $(this).attr('class');
     $("#mainList").html('');
     val = $('#inpMain').val();
     connection.invoke("Search", val);
@@ -79,8 +84,11 @@ function CreateReceive(b, json) {
         $("#creatRoomfotter").css("display", "block");
         createRoomErro(json)
         return;
-    }
-    roomInfo = JSON.parse(json);
+    } 
+
+    var inpInsertPassword = $("#inpPassword").val();
+    var obj = JSON.parse(json);
+    connection.invoke("Join", publicToken, publicDeviceId, obj.id, inpInsertPassword);
 
 }
 
@@ -91,12 +99,14 @@ function JoinReceive(b, roomJson, usersJson, imgs) {
         return;
     }
 
+    $("#roomList").html('');
     $("#insertPassword").css("display", "none");
+    $("#createRoom").css("display", "none");
     roomInfo = JSON.parse(roomJson);
     let date = new Date(roomInfo.date);
     roomInfo.diffMinutes = diffMinutes(date);
     roomInfo.pDate = jalaali.toJalaali(date);
-
+    roomInfo.name = roomInfo.name.replaceAll('-', ' ');
     usersInfo = JSON.parse(usersJson);
     usersInfo.forEach((item, index, arr) => {
         usersInfo[index].img = imgs[index];
@@ -142,6 +152,16 @@ function mainTopItem() {
         $('#inpMain').val('');
         mainSearch();
     }
+    else if (info == 'roomTopTrash') {
+        $("#roomTrash").css("display", "block");
+    }
+    else if (info == 'mainTopCount') {
+        $("#roomUserList").css("display", "block");
+    }
+    else if (info == 'exitRoom') {
+        connection.invoke("Exit", roomInfo.id, roomInfo.kay);
+    }
+
 }
 function createRoom() {
     $("#createRoomErro").css("display", "none");
@@ -149,20 +169,19 @@ function createRoom() {
     var inpRoomName = $('#inpRoomName').val();
     var inpType = $('#inpType').val();
     inpRoomName = inpRoomName.replaceAll(" ", "-");
-
-    if (isNullOrEmpty(inpType)) {
+    if (inpType.isNullOrEmpty()) {
         return createRoomErro("نوع انتخاب نشده");
     }
 
-    if (isNullOrEmpty(inpPassword) || inpPassword.length < 3 || inpPassword.length > 25) {
+    if (inpPassword.isNullOrEmpty() || inpPassword.length < 3 || inpPassword.length > 25) {
         return createRoomErro("رمز عبور را صحیح وارد کنید");
     }
 
-    if (!isOnlyLatin(inpPassword)) {
+    if (!inpPassword.isOnlyLatin()) {
         return createRoomErro("رمز عبور باید از اعداد و حروف لاتین باشد");
     }
 
-    if (isNullOrEmpty(inpRoomName) || inpRoomName.length < 3 || inpRoomName.length > 25) {
+    if (inpRoomName.isNullOrEmpty() || inpRoomName.length < 3 || inpRoomName.length > 25) {
         return createRoomErro("نام را صحیح وارد کنید");
     }
     $("#creatRoomfotter").css("display", "none");
@@ -185,16 +204,16 @@ function updateRoom(b, user) {
     userNotif();
     function checkState() {
         if (state == 'main') {
-            $("#roomTopTrash").css("display", "none");
-            $("#thisRoom").css("display", "block");
+            $(".mainTopItem[info='roomTopTrash']").css("display", "none");
+            $("#roomTopTrashName").css("display", "none");
             $("#mainRoom").css("display", "none");
+
+            $("#thisRoom").css("display", "block");
             state = 'room';
             if (roomInfo.creator) {
-                $("#roomTopTrash").css("display", "block");
-                $("#roomTopTrashName").css("display", "none");
+                $(".mainTopItem[info='roomTopTrash']").css("display", "block");
             } else {
                 
-                $("#roomTopTrash").css("display", "none");
                 $("#roomTopTrashName").css("display", "block");
                 $("#roomTopTrashName").html(`<div>ایجاد شده توسط</div><div>${roomInfo.createName}</div>`)
             }
@@ -222,7 +241,7 @@ function updateRoom(b, user) {
 
         $("#roomUserListBody").html(elRoomUserListBody);
 
-        $("#mainTopCount").html(`اعضای حاضر ${usersInfo.length} از ${roomInfo.count}`);
+        $(".mainTopItem[info='mainTopCount']").html(`<div style="color: var(--LinkColor);">${roomInfo.name}</div><div style="color: var(--TextColor2);">اعضای حاضر ${usersInfo.length} از ${roomInfo.count}</div>`);
 
         setTimeout(() => {
             setIconColor();
@@ -246,66 +265,50 @@ function updateRoom(b, user) {
 
             $("#roomList").append(el);
 
-
             setTimeout(() => {
-                scroll();
+                scrollEl('#roomList');
             }, "500");
-            function scroll() {
-                var outerHeight = $('#roomList').outerHeight(true);
-                var scrollTop = $('#roomList').scrollTop();
-                var scrollHeight = $('#roomList')[0].scrollHeight;
-                var h2_3 = outerHeight - (outerHeight / 5);
-                var outerscrollTop = outerHeight + scrollTop;
-
-                var t = scrollHeight - outerscrollTop;
-                if (t < h2_3) {
-                    $('#roomList').animate({
-                        scrollTop: scrollHeight
-                    }, 1000);
-                }
-            }
-
         }
     }
 }
 
 function sendMessage() {
-    var outerHeight = $('#roomList').outerHeight(true);
-    var scrollTop = $('#roomList').scrollTop();
-    var scrollHeight = $('#roomList')[0].scrollHeight;
-    var h2_3 = outerHeight - (outerHeight / 3 );
-    var outerscrollTop = outerHeight + scrollTop;
-
-    var t = scrollHeight - outerscrollTop;
-    console.log(`${t} - ${h2_3} - ${t < h2_3}`);
-    if (t < h2_3) {
-            $('#roomList').animate({
-                scrollTop: scrollHeight
-            }, 1000);
+    val = $('#inpMessage').val();
+    if (!val.isNullOrEmpty()) {
+        $('#inpMessage').val('');
+        if (val.length > 200)
+            val = val.slice(0, 200)
+        connection.invoke("Message", roomInfo.id, roomInfo.kay, val);
     }
 }
-function exitRoom() {
-    connection.invoke("Exit", roomInfo.kay);
-}
-function mainTopCount() {
-    $("#roomUserList").css("display", "block");
+function MessageReceive(connectionId, mes) {
+    let user = usersInfo.find((x) => x.connectionId == connectionId);
+    let b = user.connectionId == connection.connectionId;
+
+    if (!user)
+        return;
+
+    var el = `<div class="chatMain ${b == true ? 'myText': ''} d-flex">`;
+    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg"><img src="data:image/png;base64,${user.imgBbase64}" /></div></div></div>`;
+    var chatText = `<div class="chatText"><div class="chatBox"><div class="chatInfo">${user.userName} <br /> ${user.name}</div><div class="chatMsg">${mes}</div></div></div>`;
+
+    el += (b == true ? chatText + chatImg : chatImg + chatText) + '</div>';
+
+    $("#roomList").append(el);
+
+    setTimeout(() => {
+        scrollEl('#roomList');
+    }, "500");
 }
 
-function roomTopTrash() {
-    $("#roomTrash").css("display", "block");
-}
 function trashRoom() {
-    debugger
+    connection.invoke("Destroy", publicToken, publicDeviceId, roomInfo.name);
 }
-
-$("#mainSearch").on("click", mainSearch);
 
 $(".mainTopItem").on("click", mainTopItem);
 
+$("#mainSearch").on("click", mainSearch);
+
 $("#sendMessage").on("click", sendMessage);
 
-$("#exitRoom").on("click", exitRoom);
 
-$("#mainTopCount").on("click", mainTopCount);
-
-$("#roomTopTrash").on("click", roomTopTrash);

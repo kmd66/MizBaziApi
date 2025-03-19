@@ -419,3 +419,6 @@ a {
     -ms-flex-pack: justify !important;
     justify-content: space-between !important;
 }
+.d-none {
+    display:none !important;
+}

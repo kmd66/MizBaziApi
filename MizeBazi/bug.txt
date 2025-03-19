@@ -16,5 +16,4 @@ dotnet ef database update --context OrgContexts
 محدود کردن دیوایس
 
 محدود سازی کاربر
-
-لود و خطای اتصال وب
+ چک کردن رشته ارسالی

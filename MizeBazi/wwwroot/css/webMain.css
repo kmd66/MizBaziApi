@@ -1,8 +1,4 @@
-﻿.fading-image {
-    background-image: url('../img/webHome/1.png');
-}
-
-.container {
+﻿.container {
     display: flex !important;
     -webkit-box-pack: justify !important;
     -ms-flex-pack: justify !important;
@@ -52,7 +48,7 @@
 }
 #help {
     width: 100%;
-    height: 300px;
+    height: 250px;
     box-shadow: 0 5px 12px 2px #4b4b4b80;
     border-radius: 14px;
     margin-bottom: 12px;
@@ -61,6 +57,7 @@
     padding: 12px;
     overflow: hidden;
     align-items: center;
+    overflow: hidden;
 }
 #userCount {
     font-size: 1.4rem;
@@ -72,4 +69,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 12px;
+}
+.itemMain{display:none}
+#mainList {
+    padding: 14px 0;
+    display: flex;
+    height: calc(100% - 300px);
+    -webkit-box-pack: justify !important;
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+    flex-direction: column;
+}
+.btn {
+    height: 50px;
 }

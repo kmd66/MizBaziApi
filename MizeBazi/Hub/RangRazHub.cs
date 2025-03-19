@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using MizeBazi.Models;
 using MizeBazi.Helper;
 
@@ -6,9 +6,9 @@ namespace MizeBazi.HubControllers;
 
 public class RangRazHub : MainHub
 {
-    public static byte Count = 5;
     static Dictionary<string, UserView> initUser = new Dictionary<string, UserView>();
-    public RangRazHub() : base(Count)
+
+    public RangRazHub() : base(GameType.رنگ_و_راز)
     {
     }
 
@@ -24,12 +24,12 @@ public class RangRazHub : MainHub
 
     protected override async Task start()
     {
-        var users = initUser.Values.Take(Count).ToList();
-        var keys = initUser.Keys.Take(Count).ToList();
+        var users = initUser.Values.Take(_count).ToList();
+        var keys = initUser.Keys.Take(_count).ToList();
         foreach (var key in keys)
         {
             initUser.Remove(key);
         }
-        await Clients.Clients(keys).SendAsync("InitGameReceive");
+        await Clients.Clients(keys).SendAsync("InitGameReceive", _type.GameLink());
     }
 }

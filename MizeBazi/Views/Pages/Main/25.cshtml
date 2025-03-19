@@ -1,80 +1,29 @@
 ﻿@{
     ViewData["Title"] = "Pages / Main 25";
+    var htmlMain = System.IO.File.ReadAllText("./Views/Pages/Main/main.html");
 }
 @section css {
-    <link rel="stylesheet" href="~/css/webMain25.css" />
+    <style>
+        .fading-image {
+            background-image: url('../img/webHome/1.png');
+        }
+
+    </style>
+    <link rel="stylesheet" href="~/css/webMain.css" />
 }
 @section Scripts2 {
+    <script>
+        const connectionLink = "/nabardkhandehub";
+        var gameCount = 6;
+    </script>
     <script src="~/lib/signalr.min.js"></script>
     <script src="~/lib/msgpack.min.js"></script>
     <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
 }
 @section Scripts {
-    <script src="~/js/webMain25.js"></script>
+    <script src="~/js/webMain.js"></script>
 }
-
-
-
 <div class="fading-image"></div>
-<div class="container">
-    <div id="help">تست راهنما</div>
-    <div class="d-flex">
-
-        <div class="itemMain">
-            <div class="itemImg">
-                <i class="iconsax" icon-name="user-2"></i>
-            </div>
-            <div class="itemName">-</div>
-            <div class="userName">-</div>
-        </div>
-
-        <div class="itemMain">
-            <div class="itemImg">
-                <i class="iconsax" icon-name="user-2"></i>
-            </div>
-            <div class="itemName">-</div>
-            <div class="userName">-</div>
-        </div>
-    </div>
-    <div class="d-flex">
-
-        <div class="itemMain">
-            <div class="itemImg">
-                <i class="iconsax" icon-name="user-2"></i>
-            </div>
-            <div class="itemName">-</div>
-            <div class="userName">-</div>
-        </div>
-        <div id="userCount">0 نفر</div>
-        <div class="itemMain">
-            <div class="itemImg">
-                <i class="iconsax" icon-name="user-2"></i>
-            </div>
-            <div class="itemName">-</div>
-            <div class="userName">-</div>
-        </div>
-    </div>
-    <div class="d-flex">
-
-        <div class="itemMain">
-            <div class="itemImg">
-                <i class="iconsax" icon-name="user-2"></i>
-            </div>
-            <div class="itemName">-</div>
-            <div class="userName">-</div>
-        </div>
-
-        <div class="itemMain">
-            <div class="itemImg">
-                <i class="iconsax" icon-name="user-2"></i>
-            </div>
-            <div class="itemName">-</div>
-            <div class="userName">-</div>
-        </div>
-    </div>
-
-    <button class="btn btn-primary" onclick="f_urlBack()">انصراف</button>
-</div>
 
 <div id="comment" style="display:none">
     <span>jsj 1</span>
@@ -83,3 +32,5 @@
     <span>jsj 4</span>
     <span>jsj 5</span>
 </div>
+
+@Html.Raw(htmlMain)

@@ -121,22 +121,13 @@ function soketStart(connection, callback) {
     });
     startConnection();
 }
-function isOnlyLatin(input) {
-    const regex = /^[A-Za-z0-9]+$/;
-    return regex.test(input);
-} function isOnlyDigits(input) {
-    const regex = /^\d+$/;
-    return regex.test(input);
-} function isNullOrEmpty(input) {
-    if (!input || input == '')
-        return true;
-    return false;
-} function ticksToDate(ticks) {
+function ticksToDate(ticks) {
     const ticksPerSecond = 1e7;
     const epoch = new Date(1900, 0, 1);
     const date = new Date(epoch.getTime() + (ticks / ticksPerSecond));
     return date;
-} function diffMinutes(date) {
+}
+function diffMinutes(date) {
     let datenew = new Date();
     let differenceInMilliseconds = date - datenew;
     return Math.floor(Math.floor(differenceInMilliseconds / 1000) / 60);
@@ -147,10 +138,48 @@ function getRandomPastelColor() {
     const b = Math.floor(Math.random() * 128) + 128; // محدوده 128 تا 255
     const toHex = (value) => value.toString(16).padStart(2, '0');
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-} function uint8ArrayToBase64(uint8Array) {
+}
+function uint8ArrayToBase64(uint8Array) {
     let binaryString = '';
     uint8Array.forEach(byte => {
         binaryString += String.fromCharCode(byte);
     });
     return btoa(binaryString);
 }
+function scrollEl(el, b) {
+    var outerHeight = $(el).outerHeight(true);
+    var scrollTop = $(el).scrollTop();
+    var scrollHeight = $(el)[0].scrollHeight;
+    var h2_3 = outerHeight - (outerHeight / 5);
+    var outerscrollTop = outerHeight + scrollTop;
+
+    var t = scrollHeight - outerscrollTop;
+    if (b || t < h2_3) {
+        $(el).animate({
+            scrollTop: scrollHeight
+        }, 1000);
+    }
+}
+
+
+
+//---------extension-------
+String.prototype.isNullOrEmpty = function () {
+    if (!this || this == '')
+        return true;
+    return false;
+};
+String.prototype.isOnlyLatin = function () {
+    if (!this || this == '')
+        return false;
+    const regex = /^[A-Za-z0-9]+$/;
+    return regex.test(this);
+};
+String.prototype.isOnlyDigits = function () {
+    if (!this || this == '')
+        return false;
+    const regex = /^\d+$/;
+    return regex.test(this);
+};
+
+//---------extension-------

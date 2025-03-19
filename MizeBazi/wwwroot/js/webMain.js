@@ -2,7 +2,7 @@
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("/nabardkhandehub")
+        .withUrl(connectionLink)
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
@@ -11,7 +11,7 @@ function initSoket() {
         setList(obj);
     });
 
-    connection.on("InitGameReceive", () => {
+    connection.on("InitGameReceive", (link) => {
         alert('InitGameReceive')
     });
 
@@ -45,6 +45,18 @@ function setIconColor() {
         $(this).attr("fill", `${c}`)
     });
 }
+
+let dFlexCount = Math.floor((10 - gameCount) / 2);
+if (dFlexCount > 0) {
+    var dFlex = $("#mainList .d-flex").slice(dFlexCount * -1);
+    $(dFlex).addClass('d-none');
+}
+$('#mainList .itemMain').each(function () {
+    if (gameCount > 0) {
+        $(this).css("display", "block");
+    }
+    gameCount = gameCount - 1;
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     initSoket();    
