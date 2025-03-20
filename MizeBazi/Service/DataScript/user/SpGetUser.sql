@@ -18,7 +18,8 @@ BEGIN
         u.Phone,
         u.[Type],
         u.[Date],
-        t.img
+        t.Bio, 
+		t.img
 	FROM org.Users u
 	INNER JOIN org.UsersThumbnail t
 		ON u.Id = t.Id

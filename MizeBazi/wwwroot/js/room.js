@@ -289,8 +289,8 @@ function MessageReceive(connectionId, mes) {
         return;
 
     var el = `<div class="chatMain ${b == true ? 'myText': ''} d-flex">`;
-    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg"><img src="data:image/png;base64,${user.imgBbase64}" /></div></div></div>`;
-    var chatText = `<div class="chatText"><div class="chatBox"><div class="chatInfo">${user.userName} <br /> ${user.name}</div><div class="chatMsg">${mes}</div></div></div>`;
+    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg"><img src="data:image/png;base64,${user.imgBbase64}" /></div></div><div class="chatUserName">${user.userName}</div></div>`;
+    var chatText = `<div class="chatText"><div class="chatBox"><div class="chatInfo">${user.name}</div><div class="chatMsg">${mes}</div></div></div>`;
 
     el += (b == true ? chatText + chatImg : chatImg + chatText) + '</div>';
 

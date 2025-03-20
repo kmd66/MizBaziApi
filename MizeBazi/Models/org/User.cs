@@ -54,6 +54,7 @@ public class UserValidate
 [Keyless]
 public class UserView : User
 {
+    public string Bio { get; set; }
     public byte[] Img { get; set; }
 
     public void SafeData()
@@ -75,7 +76,8 @@ public class UserView : User
             name = $"{FirstName} {LastName}",
             userName = UserName,
             date = Date,
-            img = Img
+            img = Img,
+            bio = Bio
         };
     public object SafeModelwithoutImg()
         => new
@@ -101,6 +103,9 @@ public class User : BaseModel
     public string? UserName { get; set; }
 
     public byte Type { get; set; }
+
+    [Column(TypeName = "Date")] 
+    public DateTime BirthDate { get; set; }
 
     public DateTime Date { get; set; }
 

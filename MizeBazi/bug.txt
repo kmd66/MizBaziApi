@@ -3,8 +3,8 @@
 افزودن ابزار
 dotnet tool install --global dotnet-ef --version 8.*
 
-dotnet ef migrations add UserThumbnailAddKey --context OrgContexts
-dotnet ef database update --context OrgContexts
+dotnet ef migrations add flwAdd --context FlwContexts
+dotnet ef database update --context FlwContexts
 
 --------------------------------
 // اصلاح

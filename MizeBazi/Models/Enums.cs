@@ -32,3 +32,17 @@ public static class RomHubCountHelper
     public static string GameLink(this GameType val)
         => GameLinkSection[val.ToString()];
 }
+public enum RequestsType : byte
+{
+    Unknown = 0,
+    در_انتظار = 1,
+    ردشده = 2,
+    پذیرفته = 3,
+    لغو = 4,
+}
+public enum NotificationType : byte
+{
+    Unknown = 0,
+    پیام = 1,
+    درخواست_دوستی = 2,
+}

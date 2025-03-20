@@ -31,7 +31,7 @@ BEGIN
 		INNER JOIN  org.Users u ON u.Id = i.v
 	)
 	SELECT 
-		items.*, t.img
+		items.*, t.Bio, t.img
 	FROM items
 	INNER JOIN org.UsersThumbnail t
 		ON items.Id = t.Id
