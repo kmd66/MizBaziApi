@@ -15,6 +15,7 @@ public class FlwContexts : DbContext
         modelBuilder.HasDefaultSchema("flw");
 
         friendRequestConfig(ref modelBuilder);
+        blockFriendConfig(ref modelBuilder);
         friendConfig(ref modelBuilder);
         messageConfig(ref modelBuilder);
         groupConfig(ref modelBuilder);
@@ -68,6 +69,26 @@ public class FlwContexts : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Friend>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(f => f.User2Id)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private void blockFriendConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<BlockFriend>()
+            .HasIndex(p => p.Id);
+        modelBuilder.Entity<BlockFriend>()
+            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+
+        modelBuilder.Entity<BlockFriend>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(f => f.User1Id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<BlockFriend>()
             .HasOne<User>()
             .WithMany()
             .HasForeignKey(f => f.User2Id)
@@ -180,6 +201,7 @@ public class FlwContexts : DbContext
 
     public DbSet<FriendRequest> FriendRequests { get; set; }
     public DbSet<Friend> Friends { get; set; }
+    public DbSet<BlockFriend> BlockFriends { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }

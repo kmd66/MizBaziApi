@@ -221,5 +221,26 @@ namespace MizeBazi.DataSource
             }
 
         }
+
+        public async Task<Result<List<byte[]>>> ListAvatar(List<long> ids)
+        {
+            try
+            {
+                var ett = await _orgContexts.UsersThumbnail
+                    .Where(x => ids.Contains(x.Id)).AsNoTracking().ToListAsync();
+                var result = ett.Select(x => x.img).ToList();
+
+                return Result<List<byte[]>>.Successful(data: result);
+            }
+            catch (Exception ex)
+            {
+                throw MizeBaziException.Error(message: ex.Message);
+            }
+            finally
+            {
+                _orgContexts.ChangeTracker.Clear();
+            }
+
+        }
     }
 }

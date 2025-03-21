@@ -1,8 +1,6 @@
 ﻿namespace MizeBazi.Models;
 
-public record RequestEdit(RequestEditType Type, long UserId);
-
-public class Friend
+public class BlockFriend
 {
     public Guid Id { get; set; }
     public long User1Id { get; set; }

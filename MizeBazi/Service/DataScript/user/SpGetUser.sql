@@ -18,6 +18,7 @@ BEGIN
         u.Phone,
         u.[Type],
         u.[Date],
+		u.[BirthDate],
         t.Bio, 
 		t.img
 	FROM org.Users u

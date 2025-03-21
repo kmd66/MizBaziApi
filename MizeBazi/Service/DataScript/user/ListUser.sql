@@ -26,7 +26,8 @@ BEGIN
 		    u.UserName,
 		    u.Phone,
 		    u.[Type],
-		    u.[Date]
+		    u.[Date],
+			u.[BirthDate]
 		FROM id i
 		INNER JOIN  org.Users u ON u.Id = i.v
 	)

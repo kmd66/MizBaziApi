@@ -26,6 +26,10 @@ public static class Hash
     {
         return Base64.Encrypt(plainText);
     }
+    public static string Base64Encrypt(this byte[] bytes)
+    {
+        return Convert.ToBase64String(bytes);
+    }
 
     public static string Base64Decrypt(this string plainText)
     {
