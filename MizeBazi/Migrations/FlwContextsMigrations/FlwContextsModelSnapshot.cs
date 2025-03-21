@@ -32,7 +32,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 244, DateTimeKind.Local).AddTicks(620));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 49, DateTimeKind.Local).AddTicks(860));
 
                     b.Property<long>("User1Id")
                         .HasColumnType("bigint");
@@ -60,7 +60,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 246, DateTimeKind.Local).AddTicks(2657));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 50, DateTimeKind.Local).AddTicks(5415));
 
                     b.Property<long>("User1Id")
                         .HasColumnType("bigint");
@@ -88,7 +88,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 238, DateTimeKind.Local).AddTicks(2446));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 45, DateTimeKind.Local).AddTicks(2286));
 
                     b.Property<long>("ReceiverID")
                         .HasColumnType("bigint");
@@ -124,7 +124,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 250, DateTimeKind.Local).AddTicks(2372));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 53, DateTimeKind.Local).AddTicks(6259));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(140)");
@@ -162,7 +162,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 251, DateTimeKind.Local).AddTicks(1508));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 54, DateTimeKind.Local).AddTicks(3168));
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -190,7 +190,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 253, DateTimeKind.Local).AddTicks(768));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 55, DateTimeKind.Local).AddTicks(8658));
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -227,7 +227,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 248, DateTimeKind.Local).AddTicks(550));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 51, DateTimeKind.Local).AddTicks(9921));
 
                     b.Property<bool>("IsRemove")
                         .ValueGeneratedOnAdd()
@@ -264,7 +264,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 8, 9, 7, 255, DateTimeKind.Local).AddTicks(2133));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 57, DateTimeKind.Local).AddTicks(4246));
 
                     b.Property<bool>("IsRead")
                         .ValueGeneratedOnAdd()

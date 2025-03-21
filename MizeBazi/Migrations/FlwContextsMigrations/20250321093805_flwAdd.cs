@@ -36,6 +36,35 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlockFriends",
+                schema: "flw",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    User1Id = table.Column<long>(type: "bigint", nullable: false),
+                    User2Id = table.Column<long>(type: "bigint", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 49, DateTimeKind.Local).AddTicks(860))
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlockFriends", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlockFriends_User_User1Id",
+                        column: x => x.User1Id,
+                        principalSchema: "flw",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BlockFriends_User_User2Id",
+                        column: x => x.User2Id,
+                        principalSchema: "flw",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FriendRequests",
                 schema: "flw",
                 columns: table => new
@@ -44,7 +73,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     SenderID = table.Column<long>(type: "bigint", nullable: false),
                     ReceiverID = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<byte>(type: "tinyint", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 155, DateTimeKind.Local).AddTicks(6291))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 45, DateTimeKind.Local).AddTicks(2286))
                 },
                 constraints: table =>
                 {
@@ -73,7 +102,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     User1Id = table.Column<long>(type: "bigint", nullable: false),
                     User2Id = table.Column<long>(type: "bigint", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 161, DateTimeKind.Local).AddTicks(2268))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 50, DateTimeKind.Local).AddTicks(5415))
                 },
                 constraints: table =>
                 {
@@ -104,7 +133,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     CreateId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: ""),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 165, DateTimeKind.Local).AddTicks(6866)),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 53, DateTimeKind.Local).AddTicks(6259)),
                     IsRemove = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     Description = table.Column<string>(type: "nvarchar(140)", nullable: true)
                 },
@@ -129,7 +158,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     SenderID = table.Column<long>(type: "bigint", nullable: false),
                     ReceiverID = table.Column<long>(type: "bigint", nullable: false),
                     IsRemove = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 163, DateTimeKind.Local).AddTicks(2583)),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 51, DateTimeKind.Local).AddTicks(9921)),
                     Text = table.Column<string>(type: "nvarchar(140)", nullable: false)
                 },
                 constraints: table =>
@@ -160,7 +189,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<byte>(type: "tinyint", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 171, DateTimeKind.Local).AddTicks(4109))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 57, DateTimeKind.Local).AddTicks(4246))
                 },
                 constraints: table =>
                 {
@@ -182,7 +211,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GroupId = table.Column<long>(type: "bigint", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 166, DateTimeKind.Local).AddTicks(7536))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 54, DateTimeKind.Local).AddTicks(3168))
                 },
                 constraints: table =>
                 {
@@ -212,7 +241,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     GroupId = table.Column<long>(type: "bigint", nullable: false),
                     SenderId = table.Column<long>(type: "bigint", nullable: false),
                     IsPin = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 20, 17, 22, 22, 169, DateTimeKind.Local).AddTicks(1178)),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 38, 5, 55, DateTimeKind.Local).AddTicks(8658)),
                     Text = table.Column<string>(type: "nvarchar(140)", nullable: false)
                 },
                 constraints: table =>
@@ -233,6 +262,24 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlockFriends_Id",
+                schema: "flw",
+                table: "BlockFriends",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlockFriends_User1Id",
+                schema: "flw",
+                table: "BlockFriends",
+                column: "User1Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlockFriends_User2Id",
+                schema: "flw",
+                table: "BlockFriends",
+                column: "User2Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FriendRequests_Id",
@@ -352,6 +399,10 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BlockFriends",
+                schema: "flw");
+
             migrationBuilder.DropTable(
                 name: "FriendRequests",
                 schema: "flw");

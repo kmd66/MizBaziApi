@@ -22,7 +22,7 @@ BEGIN
         t.Bio, 
 		t.img
 	FROM org.Users u
-	INNER JOIN org.UsersThumbnail t
+	INNER JOIN org.UsersExtra t
 		ON u.Id = t.Id
 	WHERE u.Id = @Id
 

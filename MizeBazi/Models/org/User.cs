@@ -55,7 +55,7 @@ public class UserValidate
 public class UserView : User
 {
     public string Bio { get; set; }
-    public byte[] Img { get; set; }
+    public string Img { get; set; }
 
     public void SafeData()
     {
@@ -68,7 +68,8 @@ public class UserView : User
         {
             connectionId = x.Key,
             name = $"{x.Value.FirstName} {x.Value.LastName}",
-            userName = x.Value.UserName
+            userName = x.Value.UserName,
+            img = x.Value.Img
         });
     public object SafeModel()
         => new
@@ -79,13 +80,13 @@ public class UserView : User
             img = Img,
             bio = Bio
         };
-    public object SafeModelwithoutImg()
+    public object SafeModelwithoutBio()
         => new
         {
-            id= Id,
             name = $"{FirstName} {LastName}",
             userName = UserName,
-            date = Date
+            date = Date,
+            img = Img
         };
 }
 public class User : BaseModel

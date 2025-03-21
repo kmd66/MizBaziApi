@@ -23,7 +23,7 @@ namespace MizeBazi.Controllers
             => _service.Edit(model);
 
         [HttpPost("GetAvatar")]
-        public Task<Models.Result<byte[]>> GetAvatar()
+        public Task<Models.Result<string>> GetAvatar()
             => _service.GetAvatar();
 
         [HttpPost("GetViwe")]

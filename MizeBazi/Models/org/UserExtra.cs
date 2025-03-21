@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MizeBazi.Models;
 
-public record UserThumbnailDto(UserThumbnail Product);
 
-public class UserThumbnail
+public class UserExtra
 {
-    [Key]
     public long Id { get; set; }
 
-    [MaxLength(140)] //معرفی مختصر
+    [MaxLength(140)]
     public string Bio { get; set; }
-    public byte[] img { get; set; }
+    public string img { get; set; }
 }

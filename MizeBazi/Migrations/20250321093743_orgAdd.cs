@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MizeBazi.Migrations
 {
     /// <inheritdoc />
-    public partial class addorg : Migration
+    public partial class orgAdd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace MizeBazi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DeviceId = table.Column<string>(type: "varchar(32)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(11)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(3705))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(3475))
                 },
                 constraints: table =>
                 {
@@ -38,7 +38,7 @@ namespace MizeBazi.Migrations
                     Phone = table.Column<string>(type: "varchar(11)", nullable: false),
                     Stamp = table.Column<string>(type: "varchar(5)", nullable: false),
                     Count = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(2159))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(1510))
                 },
                 constraints: table =>
                 {
@@ -72,7 +72,8 @@ namespace MizeBazi.Migrations
                     Phone = table.Column<string>(type: "varchar(11)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
                     Type = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)1),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 5, 8, 39, 24, 451, DateTimeKind.Local).AddTicks(6201)),
+                    BirthDate = table.Column<DateTime>(type: "Date", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(6307)),
                     UnicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -81,16 +82,17 @@ namespace MizeBazi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersThumbnail",
+                name: "UsersExtra",
                 schema: "org",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false),
-                    img = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    Bio = table.Column<string>(type: "nvarchar(140)", maxLength: 140, nullable: true),
+                    img = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersThumbnail", x => x.Id);
+                    table.PrimaryKey("PK_UsersExtra", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -116,6 +118,12 @@ namespace MizeBazi.Migrations
                 schema: "org",
                 table: "Users",
                 column: "UnicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersExtra_Id",
+                schema: "org",
+                table: "UsersExtra",
+                column: "Id");
         }
 
         /// <inheritdoc />
@@ -138,7 +146,7 @@ namespace MizeBazi.Migrations
                 schema: "org");
 
             migrationBuilder.DropTable(
-                name: "UsersThumbnail",
+                name: "UsersExtra",
                 schema: "org");
         }
     }

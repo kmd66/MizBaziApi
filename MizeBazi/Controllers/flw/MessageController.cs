@@ -29,7 +29,7 @@ namespace MizeBazi.Controllers
             => _service.Edit(model);
 
         [HttpPost, Route("Remove")]
-        public Task<Models.Result<byte[]>> Remove()
+        public Task<Models.Result<string>> Remove()
             => _service.GetAvatar();
 
     }

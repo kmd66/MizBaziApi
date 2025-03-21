@@ -34,7 +34,7 @@ BEGIN
 	SELECT 
 		items.*, t.Bio, t.img
 	FROM items
-	INNER JOIN org.UsersThumbnail t
+	INNER JOIN org.UsersExtra t
 		ON items.Id = t.Id
 
 END 

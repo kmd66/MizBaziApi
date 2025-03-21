@@ -33,6 +33,10 @@ namespace MizeBazi.Helper
             var t = enumValue.ToString();
             return enumValue.ToString().Replace("_"," ");
         }
+        public static string Stamp(this Guid id)
+        {
+            return id.ToString().Replace("-", "");
+        }
 
     }
 }

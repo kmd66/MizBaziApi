@@ -92,7 +92,7 @@ function CreateReceive(b, json) {
 
 }
 
-function JoinReceive(b, roomJson, usersJson, imgs) {
+function JoinReceive(b, roomJson, usersJson) {
     if (!b) {
         $("#insertPasswordErro").css("display", "block");
         $('#insertPasswordErro').html(roomJson);
@@ -108,21 +108,15 @@ function JoinReceive(b, roomJson, usersJson, imgs) {
     roomInfo.pDate = jalaali.toJalaali(date);
     roomInfo.name = roomInfo.name.replaceAll('-', ' ');
     usersInfo = JSON.parse(usersJson);
-    usersInfo.forEach((item, index, arr) => {
-        usersInfo[index].img = imgs[index];
-        usersInfo[index].imgBbase64= uint8ArrayToBase64(imgs[index]);
-    });
 
     let userIndex = usersInfo.findIndex(x => x.connectionId == connection.connectionId);
     updateRoom(true, usersInfo[userIndex]);
 }
 
-function UpdateReceive(b, connectionId, json, img) {
+function UpdateReceive(b, connectionId, json) {
 
     var user = JSON.parse(json);
     user.connectionId = connectionId;
-    user.img = img;
-    user.imgBbase64 = uint8ArrayToBase64(img);
     if (b) {
         usersInfo.push(user);
     }
@@ -224,7 +218,7 @@ function updateRoom(b, user) {
         let elRoomTopUserList = ''
         for (let i = 0; i < roomInfo.count; i++) {
             if (usersInfo.length > i) {
-                elRoomTopUserList += `<div class="roomTopUserImg"><img src="data:image/png;base64,${usersInfo[i].imgBbase64}" /></div>`;
+                elRoomTopUserList += `<div class="roomTopUserImg"><img src="${usersInfo[i].img}90.jpg"></div>`;
 
             } else {
                 elRoomTopUserList += `<div class="roomTopUserImg"><i class="iconsax" icon-name="user-2">${icon}</i></div>`;
@@ -235,7 +229,7 @@ function updateRoom(b, user) {
 
         let elRoomUserListBody = '';
         usersInfo.map((x) => {
-            elRoomUserListBody += `<div class="roomListUserImg"><div class="roomTopUserImg"><img src="data:image/png;base64,${x.imgBbase64}" /></div>`
+            elRoomUserListBody += `<div class="roomListUserImg"><div class="roomTopUserImg"><img src="${x.img}90.jpg"></div>`
                 + `<div class="roomListUserMess"><div>${x.userName}</div><div>${x.name}</div></div></div>`;
         });
 
@@ -259,7 +253,7 @@ function updateRoom(b, user) {
     function userNotif() {
         if (user) {
             var el = '<div class="roomListUser"><div class="roomListUserImg">'
-                + `<div class="roomTopUserImg"><img src="data:image/png;base64,${user.imgBbase64}" /></div>`
+                + `<div class="roomTopUserImg"><img src="${user.img}90.jpg"></div>`
                 + `<div class="roomListUserMess">${user.userName}</div></div><div class="roomListUserMess">`
                 + `کاربر ${user.name} <span style="color: ${b == true ? "var(--SuccessColor)" : "var(--ErrorColor)"}; font-weight: bold;">${b == true ? "وارد" : "خارج" }</span> شد</div></div>`;
 
@@ -289,7 +283,7 @@ function MessageReceive(connectionId, mes) {
         return;
 
     var el = `<div class="chatMain ${b == true ? 'myText': ''} d-flex">`;
-    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg"><img src="data:image/png;base64,${user.imgBbase64}" /></div></div><div class="chatUserName">${user.userName}</div></div>`;
+    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg"><img src="${user.img}90.jpg" /></div></div><div class="chatUserName">${user.userName}</div></div>`;
     var chatText = `<div class="chatText"><div class="chatBox"><div class="chatInfo">${user.name}</div><div class="chatMsg">${mes}</div></div></div>`;
 
     el += (b == true ? chatText + chatImg : chatImg + chatText) + '</div>';

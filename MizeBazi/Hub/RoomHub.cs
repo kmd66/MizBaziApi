@@ -274,8 +274,7 @@ public class RoomHub : Hub
         if (join)
         {
             var users = UserView.SafeDictionary(room.initUser);
-            var imgs = room.initUser.Values.Select(x => x.Img).ToList();
-            await Clients.Caller.SendAsync("JoinReceive", true, room.SafeModel(createUserId).ToJson(), users.ToJson(), imgs);
+            await Clients.Caller.SendAsync("JoinReceive", true, room.SafeModel(createUserId).ToJson(), users.ToJson());
         }
         if (room.initUser.Count > 0)
         {
@@ -283,7 +282,7 @@ public class RoomHub : Hub
             var keys = room.initUser.Keys.Where(x => x != connectionId).ToList();
             if(!join)
                 room.initUser.Remove(connectionId);
-            await Clients.Clients(keys).SendAsync("UpdateReceive", join, connectionId, user.SafeModelwithoutImg().ToJson(), user.Img);
+            await Clients.Clients(keys).SendAsync("UpdateReceive", join, connectionId, user.SafeModelwithoutBio().ToJson());
         }
     }
 

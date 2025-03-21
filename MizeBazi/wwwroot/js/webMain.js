@@ -24,15 +24,24 @@ function initSoket() {
     soketStart(connection, callbackSoketStart);
 }
 
-function setList(obj) {
+async function setList(obj) {
     if (obj != null) {
+        var icon = await iconsaxByName("user-2");
         $('#userCount').text(`${obj.length} نفر`);
+        var itemImg = $('.itemMain .itemImg');
+        itemImg.each(function () {
+            $(this).html(`<i class="iconsax" icon-name="user-2">${icon}</i>`);
+        });
+
+        setIconColor();
+
         var itemName = $('.itemMain .itemName');
         var userName = $('.itemMain .userName');
         itemName.text('*');
         userName.text('*');
         obj.forEach((num, index, arr) => {
-             $(itemName[index]).text(num.name);
+            $(itemImg[index]).html(`<img src="${num.img}90.jpg">`);
+            $(itemName[index]).text(num.name);
             $(userName[index]).text(num.userName);
         });
     }

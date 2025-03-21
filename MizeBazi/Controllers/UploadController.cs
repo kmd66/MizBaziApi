@@ -9,8 +9,11 @@ namespace MizeBazi.Controllers
 {
     public class UploadController : _ControllerBase
     {
-        public UploadController()
+        private readonly IWebHostEnvironment _env;
+
+        public UploadController(IWebHostEnvironment env)
         {
+            _env = env;
         }
 
         [HttpPost, Route("Avatar")]
@@ -24,7 +27,8 @@ namespace MizeBazi.Controllers
                 if (filelist.Count > 0)
                 {
                     var file = filelist[0];
-                    return await userService.AddAvatar(file, contentType);
+                    string folderPath = Path.Combine(_env.WebRootPath);
+                    return await userService.AddAvatar(file, folderPath, contentType);
                 }
                 return Result.Failure(message: "filelist.Count > 0");
             }

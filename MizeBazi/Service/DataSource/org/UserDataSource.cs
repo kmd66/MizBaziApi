@@ -63,7 +63,7 @@ namespace MizeBazi.DataSource
         {
             try
             {
-                if(ids.Count < 1)
+                if (ids.Count < 1)
                     return Result<List<UserView>>.Successful(data: new List<UserView>());
 
                 var _ids = System.Text.Json.JsonSerializer.Serialize(ids);
@@ -114,6 +114,9 @@ namespace MizeBazi.DataSource
                 var ett = Map<User, UserRegister>(model);
                 _orgContexts.Add<User>(ett);
                 await _orgContexts.SaveChangesAsync();
+                var eEtt = new UserExtra { Id = ett.Id };
+                _orgContexts.Add<UserExtra>(eEtt);
+                await _orgContexts.SaveChangesAsync();
 
                 return Result.Successful();
             }
@@ -156,6 +159,7 @@ namespace MizeBazi.DataSource
                 _orgContexts.ChangeTracker.Clear();
             }
         }
+
         public async Task<Result> UniqueUserName(string userName)
         {
             try
@@ -179,14 +183,21 @@ namespace MizeBazi.DataSource
 
         }
 
-        public async Task<Result> AddAvatar(UserThumbnail model)
+        public async Task<Result> AddAvatar(long id, string url)
         {
             try
             {
-                var thumbnail = _orgContexts.UsersThumbnail.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
+                var ett = await _orgContexts.UsersExtra.Where(x =>
+                    x.Id == id
+                ).Take(1).FirstOrDefaultAsync();
+                if (ett == null)
+                    throw MizeBaziException.Error(message: "Edit ett null");
 
-                _orgContexts.Entry(model).State = thumbnail != null ? EntityState.Modified : EntityState.Added;
-                _orgContexts.SaveChanges();
+                ett.img = url;
+
+                _orgContexts.Update<UserExtra>(ett);
+
+                await _orgContexts.SaveChangesAsync();
 
                 return Result.Successful();
             }
@@ -201,36 +212,15 @@ namespace MizeBazi.DataSource
 
         }
 
-        public async Task<Result<byte[]>> GetAvatar(long id)
+        public async Task<Result<string>> GetAvatar(long id)
         {
             try
             {
-                var ett = await _orgContexts.UsersThumbnail.Where(x =>
+                var ett = await _orgContexts.UsersExtra.Where(x =>
                     x.Id == id
                 ).AsNoTracking().Take(1).FirstOrDefaultAsync();
 
-                return Result<byte[]>.Successful(data: ett?.img);
-            }
-            catch (Exception ex)
-            {
-                throw MizeBaziException.Error(message: ex.Message);
-            }
-            finally
-            {
-                _orgContexts.ChangeTracker.Clear();
-            }
-
-        }
-
-        public async Task<Result<List<byte[]>>> ListAvatar(List<long> ids)
-        {
-            try
-            {
-                var ett = await _orgContexts.UsersThumbnail
-                    .Where(x => ids.Contains(x.Id)).AsNoTracking().ToListAsync();
-                var result = ett.Select(x => x.img).ToList();
-
-                return Result<List<byte[]>>.Successful(data: result);
+                return Result<string>.Successful(data: ett?.img);
             }
             catch (Exception ex)
             {

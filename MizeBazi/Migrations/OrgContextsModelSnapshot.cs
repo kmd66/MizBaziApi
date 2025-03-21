@@ -32,7 +32,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 20, 1, 24, 41, 698, DateTimeKind.Local).AddTicks(2647));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(3475));
 
                     b.Property<string>("DeviceId")
                         .IsRequired()
@@ -63,7 +63,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 20, 1, 24, 41, 698, DateTimeKind.Local).AddTicks(458));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(1510));
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -119,7 +119,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 20, 1, 24, 41, 698, DateTimeKind.Local).AddTicks(6192));
+                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(6307));
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(25)
@@ -151,7 +151,7 @@ namespace MizeBazi.Migrations
                     b.ToTable("Users", "org");
                 });
 
-            modelBuilder.Entity("MizeBazi.Models.UserThumbnail", b =>
+            modelBuilder.Entity("MizeBazi.Models.UserExtra", b =>
                 {
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
@@ -160,12 +160,14 @@ namespace MizeBazi.Migrations
                         .HasMaxLength(140)
                         .HasColumnType("nvarchar(140)");
 
-                    b.Property<byte[]>("img")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("img")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsersThumbnail", "org");
+                    b.HasIndex("Id");
+
+                    b.ToTable("UsersExtra", "org");
                 });
 
             modelBuilder.Entity("MizeBazi.Models.UserView", b =>
@@ -186,8 +188,8 @@ namespace MizeBazi.Migrations
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
 
-                    b.Property<byte[]>("Img")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Img")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(25)

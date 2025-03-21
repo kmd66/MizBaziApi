@@ -53,7 +53,7 @@ public class UserService : IService
         return Result.Successful();
     }
 
-    public async Task<Result> AddAvatar(IFormFile file, string contentType)
+    public async Task<Result> AddAvatar(IFormFile file, string folderPath, string contentType)
     {
         try
         {
@@ -71,9 +71,14 @@ public class UserService : IService
                 ))
                 return Result.Failure(message: "مجاز به آپلود این نوع فایل نیستید");
 
-            var data = FileHelper.ResizeImageWithAspectRatio(fileData, AppStrings.AvatarMaxWidth);
+            var data90 = FileHelper.ResizeImageWithAspectRatio(fileData, 90);
+            var data400 = FileHelper.ResizeImageWithAspectRatio(fileData, 400);
+            var imgName = $"/thumbnail/{Guid.NewGuid().Stamp()}";
+            File.WriteAllBytes($"{folderPath}{imgName}90.jpg", data90);
+            File.WriteAllBytes($"{folderPath}{imgName}400.jpg", data400);
+
             var userDataSource = new DataSource.UserDataSource();
-            await userDataSource.AddAvatar(new UserThumbnail { Id = _requestInfo.model.UserId, img = data });
+            await userDataSource.AddAvatar(_requestInfo.model.UserId, imgName);
             return Result.Successful();
 
         }
@@ -83,7 +88,7 @@ public class UserService : IService
         }
     }
 
-    public async Task<Result<byte[]>> GetAvatar()
+    public async Task<Result<string>> GetAvatar()
     {
         var userDataSource = new DataSource.UserDataSource();
         return await userDataSource.GetAvatar(_requestInfo.model.UserId);
@@ -91,8 +96,20 @@ public class UserService : IService
 
     public async Task<Result<UserView>> GetViwe(long id = 0)
     {
+        if (id == 0)
+        {
+            var tokenDataSource = new DataSource.TokenDataSource();
+            var tokenResult = await tokenDataSource.Get(_requestInfo.model.Id);
+            if (tokenResult.data == null || tokenResult.data.Hash != _requestInfo.Token.Md5())
+                return Result<UserView>.Failure(code: 401, message: "401");
+        }
+
         var userDataSource = new DataSource.UserDataSource();
         var result = await userDataSource.GetViwe(id == 0 ? _requestInfo.model.UserId : id);
+        if (id == 0 && result.data == null)
+        {
+            return Result<UserView>.Failure(code: 401, message: "401");
+        }
         if (!result.success)
             return Result<UserView>.Failure(message: result.message);
         if (result.data != null && id != 0)

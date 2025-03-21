@@ -72,7 +72,7 @@ public class LoginService : IService
 
         await tokenDataSource.Add(tokenModel);
         await securityStamDataSource.Expiry(result.data.Id);
-
+            
         var deviceDataSource = new DataSource.DeviceDataSource();
         var deviceModel = new DeviceDto(Guid.NewGuid(), _requestInfo.DeviceId, model.Phone, DateTime.Now);
         await deviceDataSource.Add(deviceModel);

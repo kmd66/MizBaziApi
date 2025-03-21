@@ -16,7 +16,7 @@ public class OrgContexts : DbContext
         deviceConfig(ref modelBuilder);
         tokenConfig(ref modelBuilder);
         userConfig(ref modelBuilder);
-        UsersThumbnailConfig(ref modelBuilder);
+        userExtraConfig(ref modelBuilder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -67,14 +67,11 @@ public class OrgContexts : DbContext
                    eb.ToView("UserView");
                });
     }
-    private void UsersThumbnailConfig(ref ModelBuilder modelBuilder)
+    private void userExtraConfig(ref ModelBuilder modelBuilder)
     {
-        //modelBuilder.Entity<UserThumbnail>().Property(e => e.Id)
-        //    .ValueGeneratedNever();
-        //modelBuilder.Entity<UserThumbnail>().HasOne<User>()
-        //    .WithOne()
-        //    .HasForeignKey<UserThumbnail>(p => p.Id);
-        modelBuilder.Entity<UserThumbnail>().Property(e => e.Id)
+        modelBuilder.Entity<UserExtra>()
+            .HasIndex(p => p.Id);
+        modelBuilder.Entity<UserExtra>().Property(e => e.Id)
             .ValueGeneratedNever();
     }
 
@@ -83,7 +80,6 @@ public class OrgContexts : DbContext
     public DbSet<Token> Tokens { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserView> UsersView { get; set; }
-    public DbSet<UserThumbnail> UsersThumbnail { get; set; }
-    //public DbSet<UserThumbnail2> UsersThumbnail2 { get; set; }
+    public DbSet<UserExtra> UsersExtra { get; set; }
 
 }
