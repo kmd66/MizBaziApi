@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MizeBazi.DataSource;
-using MizeBazi.Helper;
 
 namespace MizeBazi.Controllers
 {

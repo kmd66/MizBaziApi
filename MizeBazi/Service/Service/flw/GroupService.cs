@@ -5,10 +5,10 @@ using System.Runtime.Intrinsics.X86;
 
 namespace MizeBazi.Service;
 
-public class FriendService : IService
+public class GroupService : IService
 {
     readonly IRequestInfo _requestInfo;
-    public FriendService(IRequestInfo requestInfo)
+    public GroupService(IRequestInfo requestInfo)
     {
         _requestInfo = requestInfo;
     }

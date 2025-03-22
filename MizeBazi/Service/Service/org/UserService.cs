@@ -1,13 +1,10 @@
 ﻿using MizeBazi.Helper;
 using MizeBazi.Models;
-using System.IO;
-using System.IO.Compression;
 
 namespace MizeBazi.Service;
 
 public class UserService : IService
 {
-    //readonly DataSource.LoginDataSource _loginDataSource;
     readonly Helper.IRequestInfo _requestInfo;
     public UserService(IRequestInfo requestInfo)
     {

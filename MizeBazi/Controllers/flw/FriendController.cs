@@ -1,55 +1,44 @@
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace MizeBazi.Controllers
-//{
-//    public class FriendController : _ControllerBase
-//    {
-//        readonly Service.FriendService _service;
+namespace MizeBazi.Controllers
+{
+    public class FriendController : _ControllerBase
+    {
+        readonly Service.FriendService _service;
 
-//        public FriendController(Service.FriendService service)
-//        {
-//            _service = service;
-//        }
+        public FriendController(Service.FriendService service)
+        {
+            _service = service;
+        }
 
-//        [HttpPost, Route("Request")]
-//        public Task<Models.Result> Request(long UserId)
-//            => _service.Get();
-
-//        [HttpPost, Route("List")]
-//        public Task<Models.Result<byte[]>> List()
-//            => _service.GetAvatar();
-
-//        [HttpPost, Route("Search")]
-//        public Task<Models.Result<byte[]>> Search(string UserName)
-//            => _service.GetAvatar();
+        [HttpPost, Route("Request")]
+        public Task<Models.Result> Request(long userId)
+            => _service.Request(userId);
 
 
-//        [HttpPost, Route("RequestList")]
-//        public Task<Models.Result> RequestList()
-//            => _service.Edit(model);
+        [HttpPost, Route("RequestEdit")]
+        public Task<Models.Result> RequestEdit([FromBody] Models.RequestEdit model)
+            => _service.RequestEdit(model);
 
-//        [HttpPost, Route("RequestListSearch")]
-//        public Task<Models.Result<byte[]>> RequestListSearch(string UserName)
-//            => _service.GetAvatar();
+        [HttpPost, Route("Block")]
+        public Task<Models.Result> Block(long userId)
+            => _service.Block(userId);
 
+        [HttpPost, Route("RemoveBlock")]
+        public Task<Models.Result> RemoveBlock(long userId)
+            => _service.RemoveBlock(userId);
 
-//        [HttpPost, Route("RequestEdit")]
-//        public Task<Models.Result> RequestEdit([FromBody] Models.RequestEdit model)
-//            => _service.Edit(model);
+        [HttpPost, Route("List")]
+        public Task<Models.Result<List<Models.UserView>>> List([FromBody] Models.FriendSearch model)
+            => _service.List(model);
 
+        [HttpPost, Route("RequestList")]
+        public Task<Models.Result<List<Models.UserView>>> ListRequest([FromBody] Models.FriendSearch model)
+            => _service.ListRequest(model);
 
-//        [HttpPost, Route("Block")]
-//        public Task<Models.Result<byte[]>> Block(long UserId)
-//            => _service.GetAvatar();
+        [HttpPost, Route("ListBlock")]
+        public Task<Models.Result<List<Models.UserView>>> ListBlock([FromBody] Models.FriendSearch model)
+            => _service.ListBlock(model);
 
-//        [HttpPost, Route("RemoveBlock")]
-//        public Task<Models.Result<byte[]>> RemoveBlock(long UserId)
-//            => _service.GetAvatar();
-
-//        [HttpPost, Route("ListBlock")]
-//        public Task<Models.Result<byte[]>> ListBlock(string UserName)
-//            => _service.GetAvatar();
-
-//    }
-//}
+    }
+}

@@ -7,18 +7,18 @@ namespace MizeBazi.DataSource
     public class TokenDataSource : BaseDataSource
     {
 
-        readonly OrgContexts _orgContexts;
+        readonly OrgContexts _context;
 
         public TokenDataSource()
         {
-            _orgContexts = new OrgContexts();
+            _context = new OrgContexts();
         }
 
         public async Task<Result<TokenDto>> Get(Guid id)
         {
             try
             {
-                var ett = await _orgContexts.Tokens.Where(x =>
+                var ett = await _context.Tokens.Where(x =>
                     x.Id == id && x.IsValid == true
                 ).AsNoTracking().Take(1).FirstOrDefaultAsync();
 
@@ -32,7 +32,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
         }
 
@@ -41,7 +41,7 @@ namespace MizeBazi.DataSource
             try
             {
                 var sqlQuery = $"UPDATE [org].[Tokens] SET IsValid = 0 WHERE [UserId] = {UserId} AND IsValid = 1";
-                _orgContexts.Database.ExecuteSqlRaw(sqlQuery);
+                _context.Database.ExecuteSqlRaw(sqlQuery);
 
                 return Result.Successful();
 
@@ -52,7 +52,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
         }
 
@@ -61,8 +61,8 @@ namespace MizeBazi.DataSource
             try
             {
                 var ett = Map<Token, TokenDto>(model);
-                _orgContexts.Add<Token>(ett);
-                await _orgContexts.SaveChangesAsync();
+                _context.Add<Token>(ett);
+                await _context.SaveChangesAsync();
 
                 return Result.Successful();
 
@@ -73,7 +73,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
 
         }

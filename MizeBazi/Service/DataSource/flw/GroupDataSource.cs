@@ -7,12 +7,12 @@ using System.Threading;
 
 namespace MizeBazi.DataSource;
 
-public class FriendDataSource : BaseDataSource
+public class GroupDataSource : BaseDataSource
 {
 
     readonly FlwContexts _context;
 
-    public FriendDataSource()
+    public GroupDataSource()
     {
         _context = new FlwContexts();
     }
@@ -161,7 +161,6 @@ public class FriendDataSource : BaseDataSource
             _context.ChangeTracker.Clear();
         }
     }
-
     public async Task<Result> AddBlock(long from, long to)
     {
         try

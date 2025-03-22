@@ -7,23 +7,23 @@ namespace MizeBazi.DataSource
     public class DeviceDataSource : BaseDataSource
     {
 
-        readonly OrgContexts _orgContexts;
+        readonly OrgContexts _context;
 
         public DeviceDataSource()
         {
-            _orgContexts = new OrgContexts();
+            _context = new OrgContexts();
         }
 
         public async Task<Result<List<DeviceGroupBy>>> List(DeviceDto model, int task = 10)
         {
             try
             {
-                //var ett = await _orgContexts.Devices.Where(x =>
+                //var ett = await _context.Devices.Where(x =>
                 //    (model.Phone == null || x.Phone == model.Phone)
                 //    && (model.DeviceId == null || x.DeviceId == model.DeviceId)
                 //    && x.Date > model.Date
                 //).OrderBy(o => o.Date).Take(task).ToListAsync();
-                var query = from d in _orgContexts.Set<Device>()
+                var query = from d in _context.Set<Device>()
                             where d.DeviceId == model.DeviceId && d.Date > model.Date
                             group d by d.Phone
                             into g
@@ -40,7 +40,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
 
         }
@@ -50,8 +50,8 @@ namespace MizeBazi.DataSource
             try
             {
                 var ett = Map<Device, DeviceDto>(model);
-                _orgContexts.Add<Device>(ett);
-                await _orgContexts.SaveChangesAsync();
+                _context.Add<Device>(ett);
+                await _context.SaveChangesAsync();
 
                 return Result.Successful();
 
@@ -62,7 +62,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
 
         }

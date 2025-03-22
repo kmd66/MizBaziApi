@@ -7,11 +7,11 @@ namespace MizeBazi.DataSource
     public class SecurityStampDataSource : BaseDataSource
     {
 
-        readonly OrgContexts _orgContexts;
+        readonly OrgContexts _context;
 
         public SecurityStampDataSource()
         {
-            _orgContexts = new OrgContexts();
+            _context = new OrgContexts();
         }
 
 
@@ -19,7 +19,7 @@ namespace MizeBazi.DataSource
         {
             try
             {
-                var ett = await _orgContexts.SecurityStamps.Where(x =>
+                var ett = await _context.SecurityStamps.Where(x =>
                     x.Phone == phone
                     && x.Date > date
                 ).AsNoTracking().OrderByDescending(o => o.Date).Take(Task).ToListAsync();
@@ -35,7 +35,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
 
         }
@@ -45,8 +45,8 @@ namespace MizeBazi.DataSource
             try
             {
                 var ett = Map<SecurityStamp, SecurityStampDto>(model);
-                _orgContexts.Add<SecurityStamp>(ett);
-                await _orgContexts.SaveChangesAsync();
+                _context.Add<SecurityStamp>(ett);
+                await _context.SaveChangesAsync();
 
                 return Result.Successful();
 
@@ -57,7 +57,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
 
         }
@@ -66,7 +66,7 @@ namespace MizeBazi.DataSource
         {
             try
             {
-                var ett = await _orgContexts.SecurityStamps.Where(x =>
+                var ett = await _context.SecurityStamps.Where(x =>
                     x.Phone == phone
                 ).AsNoTracking().OrderByDescending(o => o.Date).FirstOrDefaultAsync();
 
@@ -75,8 +75,8 @@ namespace MizeBazi.DataSource
 
                 ett.Count++;
 
-                _orgContexts.Update<SecurityStamp>(ett);
-                await _orgContexts.SaveChangesAsync();
+                _context.Update<SecurityStamp>(ett);
+                await _context.SaveChangesAsync();
 
                 var returnModel = Map<SecurityStampDto, SecurityStamp>(ett);
 
@@ -89,7 +89,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
 
         }
@@ -99,7 +99,7 @@ namespace MizeBazi.DataSource
             try
             {
                 var sqlQuery = $"UPDATE org.SecurityStamps SET [Date] = {DateTime.Now.AddDays(-1).Query()} WHERE [Id] = {id.Query()}";
-                _orgContexts.Database.ExecuteSqlRaw(sqlQuery);
+                _context.Database.ExecuteSqlRaw(sqlQuery);
 
                 return Result.Successful();
 
@@ -110,7 +110,7 @@ namespace MizeBazi.DataSource
             }
             finally
             {
-                _orgContexts.ChangeTracker.Clear();
+                _context.ChangeTracker.Clear();
             }
         }
     }

@@ -32,7 +32,7 @@ BEGIN
 		INNER JOIN  org.Users u ON u.Id = i.v
 	)
 	SELECT 
-		items.*, t.Bio, t.img
+		items.*, Bio = '', t.img
 	FROM items
 	INNER JOIN org.UsersExtra t
 		ON items.Id = t.Id

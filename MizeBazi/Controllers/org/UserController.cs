@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MizeBazi.Helper;
-using System.Text;
 
 namespace MizeBazi.Controllers
 {
