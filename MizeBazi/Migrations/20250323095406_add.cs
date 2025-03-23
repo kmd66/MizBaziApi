@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MizeBazi.Migrations
 {
     /// <inheritdoc />
-    public partial class orgAdd : Migration
+    public partial class add : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace MizeBazi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DeviceId = table.Column<string>(type: "varchar(32)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(11)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(3475))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -38,7 +38,7 @@ namespace MizeBazi.Migrations
                     Phone = table.Column<string>(type: "varchar(11)", nullable: false),
                     Stamp = table.Column<string>(type: "varchar(5)", nullable: false),
                     Count = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(1510))
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -73,7 +73,7 @@ namespace MizeBazi.Migrations
                     UserName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
                     Type = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)1),
                     BirthDate = table.Column<DateTime>(type: "Date", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(6307)),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UnicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

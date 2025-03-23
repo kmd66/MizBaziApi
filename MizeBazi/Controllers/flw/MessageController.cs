@@ -1,35 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
+using MizeBazi.DataSource;
+using MizeBazi.Helper;
+using MizeBazi.Models;
 
 namespace MizeBazi.Controllers
 {
     public class MessageController : _ControllerBase
     {
-        readonly Service.UserService _service;
 
-        public MessageController(Service.UserService service)
+        readonly IRequestInfo _requestInfo;
+        readonly MessageDataSource _dtaSource;
+        public MessageController(IRequestInfo requestInfo)
         {
-            _service = service;
+            _requestInfo = requestInfo;
+            _dtaSource = new MessageDataSource();
         }
 
+
         [HttpPost, Route("Add")]
-        public Task<Models.Result<Models.UserDto>> Add()
-            => _service.Get();
+        public async Task<Result> Add(MessageAdd model) {
+            var message = model.Validate();
+            message.SenderID = _requestInfo.model.UserId;
+            message.ReceiverID = model.ReceiverID;
+            var result = await _dtaSource.Add(message);
+            
+            if (result.success)
+            {
+                _ = Task.Run(async () =>
+                {
+                    await ProcessMessageAsync(message);
+                });
+            }
+            return result;
+        }
 
-        [HttpPost, Route("Edit")]
-        public Task<Models.Result> Edit([FromBody] Models.UserEdit model)
-            => _service.Edit(model);
+        private async Task ProcessMessageAsync(Message message)
+        {
+            await Task.Delay(5000);
+        }
 
-        [HttpPost, Route("List")]
-        public Task<Models.Result> List([FromBody] Models.UserEdit model)
-            => _service.Edit(model);
-
-        [HttpPost, Route("ListForRoom")]
-        public Task<Models.Result> ListForRoom([FromBody] Models.UserEdit model)
-            => _service.Edit(model);
 
         [HttpPost, Route("Remove")]
-        public Task<Models.Result<string>> Remove()
-            => _service.GetAvatar();
+        public Task<Result> Remove(long id)
+            => _dtaSource.Remove(_requestInfo.model.UserId, id);
+
+        [HttpPost, Route("List")]
+        public Task<Result<List<MessageVeiw>>> List()
+            => _dtaSource.List(_requestInfo.model.UserId);
+
+        [HttpPost, Route("ListForRoom")]
+        public Task<Result<List<MessageVeiw>>> ListForRoom(long userId)
+            => _dtaSource.ListForRoom(_requestInfo.model.UserId, userId);
+
+        [HttpPost, Route("ListNotification")]
+        public Task<Result<List<NotificationVeiw>>> ListNotification()
+            => _dtaSource.ListNotification(_requestInfo.model.UserId);
 
     }
 }

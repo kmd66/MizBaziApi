@@ -27,6 +27,20 @@ public class RequestInfo : IRequestInfo
         if (_httpContextAccessor.HttpContext?.Request != null && _httpContextAccessor.HttpContext.Request.Headers.ContainsKey("D-Id"))
             DeviceId = _httpContextAccessor.HttpContext.Request.Headers["D-Id"];
     }
+
+    private RequestInfo()
+    {
+    }
+
+    public static RequestInfo Instance(string token, string deviceId )
+    {
+        var requestInfo = new RequestInfo();
+        requestInfo.Token = token;
+        requestInfo.DeviceId = deviceId;
+        requestInfo.model = new JwtHelper().Decode(token);
+        return requestInfo;
+    }
+
     public Jwt model { get; private set; }
     public string DeviceId { get; private set; }
     public string Token { get; private set; }

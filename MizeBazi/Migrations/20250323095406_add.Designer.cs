@@ -12,8 +12,8 @@ using MizeBazi.DataSource;
 namespace MizeBazi.Migrations
 {
     [DbContext(typeof(OrgContexts))]
-    [Migration("20250321093743_orgAdd")]
-    partial class orgAdd
+    [Migration("20250323095406_add")]
+    partial class add
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(3475));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DeviceId")
                         .IsRequired()
@@ -66,7 +66,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(1510));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -122,7 +122,7 @@ namespace MizeBazi.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 37, 43, 372, DateTimeKind.Local).AddTicks(6307));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(25)

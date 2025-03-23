@@ -53,6 +53,10 @@ public class FriendService : IService
 
         var friendDataSource = new FriendDataSource();
 
+        var isRequest = await friendDataSource.IsRequest(model.UserId, _requestInfo.model.UserId);
+        if(!isRequest.data)
+            return Result.Failure(message: "user null");
+
         if (model.Type == RequestEditType.مسدود_کردن)
             return await friendDataSource.AddBlock(model.UserId, _requestInfo.model.UserId);
 
@@ -66,7 +70,10 @@ public class FriendService : IService
     public Task<Result> Block(long userId)
         => new FriendDataSource().AddBlock(_requestInfo.model.UserId, userId);
 
-    public  Task<Result> RemoveBlock(long userId)
+    public Task<Result> RemoveFriend(long userId)
+        => new FriendDataSource().RemoveFriend(_requestInfo.model.UserId, userId);
+
+    public Task<Result> RemoveBlock(long userId)
         => new FriendDataSource().RemoveBlock(_requestInfo.model.UserId, userId);
 
     public Task<Result<List<UserView>>> List(FriendSearch model)

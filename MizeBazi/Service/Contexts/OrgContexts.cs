@@ -34,7 +34,7 @@ public class OrgContexts : DbContext
         modelBuilder.Entity<SecurityStamp>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<SecurityStamp>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<SecurityStamp>()
             .Property(b => b.Count).HasDefaultValue(0);
     }
@@ -43,7 +43,7 @@ public class OrgContexts : DbContext
         modelBuilder.Entity<Device>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<Device>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
     }
     private void tokenConfig(ref ModelBuilder modelBuilder)
     {
@@ -57,7 +57,7 @@ public class OrgContexts : DbContext
         modelBuilder.Entity<User>()
             .HasIndex(p => p.UnicId);
         modelBuilder.Entity<User>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<User>()
             .Property(b => b.Type).HasDefaultValue(1);
         modelBuilder

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using MizeBazi.Helper;
 using MizeBazi.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Intrinsics.X86;
 using System.Threading;
 
@@ -17,24 +18,18 @@ public class GroupDataSource : BaseDataSource
         _context = new FlwContexts();
     }
 
-    public async Task<Result> AddFriend(long from, long to)
+    public async Task<Result> Add(Group model)
     {
         try
         {
-            var ett = await _context.FriendRequests.Where(x =>
-                (x.SenderID == from && x.ReceiverID == to)
-                || (x.SenderID == to && x.ReceiverID == from)
-            ).AsNoTracking().ToListAsync(); 
-            
-            _context.FriendRequests.RemoveRange(ett);
+            _context.Add<Group>(model);
+            await _context.SaveChangesAsync();
 
-            var model = new Friend
-            {
-                Id = Guid.NewGuid(),
-                User1Id = from,
-                User2Id = to,
+            var modelMember = new GroupMember { 
+                GroupId = model.Id,
+                UserId = model.CreateId
             };
-            _context.Add<Friend>(model);
+            _context.Add<GroupMember>(modelMember);
             await _context.SaveChangesAsync();
 
             return Result.Successful();
@@ -49,13 +44,12 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<bool>> IsFriend(long user1, long user2)
+    public async Task<Result<bool>> IsAdd(long userId)
     {
         try
         {
-            var ett = await _context.Friends.Where(x =>
-                (x.User1Id == user1 && x.User2Id == user2)
-                || (x.User1Id == user2 && x.User2Id == user1)
+            var ett = await _context.Groups.Where(x =>
+                x.CreateId == userId
             ).AsNoTracking().Take(1).FirstOrDefaultAsync();
 
             return Result<bool>.Successful(data: ett != null);
@@ -70,21 +64,21 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result> AddRequest(long from, long to)
+    public async Task<Result> Edite(GroupEdit model)
     {
         try
         {
-            var model = new FriendRequest
+            var ett = await _context.Groups.Where(x =>
+                x.Id == model.Id
+            ).Take(1).FirstOrDefaultAsync();
+            if (ett != null)
             {
-                Id = Guid.NewGuid(),
-                SenderID = from,
-                ReceiverID = to,
-                Type = FriendRequestType.در_انتظار
-            };
-
-            _context.Add<FriendRequest>(model);
-            await _context.SaveChangesAsync();
-
+                ett.Name = model.Name;
+                ett.Description = model.Description;
+                ett.Password = model.Password;
+                _context.Update<Group>(ett);
+                await _context.SaveChangesAsync();
+            }
             return Result.Successful();
         }
         catch (Exception ex)
@@ -97,15 +91,19 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<bool>> IsRequest(long from, long to)
+    public async Task<Result<GroupView>> Get(long id, string uniqueName = null)
     {
         try
         {
-            var ett = await _context.FriendRequests.Where(x =>
-            x.SenderID == from && x.ReceiverID == to && x.Type == FriendRequestType.در_انتظار
-            ).AsNoTracking().Take(1).FirstOrDefaultAsync();
+            if(id == 0 && string.IsNullOrEmpty(uniqueName))
+                throw MizeBaziException.Error(message: "params null");
 
-            return Result<bool>.Successful(data: ett != null);
+            var query = $"flw.GetGroup @Id = {id.Query()}" +
+                $", @UniqueName = {uniqueName.Query()}";
+
+            var ett = await _context.GroupViews.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+            return Result<GroupView>.Successful(data: ett.FirstOrDefault());
         }
         catch (Exception ex)
         {
@@ -117,40 +115,15 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result> RemoveRequest(long from, long to)
+    public async Task<Result<List<GroupView>>> List(long userId)
     {
         try
         {
-            var ett = await _context.FriendRequests.Where(x =>
-                (x.SenderID == from && x.ReceiverID == to)
-                || (x.SenderID == to && x.ReceiverID == from)
-            ).AsNoTracking().ToListAsync();
+            var query = $"flw.ListGroup @UserId = {userId.Query()}";
 
-            _context.FriendRequests.RemoveRange(ett);
-            await _context.SaveChangesAsync();
+            var ett = await _context.GroupViews.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-            return Result<bool>.Successful(data: ett != null);
-        }
-        catch (Exception ex)
-        {
-            throw MizeBaziException.Error(message: ex.Message);
-        }
-        finally
-        {
-
-            _context.ChangeTracker.Clear();
-        }
-    }
-
-    public async Task<Result<bool>> IsBlock(long userBlocker, long userBlocked)
-    {
-        try
-        {
-            var ett = await _context.BlockFriends.Where(x =>
-                x.User1Id == userBlocker && x.User2Id == userBlocked
-            ).AsNoTracking().Take(1).FirstOrDefaultAsync();
-
-            return Result<bool>.Successful(data: ett != null);
+            return Result<List<GroupView>>.Successful(data: ett);
         }
         catch (Exception ex)
         {
@@ -161,33 +134,45 @@ public class GroupDataSource : BaseDataSource
             _context.ChangeTracker.Clear();
         }
     }
-    public async Task<Result> AddBlock(long from, long to)
+
+    public async Task<Result<List<GroupView>>> Search(string name)
     {
         try
         {
-            var ett = await _context.FriendRequests.Where(x =>
-                (x.SenderID == from && x.ReceiverID == to)
-                || (x.SenderID == to && x.ReceiverID == from)
-            ).AsNoTracking().ToListAsync();
+            var query = $"flw.SearchGroup @Name  = {name.Query()}";
 
-            _context.FriendRequests.RemoveRange(ett);
+            var ett = await _context.GroupViews.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-            var ett2 = await _context.Friends.Where(x =>
-                (x.User1Id == from && x.User2Id == to)
-                || (x.User1Id == to && x.User2Id == from)
-            ).AsNoTracking().ToListAsync();
+            return Result<List<GroupView>>.Successful(data: ett);
+        }
+        catch (Exception ex)
+        {
+            throw MizeBaziException.Error(message: ex.Message);
+        }
+        finally
+        {
+            _context.ChangeTracker.Clear();
+        }
+    }
 
-            _context.Friends.RemoveRange(ett2);
+    public async Task<Result> Remove(long id, long userId)
+    {
+        try
+        {
+            var group = await _context.Groups.Where(x =>
+                x.Id == id && x.CreateId == userId
+            ).AsNoTracking().FirstOrDefaultAsync();
 
-            var model = new BlockFriend
+            if (group != null)
             {
-                Id = Guid.NewGuid(),
-                User1Id = from,
-                User2Id = to,
-            };
-            _context.Add<BlockFriend>(model);
-            await _context.SaveChangesAsync();
+                var groupMembers = await _context.GroupMembers.Where(x =>
+                    x.GroupId == group.Id
+                ).AsNoTracking().ToListAsync();
 
+                _context.Groups.Remove(group);
+                _context.GroupMembers.RemoveRange(groupMembers);
+                await _context.SaveChangesAsync();
+            }
             return Result.Successful();
         }
         catch (Exception ex)
@@ -200,98 +185,4 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result> RemoveBlock(long from, long to)
-    {
-        try
-        {
-            var ett = await _context.BlockFriends.Where(x =>
-                x.User1Id == from && x.User2Id == to
-            ).AsNoTracking().ToListAsync();
-
-            _context.BlockFriends.RemoveRange(ett);
-            await _context.SaveChangesAsync();
-
-            return Result.Successful();
-        }
-        catch (Exception ex)
-        {
-            throw MizeBaziException.Error(message: ex.Message);
-        }
-        finally
-        {
-            _context.ChangeTracker.Clear();
-        }
-    }
-
-    public async Task<Result<List<UserView>>> List(long id, FriendSearch model)
-    {
-        var contexts = new OrgContexts();
-        try
-        {
-            var query = $"flw.ListFriend @@UserId = {id.Query()}" +
-                $", @UserName = {model.UserName.Query()}" +
-                $", @FirstName = {model.FirstName.Query()}" +
-                $", @LastName = {model.LastName.Query()}";
-
-            var ett = await contexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
-
-            return Result<List<UserView>>.Successful(data: ett);
-        }
-        catch (Exception ex)
-        {
-            throw MizeBaziException.Error(message: ex.Message);
-        }
-        finally
-        {
-            contexts.ChangeTracker.Clear();
-        }
-    }
-
-    public async Task<Result<List<UserView>>> ListRequest(long id, FriendSearch model)
-    {
-        var contexts = new OrgContexts();
-        try
-        {
-            var query = $"flw.ListRequest @@UserId = {id.Query()}" +
-                $", @UserName = {model.UserName.Query()}" +
-                $", @FirstName = {model.FirstName.Query()}" +
-                $", @LastName = {model.LastName.Query()}";
-
-            var ett = await contexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
-
-            return Result<List<UserView>>.Successful(data: ett);
-        }
-        catch (Exception ex)
-        {
-            throw MizeBaziException.Error(message: ex.Message);
-        }
-        finally
-        {
-            contexts.ChangeTracker.Clear();
-        }
-    }
-
-    public async Task<Result<List<UserView>>> ListBlock(long id, FriendSearch model)
-    {
-        var contexts = new OrgContexts();
-        try
-        {
-            var query = $"flw.ListBlock @@UserId = {id.Query()}" +
-                $", @UserName = {model.UserName.Query()}" +
-                $", @FirstName = {model.FirstName.Query()}" +
-                $", @LastName = {model.LastName.Query()}";
-
-            var ett = await contexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
-
-            return Result<List<UserView>>.Successful(data: ett);
-        }
-        catch (Exception ex)
-        {
-            throw MizeBaziException.Error(message: ex.Message);
-        }
-        finally
-        {
-            contexts.ChangeTracker.Clear();
-        }
-    }
 }

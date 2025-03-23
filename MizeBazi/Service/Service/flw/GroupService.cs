@@ -1,7 +1,10 @@
 ﻿using MizeBazi.DataSource;
 using MizeBazi.Helper;
 using MizeBazi.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Intrinsics.X86;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MizeBazi.Service;
 
@@ -13,69 +16,88 @@ public class GroupService : IService
         _requestInfo = requestInfo;
     }
 
-    public async Task<Result> Request(long userId)
+    public async Task<Result> Add(GroupAdd model)
     {
-        var userDataSource = new UserDataSource();
-        var userResult = await userDataSource.Get(userId);
-        if (userResult.data == null)
-            return Result.Failure(message: "user null");
 
-        var friendDataSource = new FriendDataSource();
+        new GroupValidate().Add(model);
 
-        var friend = await friendDataSource.IsFriend(userId, _requestInfo.model.UserId);
-        if (friend.data)
-            return Result.Failure(message: "کاربر قبلا درخواست شمار را قبول کرده است");
+        var groupDataSource = new GroupDataSource();
+        var isAdd = await groupDataSource.IsAdd(_requestInfo.model.UserId);
+        if (isAdd.data)
+            return Result.Failure(message: "شما قبلا یک گروه ایجاد کرده اید . بیش از یک گروه نمیتوانید ایجاد کنید");
 
-        var block1 = await friendDataSource.IsBlock(userId, _requestInfo.model.UserId);
-        if (block1.data)
-            return Result.Failure(message: "کاربر شمار را مسدود کرده است");
 
-        var block2 = await friendDataSource.IsBlock(_requestInfo.model.UserId, userId);
-        if (block2.data)
-            return Result.Failure(message: "شما کاربر را مسدود کرده اید");
+        var group = await groupDataSource.Get(0, model.UniqueName);
+        if (group.data != null)
+            return Result.Failure(message: "گروه با این شناسه وجود دارد");
 
-        var request1 = await friendDataSource.IsRequest(_requestInfo.model.UserId, userId);
-        if (request1.data)
-            return Result.Failure(message: "درخواست قبلا ثبت شده است");
-
-        var request2 = await friendDataSource.IsRequest(userId, _requestInfo.model.UserId);
-        if (request2.data)
-            return await friendDataSource.AddFriend(userId, _requestInfo.model.UserId);
-
-        return await friendDataSource.AddRequest(_requestInfo.model.UserId, userId);
+        var groupModel = new Group
+        {
+            CreateId = _requestInfo.model.UserId,
+            UniqueName = model.UniqueName,
+            Name = model.Name,
+            Password = model.Password,
+            Description = model.Description
+        };
+        return await groupDataSource.Add(groupModel);
     }
 
-
-    public async Task<Result> RequestEdit(RequestEdit model)
+    public async Task<Result> Edite(GroupEdit model)
     {
-        if(model.Type == RequestEditType.Unknown)
-            return Result.Failure(message: "type null");
+        new GroupValidate().Edite(model);
 
-        var friendDataSource = new FriendDataSource();
+        var groupDataSource = new GroupDataSource();
 
-        if (model.Type == RequestEditType.مسدود_کردن)
-            return await friendDataSource.AddBlock(model.UserId, _requestInfo.model.UserId);
+        var group = await groupDataSource.Get(model.Id);
+        if (group.data == null)
+            return Result.Failure(message: "data null");
+        if (group.data.CreateId != _requestInfo.model.UserId)
+            return Result.Failure(message: "create null");
 
-
-        if (model.Type == RequestEditType.قبول_کردن)
-            return await friendDataSource.AddFriend(model.UserId, _requestInfo.model.UserId);
-
-        return await friendDataSource.RemoveRequest(model.UserId, _requestInfo.model.UserId);
+        return await groupDataSource.Edite(model);
     }
 
-    public Task<Result> Block(long userId)
-        => new FriendDataSource().AddBlock(_requestInfo.model.UserId, userId);
+    public Task<Result<GroupView>> Get(long id, string uniqueName = null)
+        => new GroupDataSource().Get(id, uniqueName);
 
-    public  Task<Result> RemoveBlock(long userId)
-        => new FriendDataSource().RemoveBlock(_requestInfo.model.UserId, userId);
+    public Task<Result<List<GroupView>>> List()
+       => new GroupDataSource().List(_requestInfo.model.UserId);
 
-    public Task<Result<List<UserView>>> List(FriendSearch model)
-        => new FriendDataSource().List(_requestInfo.model.UserId, model);
+    public async Task<Result<List<GroupView>>> Search(string name)
+    {
+        if (string.IsNullOrEmpty(name) || name.Length < 3 || name.Length > 25)
+            return Result<List<GroupView>>.Successful();
 
-    public Task<Result<List<UserView>>> ListRequest(FriendSearch model)
-        => new FriendDataSource().ListRequest(_requestInfo.model.UserId, model);
+        return await new GroupDataSource().Search(name);
+    }
 
-    public Task<Result<List<UserView>>> ListBlock(FriendSearch model)
-        => new FriendDataSource().ListBlock(_requestInfo.model.UserId, model);
+    public Task<Result> Remove(long id)
+       => new GroupDataSource().Remove(id, _requestInfo.model.UserId);
+
+    public async Task<Result> Join(GroupJoin model)
+    {
+        var groupDataSource = new GroupDataSource();
+        var list = await groupDataSource.List(_requestInfo.model.UserId);
+        if(list.data.Count >= 5)
+            return Result.Failure(message: "شما نمیتوانید عضو بیش از 5 گروه شوید");
+
+        var group = await groupDataSource.Get(model.Id);
+        if(group.data == null)
+            return Result.Failure(message: "data null");
+
+        if(!string.IsNullOrEmpty(group.data.Password) && group.data.Password != model.Password)
+            return Result.Failure(message: "رمز عبور اشتباه است");
+
+        var groupMember = new GroupMember {
+            GroupId = model.Id,
+            UserId = _requestInfo.model.UserId
+        };
+        var dataSource = new GroupMemberDataSource();
+        return await dataSource.Join(groupMember);
+    }
+
+    [HttpPost, Route("Left")] // Left From Group
+    public Task<Models.Result> Left(long id)
+        => new GroupMemberDataSource().Left(_requestInfo.model.UserId, id);
 }
 

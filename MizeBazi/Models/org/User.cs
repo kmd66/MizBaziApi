@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -89,6 +88,7 @@ public class UserView : User
             img = Img
         };
 }
+
 public class User : BaseModel
 {
     [MaxLength(25)]

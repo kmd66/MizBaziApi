@@ -12,8 +12,8 @@ using MizeBazi.DataSource;
 namespace MizeBazi.Migrations.FlwContextsMigrations
 {
     [DbContext(typeof(FlwContexts))]
-    [Migration("20250321093805_flwAdd")]
-    partial class flwAdd
+    [Migration("20250323105918_add")]
+    partial class add
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 49, DateTimeKind.Local).AddTicks(860));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<long>("User1Id")
                         .HasColumnType("bigint");
@@ -46,10 +46,6 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.HasKey("Id");
 
                     b.HasIndex("Id");
-
-                    b.HasIndex("User1Id");
-
-                    b.HasIndex("User2Id");
 
                     b.ToTable("BlockFriends", "flw");
                 });
@@ -63,7 +59,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 50, DateTimeKind.Local).AddTicks(5415));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<long>("User1Id")
                         .HasColumnType("bigint");
@@ -74,10 +70,6 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.HasKey("Id");
 
                     b.HasIndex("Id");
-
-                    b.HasIndex("User1Id");
-
-                    b.HasIndex("User2Id");
 
                     b.ToTable("Friends", "flw");
                 });
@@ -91,7 +83,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 45, DateTimeKind.Local).AddTicks(2286));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<long>("ReceiverID")
                         .HasColumnType("bigint");
@@ -105,10 +97,6 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.HasKey("Id");
 
                     b.HasIndex("Id");
-
-                    b.HasIndex("ReceiverID");
-
-                    b.HasIndex("SenderID");
 
                     b.ToTable("FriendRequests", "flw");
                 });
@@ -127,7 +115,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 53, DateTimeKind.Local).AddTicks(6259));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(140)");
@@ -139,17 +127,21 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)")
                         .HasDefaultValue("");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UniqueName")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
-                    b.HasIndex("CreateId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Id");
 
@@ -165,7 +157,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 54, DateTimeKind.Local).AddTicks(3168));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -179,46 +171,47 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
 
                     b.HasIndex("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("GroupMembers", "flw");
                 });
 
-            modelBuilder.Entity("MizeBazi.Models.GroupMessage", b =>
+            modelBuilder.Entity("MizeBazi.Models.GroupView", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<long>("CreateId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CreateName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 55, DateTimeKind.Local).AddTicks(8658));
+                        .HasColumnType("datetime2");
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsPin")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<long>("SenderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(140)");
 
-                    b.HasKey("Id");
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("GroupId");
+                    b.Property<bool>("IsRemove")
+                        .HasColumnType("bit");
 
-                    b.HasIndex("Id");
+                    b.Property<string>("Name")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
-                    b.HasIndex("SenderId");
+                    b.Property<string>("Password")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
-                    b.ToTable("GroupMessages", "flw");
+                    b.Property<string>("UniqueName")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("UserView", "flw");
                 });
 
             modelBuilder.Entity("MizeBazi.Models.Message", b =>
@@ -230,7 +223,7 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 51, DateTimeKind.Local).AddTicks(9921));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool>("IsRemove")
                         .ValueGeneratedOnAdd()
@@ -251,10 +244,6 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
 
                     b.HasIndex("Id");
 
-                    b.HasIndex("ReceiverID");
-
-                    b.HasIndex("SenderID");
-
                     b.ToTable("Messages", "flw");
                 });
 
@@ -267,12 +256,15 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 3, 21, 10, 38, 5, 57, DateTimeKind.Local).AddTicks(4246));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool>("IsRead")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
+
+                    b.Property<Guid>("RequestId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
@@ -284,103 +276,23 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
 
                     b.HasIndex("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Notifications", "flw");
                 });
 
-            modelBuilder.Entity("MizeBazi.Models.User", b =>
+            modelBuilder.Entity("MizeBazi.Models.NotificationVeiw", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("Date");
+                    b.Property<string>("CreateName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("varchar(11)");
-
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
-                    b.Property<Guid>("UnicId")
-                        .HasColumnType("uniqueidentifier");
+                    b.ToTable((string)null);
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User", "flw");
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.BlockFriend", b =>
-                {
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("User2Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.Friend", b =>
-                {
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("User2Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.FriendRequest", b =>
-                {
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("ReceiverID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("SenderID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.Group", b =>
-                {
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("CreateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.ToView("NotificationVeiw", "flw");
                 });
 
             modelBuilder.Entity("MizeBazi.Models.GroupMember", b =>
@@ -388,51 +300,6 @@ namespace MizeBazi.Migrations.FlwContextsMigrations
                     b.HasOne("MizeBazi.Models.Group", null)
                         .WithMany()
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.GroupMessage", b =>
-                {
-                    b.HasOne("MizeBazi.Models.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.Message", b =>
-                {
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("ReceiverID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("SenderID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MizeBazi.Models.Notification", b =>
-                {
-                    b.HasOne("MizeBazi.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

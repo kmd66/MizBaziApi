@@ -20,8 +20,9 @@ public class FlwContexts : DbContext
         messageConfig(ref modelBuilder);
         groupConfig(ref modelBuilder);
         groupMemberConfig(ref modelBuilder);
-        groupMessageConfig(ref modelBuilder);
+        //groupMessageConfig(ref modelBuilder);
         notificationConfig(ref modelBuilder);
+        viewConfig(ref modelBuilder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,20 +40,7 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<FriendRequest>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<FriendRequest>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
-
-        modelBuilder.Entity<FriendRequest>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.SenderID)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<FriendRequest>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.ReceiverID)
-            .OnDelete(DeleteBehavior.Restrict);
-
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
     }
 
     private void friendConfig(ref ModelBuilder modelBuilder)
@@ -60,19 +48,7 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<Friend>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<Friend>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
-
-        modelBuilder.Entity<Friend>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.User1Id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Friend>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.User2Id)
-            .OnDelete(DeleteBehavior.Restrict);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
     }
 
     private void blockFriendConfig(ref ModelBuilder modelBuilder)
@@ -80,19 +56,7 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<BlockFriend>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<BlockFriend>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
-
-        modelBuilder.Entity<BlockFriend>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.User1Id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<BlockFriend>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.User2Id)
-            .OnDelete(DeleteBehavior.Restrict);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
     }
 
     private void messageConfig(ref ModelBuilder modelBuilder)
@@ -102,20 +66,9 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<Message>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<Message>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<Message>()
             .Property(b => b.IsRemove).HasDefaultValue(false);
-
-        modelBuilder.Entity<Message>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.SenderID)
-            .OnDelete(DeleteBehavior.Restrict);
-        modelBuilder.Entity<Message>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.ReceiverID)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 
     private void groupConfig(ref ModelBuilder modelBuilder)
@@ -130,13 +83,7 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<Group>()
             .Property(b => b.IsRemove).HasDefaultValue(false);
         modelBuilder.Entity<Group>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
-
-        modelBuilder.Entity<Group>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.CreateId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
     }
 
     private void groupMemberConfig(ref ModelBuilder modelBuilder)
@@ -144,43 +91,37 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<GroupMember>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<GroupMember>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
 
         modelBuilder.Entity<GroupMember>()
             .HasOne<Group>()
             .WithMany()
             .HasForeignKey(f => f.GroupId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<GroupMember>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-}
+    }
 
     private void groupMessageConfig(ref ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<GroupMessage>().Property(t => t.Text).IsRequired();
+        //modelBuilder.Entity<GroupMessage>().Property(t => t.Text).IsRequired();
 
-        modelBuilder.Entity<GroupMessage>()
-            .HasIndex(p => p.Id);
-        modelBuilder.Entity<GroupMessage>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
-        modelBuilder.Entity<GroupMessage>()
-            .Property(b => b.IsPin).HasDefaultValue(false);
+        //modelBuilder.Entity<GroupMessage>()
+        //    .HasIndex(p => p.Id);
+        //modelBuilder.Entity<GroupMessage>()
+        //    .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+        //modelBuilder.Entity<GroupMessage>()
+        //    .Property(b => b.IsPin).HasDefaultValue(false);
 
-        modelBuilder.Entity<GroupMessage>()
-            .HasOne<Group>()
-            .WithMany()
-            .HasForeignKey(f => f.GroupId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //modelBuilder.Entity<GroupMessage>()
+        //    .HasOne<Group>()
+        //    .WithMany()
+        //    .HasForeignKey(f => f.GroupId)
+        //    .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<GroupMessage>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(f => f.SenderId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //modelBuilder.Entity<GroupMessage>()
+        //    .HasOne<User>()
+        //    .WithMany()
+        //    .HasForeignKey(f => f.SenderId)
+        //    .OnDelete(DeleteBehavior.Restrict);
     }
 
     private void notificationConfig(ref ModelBuilder modelBuilder)
@@ -188,15 +129,31 @@ public class FlwContexts : DbContext
         modelBuilder.Entity<Notification>()
             .HasIndex(p => p.Id);
         modelBuilder.Entity<Notification>()
-            .Property(b => b.Date).HasDefaultValue(DateTime.Now);
+            .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<Notification>()
             .Property(b => b.IsRead).HasDefaultValue(false);
+    }
 
-        modelBuilder.Entity<Notification>()
-            .HasOne<User>() 
-            .WithMany() 
-            .HasForeignKey(f => f.UserId) 
-            .OnDelete(DeleteBehavior.Restrict); 
+    private void viewConfig(ref ModelBuilder modelBuilder)
+    {
+        modelBuilder
+               .Entity<GroupView>(eb =>
+               {
+                   eb.HasNoKey();
+                   eb.ToView("UserView");
+               });
+        modelBuilder
+               .Entity<NotificationVeiw>(eb =>
+               {
+                   eb.HasNoKey();
+                   eb.ToView("NotificationVeiw");
+               });
+        modelBuilder
+               .Entity<MessageVeiw>(eb =>
+               {
+                   eb.HasNoKey();
+                   eb.ToView("MessageVeiw");
+               });
     }
 
     public DbSet<FriendRequest> FriendRequests { get; set; }
@@ -205,7 +162,10 @@ public class FlwContexts : DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
-    public DbSet<GroupMessage> GroupMessages { get; set; }
+    //public DbSet<GroupMessage> GroupMessages { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<GroupView> GroupViews { get; set; }
+    public DbSet<NotificationVeiw> NotificationVeiws { get; set; }
+    public DbSet<MessageVeiw> MessageVeiws { get; set; }
 
 }

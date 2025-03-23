@@ -25,7 +25,7 @@ BEGIN
 		usr.FirstName,
 		usr.LastName,
 		usr.UserName,
-		usr.Phone,
+		'' Phone,
 		usr.[Type],
 		usr.[Date],
 		usr.[BirthDate],

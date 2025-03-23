@@ -74,15 +74,26 @@ public class FriendDataSource : BaseDataSource
     {
         try
         {
+            var modelId = Guid.NewGuid();
             var model = new FriendRequest
             {
-                Id = Guid.NewGuid(),
+                Id = modelId,
                 SenderID = from,
                 ReceiverID = to,
                 Type = FriendRequestType.در_انتظار
             };
 
             _context.Add<FriendRequest>(model);
+
+            var notification = new Notification
+            {
+                Id = Guid.NewGuid(),
+                RequestId= modelId,
+                UserId = to,
+                Type = NotificationType.درخواست_دوستی
+            };
+            _context.Add<Notification>(notification);
+
             await _context.SaveChangesAsync();
 
             return Result.Successful();
@@ -166,19 +177,27 @@ public class FriendDataSource : BaseDataSource
     {
         try
         {
-            var ett = await _context.FriendRequests.Where(x =>
+            var removeFriendRequests = await _context.FriendRequests.Where(x =>
                 (x.SenderID == from && x.ReceiverID == to)
                 || (x.SenderID == to && x.ReceiverID == from)
-            ).AsNoTracking().ToListAsync();
+            ).ToListAsync();
 
-            _context.FriendRequests.RemoveRange(ett);
+            _context.FriendRequests.RemoveRange(removeFriendRequests);
 
-            var ett2 = await _context.Friends.Where(x =>
+            var removeFriend = await _context.Friends.Where(x =>
                 (x.User1Id == from && x.User2Id == to)
                 || (x.User1Id == to && x.User2Id == from)
-            ).AsNoTracking().ToListAsync();
+            ).ToListAsync();
 
-            _context.Friends.RemoveRange(ett2);
+            _context.Friends.RemoveRange(removeFriend);
+
+            var removeMessage= await _context.Messages.Where(x =>
+                (x.SenderID == from && x.ReceiverID == to)
+                || (x.SenderID == to && x.ReceiverID == from)
+            ).ToListAsync();
+
+            removeMessage.ForEach(x=>x.IsRemove = true);
+            _context.UpdateRange(removeMessage);
 
             var model = new BlockFriend
             {
@@ -187,6 +206,39 @@ public class FriendDataSource : BaseDataSource
                 User2Id = to,
             };
             _context.Add<BlockFriend>(model);
+            await _context.SaveChangesAsync();
+
+            return Result.Successful();
+        }
+        catch (Exception ex)
+        {
+            throw MizeBaziException.Error(message: ex.Message);
+        }
+        finally
+        {
+            _context.ChangeTracker.Clear();
+        }
+    }
+
+    public async Task<Result> RemoveFriend(long from, long to)
+    {
+        try
+        {
+            var removeFriend = await _context.Friends.Where(x =>
+                (x.User1Id == from && x.User2Id == to)
+                || (x.User1Id == to && x.User2Id == from)
+            ).ToListAsync();
+
+            _context.Friends.RemoveRange(removeFriend);
+
+            var removeMessage = await _context.Messages.Where(x =>
+                (x.SenderID == from && x.ReceiverID == to)
+                || (x.SenderID == to && x.ReceiverID == from)
+            ).ToListAsync();
+
+            removeMessage.ForEach(x => x.IsRemove = true);
+            _context.UpdateRange(removeMessage);
+
             await _context.SaveChangesAsync();
 
             return Result.Successful();
@@ -229,7 +281,7 @@ public class FriendDataSource : BaseDataSource
         var contexts = new OrgContexts();
         try
         {
-            var query = $"flw.ListFriend @@UserId = {id.Query()}" +
+            var query = $"flw.ListFriend @UserId = {id.Query()}" +
                 $", @UserName = {model.UserName.Query()}" +
                 $", @FirstName = {model.FirstName.Query()}" +
                 $", @LastName = {model.LastName.Query()}";
@@ -253,7 +305,7 @@ public class FriendDataSource : BaseDataSource
         var contexts = new OrgContexts();
         try
         {
-            var query = $"flw.ListRequest @@UserId = {id.Query()}" +
+            var query = $"flw.ListRequest @UserId = {id.Query()}" +
                 $", @UserName = {model.UserName.Query()}" +
                 $", @FirstName = {model.FirstName.Query()}" +
                 $", @LastName = {model.LastName.Query()}";
@@ -277,7 +329,7 @@ public class FriendDataSource : BaseDataSource
         var contexts = new OrgContexts();
         try
         {
-            var query = $"flw.ListBlock @@UserId = {id.Query()}" +
+            var query = $"flw.ListBlock @UserId = {id.Query()}" +
                 $", @UserName = {model.UserName.Query()}" +
                 $", @FirstName = {model.FirstName.Query()}" +
                 $", @LastName = {model.LastName.Query()}";

@@ -25,7 +25,7 @@ BEGIN
 		usr.FirstName,
 		usr.LastName,
 		usr.UserName,
-		usr.Phone,
+		'' Phone,
 		usr.[Type],
 		usr.[Date],
 		usr.[BirthDate],
@@ -33,7 +33,7 @@ BEGIN
 		Bio = ''
 	FROM friend frd
 	INNER JOIN org.Users usr ON usr.Id = frd.User1Id OR usr.Id = frd.User2Id
-	INNER JOIN org.UsersExtra usx ON usr.Id = usx.Id 
+	INNER JOIN org.UsersExtra usx ON usx.Id =  usr.Id
 	WHERE usr.Id != @UserId
 	AND(@FirstName IS NULL OR FirstName = @FirstName)
 	AND(@LastName IS NULL OR LastName = @LastName)

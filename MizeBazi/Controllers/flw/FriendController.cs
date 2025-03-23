@@ -24,6 +24,10 @@ namespace MizeBazi.Controllers
         public Task<Models.Result> Block(long userId)
             => _service.Block(userId);
 
+        [HttpPost, Route("RemoveFriend")]
+        public Task<Models.Result> RemoveFriend(long userId)
+            => _service.RemoveFriend(userId);
+
         [HttpPost, Route("RemoveBlock")]
         public Task<Models.Result> RemoveBlock(long userId)
             => _service.RemoveBlock(userId);
@@ -32,7 +36,7 @@ namespace MizeBazi.Controllers
         public Task<Models.Result<List<Models.UserView>>> List([FromBody] Models.FriendSearch model)
             => _service.List(model);
 
-        [HttpPost, Route("RequestList")]
+        [HttpPost, Route("ListRequest")]
         public Task<Models.Result<List<Models.UserView>>> ListRequest([FromBody] Models.FriendSearch model)
             => _service.ListRequest(model);
 
