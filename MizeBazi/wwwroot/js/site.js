@@ -1,8 +1,10 @@
 ﻿publicDeviceId = '';
 publicToken = '';
 (() => {
-    publicDeviceId = localStorage.getItem("publicDeviceId");
-    publicToken = localStorage.getItem("publicToken");
+    if (!publicToken) { 
+        publicDeviceId = localStorage.getItem("publicDeviceId");
+        publicToken = localStorage.getItem("publicToken");
+    }
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -88,7 +90,6 @@ function f_urlBack() {
     window.flutter_inappwebview.callHandler('f_urlBack', '');
 }
 $(window).on('popstate', function (e) {
-    v
     alert('on popstate')
     var state = e.originalEvent.state;
     if (state !== null) {

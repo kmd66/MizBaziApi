@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using MizeBazi.Helper;
 using MizeBazi.Models;
@@ -91,14 +92,15 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<GroupView>> Get(long id, string uniqueName = null)
+    public async Task<Result<GroupView>> Get(long id = 0, long createId = 0, string uniqueName = null)
     {
         try
         {
-            if(id == 0 && string.IsNullOrEmpty(uniqueName))
+            if (id == 0 && createId == 0 && string.IsNullOrEmpty(uniqueName))
                 throw MizeBaziException.Error(message: "params null");
 
             var query = $"flw.GetGroup @Id = {id.Query()}" +
+                $", @CreateId = {createId.Query()}" +
                 $", @UniqueName = {uniqueName.Query()}";
 
             var ett = await _context.GroupViews.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
@@ -174,6 +176,24 @@ public class GroupDataSource : BaseDataSource
                 await _context.SaveChangesAsync();
             }
             return Result.Successful();
+        }
+        catch (Exception ex)
+        {
+            throw MizeBaziException.Error(message: ex.Message);
+        }
+        finally
+        {
+            _context.ChangeTracker.Clear();
+        }
+    }
+
+    public async Task<Result<int>> Count(long userId)
+    {
+        try
+        {
+            var ett = await _context.GroupMembers.Where(x => x.UserId == userId ).CountAsync();
+
+            return Result<int>.Successful(data: ett);
         }
         catch (Exception ex)
         {

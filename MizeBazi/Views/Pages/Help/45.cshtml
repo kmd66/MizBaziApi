@@ -1,1 +1,65 @@
-﻿45
+﻿<div id="app">
+    <h1>{{ title }}</h1>
+
+    <!-- ارتباط دوطرفه با v-model -->
+    <input v-model="message" placeholder="متن خود را وارد کنید">
+    <p>شما تایپ کردید: {{ message }}</p>
+
+    <!-- محاسبه شده (computed) -->
+    <p>تعداد کاراکترها: {{ messageLength }}</p>
+
+    <!-- حلقه با v-for -->
+    <ul>
+        <li v-for="(item, index) in items" :key="index">
+            {{ item }}
+            <button @@click="removeItem(index)">حذف</button>
+        </li>
+    </ul>
+
+    <input v-model="newItem" @@keyup.enter="addItem">
+    <button @@click="addItem">افزودن آیتم</button>
+</div>
+
+<hr style="margin:20px 0" />
+
+
+@section Scripts {
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const title = ref('برنامه Vue.js من');
+                const message = ref('');
+                const items = ref(['آیتم ۱', 'آیتم ۲', 'آیتم ۳']);
+                const newItem = ref('');
+
+                const messageLength = computed(() => {
+                    return message.value.length;
+                });
+
+                function addItem() {
+                    if (newItem.value.trim()) {
+                        items.value.push(newItem.value);
+                        newItem.value = '';
+                    }
+                }
+
+                function removeItem(index) {
+                    items.value.splice(index, 1);
+                }
+
+                return {
+                    title,
+                    message,
+                    items,
+                    newItem,
+                    messageLength,
+                    addItem,
+                    removeItem
+                };
+            }
+        }).mount('#app');
+
+    </script>
+}

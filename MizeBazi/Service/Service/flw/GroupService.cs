@@ -26,8 +26,11 @@ public class GroupService : IService
         if (isAdd.data)
             return Result.Failure(message: "شما قبلا یک گروه ایجاد کرده اید . بیش از یک گروه نمیتوانید ایجاد کنید");
 
+        var list = await groupDataSource.Count(_requestInfo.model.UserId);
+        if (list.data >= 5)
+            return Result.Failure(message: "شما نمیتوانید عضو بیش از 5 گروه شوید");
 
-        var group = await groupDataSource.Get(0, model.UniqueName);
+        var group = await groupDataSource.Get(uniqueName: model.UniqueName);
         if (group.data != null)
             return Result.Failure(message: "گروه با این شناسه وجود دارد");
 
@@ -57,8 +60,11 @@ public class GroupService : IService
         return await groupDataSource.Edite(model);
     }
 
+    public Task<Result<GroupView>> GetMyGroup()
+        => new GroupDataSource().Get(createId: _requestInfo.model.UserId);
+
     public Task<Result<GroupView>> Get(long id, string uniqueName = null)
-        => new GroupDataSource().Get(id, uniqueName);
+        => new GroupDataSource().Get(id: id, uniqueName: uniqueName);
 
     public Task<Result<List<GroupView>>> List()
        => new GroupDataSource().List(_requestInfo.model.UserId);
@@ -77,8 +83,8 @@ public class GroupService : IService
     public async Task<Result> Join(GroupJoin model)
     {
         var groupDataSource = new GroupDataSource();
-        var list = await groupDataSource.List(_requestInfo.model.UserId);
-        if(list.data.Count >= 5)
+        var list = await groupDataSource.Count(_requestInfo.model.UserId);
+        if(list.data>= 5)
             return Result.Failure(message: "شما نمیتوانید عضو بیش از 5 گروه شوید");
 
         var group = await groupDataSource.Get(model.Id);

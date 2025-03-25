@@ -19,6 +19,10 @@ namespace MizeBazi.Controllers
         public Task<Models.Result> Edite([FromBody] Models.GroupEdit model)
             => _service.Edite(model);
 
+        [HttpPost, Route("GetMyGroup")]
+        public Task<Models.Result<Models.GroupView>> GetMyGroup()
+            => _service.GetMyGroup();
+
         [HttpPost, Route("Get")]
         public Task<Models.Result<Models.GroupView>> Get(long id)
             => _service.Get(id);

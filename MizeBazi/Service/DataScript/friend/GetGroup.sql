@@ -6,6 +6,7 @@ GO
 
 CREATE PROCEDURE flw.GetGroup
 	@Id BIGINT,
+    @CreateId NVARCHAR(max),
     @UniqueName NVARCHAR(max)
 --WITH ENCRYPTION
 AS
@@ -31,6 +32,7 @@ BEGIN
     ) gm
     WHERE g.IsRemove = 0
         AND (@Id = 0 OR g.Id = @Id)
+        AND (@CreateId = 0 OR g.CreateId = @CreateId)
         AND (@UniqueName IS NULL OR g.UniqueName = @UniqueName)
 
 END 
