@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
 namespace MizeBazi.Models;
@@ -31,8 +32,8 @@ public class GroupValidate
 
         if (!string.IsNullOrEmpty(model.Description))
         {
-            if (model.Description.Length < 14 || model.Description.Length > 140)
-                throw MizeBaziException.Error(message: "توضیح باید بین 14 تا 140 حرف باشد");
+            if (model.Description.Length < 14 || model.Description.Length > 110)
+                throw MizeBaziException.Error(message: "توضیح باید بین 14 تا 110 حرف باشد");
         }
 
         if (!string.IsNullOrEmpty(model.Password))
@@ -51,6 +52,11 @@ public class GroupValidate
 [Keyless]
 public class GroupView : Group
 {
+    public void SafeData()
+    {
+        CreateId = 0;
+        Password = string.IsNullOrEmpty(Password)? "false" : "true";
+    }
     public string CreateName { get; set; }
     public int Count { get; set; }
     //public string LastText { get; set; }

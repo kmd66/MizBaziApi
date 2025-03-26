@@ -94,4 +94,24 @@ public class GroupMemberDataSource : BaseDataSource
             _context.ChangeTracker.Clear();
         }
     }
+
+    public async Task<Result<List<long>>> List(long userId)
+    {
+        try
+        {
+            var ett = await _context.GroupMembers.Where(x =>
+                x.UserId == userId
+            ).AsNoTracking().Select(x=>x.GroupId).ToListAsync();
+
+            return Result<List<long>>.Successful(data: ett);
+        }
+        catch (Exception ex)
+        {
+            throw MizeBaziException.Error(message: ex.Message);
+        }
+        finally
+        {
+            _context.ChangeTracker.Clear();
+        }
+    }
 }

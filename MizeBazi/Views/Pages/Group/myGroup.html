@@ -1,0 +1,89 @@
+﻿<template id="group-template">
+    <div v-show="appModel.state == 'myGroup'">
+        <div v-show="mainModel.loding" class="lds-hourglass"></div>
+        <div v-show="!mainModel.loding">
+
+            <div class="separator">گروه من</div>
+
+            <div v-show="!mainModel.itemMyGroup.name">
+                <div> هنوز گروهی ایجاد نکرده اید.</div>
+                <button v-on:click="appModel.state = 'createGroup'" class="btn btn-green">ایجاد گروه</button>
+            </div>
+
+            <div v-show="mainModel.itemMyGroup.name">
+                <div class="groupItem" v-on:click="init(mainModel.itemMyGroup)">
+                    <div class="groupItemHeder">{{ mainModel.itemMyGroup.uniqueName }}</div>
+                    <div class="groupItemMain">
+                        <div class="name">نام اتاق: {{ mainModel.itemMyGroup.name }}</div>
+                        <div class="description">{{ mainModel.itemMyGroup.description }}</div>
+                    </div>
+                    <div class="groupItemCount d-flex">
+                        <div>{{ mainModel.itemMyGroup.count }} نفر</div>
+                        <div>{{ mainModel.itemMyGroup.pDate }} </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="separator">عضو شده‌ها</div>
+
+            <div v-show="mainModel.list.length  === 0">
+                <div>موردی یافت نشد.</div>
+            </div>
+
+            <div v-for="item in mainModel.list">
+
+                <div class="groupItem" v-on:click="init(item)">
+                    <div class="groupItemHeder">{{ item.uniqueName }}</div>
+                    <div class="groupItemMain">
+                        <div class="name">نام اتاق: {{ item.name }}</div>
+                        <div class="info">ایجاد کننده: {{ item.createName }}</div>
+                        <div class="description">{{ item.description }}</div>
+                    </div>
+                    <div class="groupItemCount d-flex">
+                        <div>{{ item.count }} نفر</div>
+                        <div>{{ item.pDate }} </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div v-show="appModel.state == 'createGroup'" class="createGroup">
+        <div v-show="mainModel.loding" class="lds-hourglass"></div>
+        <div v-show="!mainModel.loding">
+            <div style="margin-top: 20px;">شناسه باید بین 5 تا 25 حرف باشد. شناسه باید از اعداد و حروف لاتین باشد</div>
+            <div class="form__group">
+                <input v-model="mainModel.itemCreate.uniqueName" @input="limitText($event,30)" class="form__field" placeholder="شناسه">
+            </div>
+            <span class="iptLength">{{mainModel.itemCreate.uniqueName.length}}</span>
+            <hr />
+
+            <div>نام باید بین 5 تا 25 حرف باشد</div>
+            <div class="form__group">
+                <input v-model="mainModel.itemCreate.name" @input="limitText($event,30)" class="form__field" placeholder="نام">
+            </div>
+            <span class="iptLength">{{mainModel.itemCreate.name.length}}</span>
+            <hr />
+
+            <div>درصورت خالی بودن رمزعبور ورود به گروه نیازی به رمز نخواهد داشت</div>
+            <div>رمز عبور باید بین 5 تا 25 حرف باشد. رمز عبور باید از اعداد و حروف لاتین باشد</div>
+            <div class="form__group">
+                <input v-model="mainModel.itemCreate.password" @input="limitText($event,30)" type="password" class="form__field" placeholder="رمز عبور">
+            </div>
+            <span class="iptLength">{{mainModel.itemCreate.password.length}}</span>
+            <hr />
+
+            <div>توضیح باید بین 14 تا 110 حرف باشد</div>
+            <div class="form__group">
+                <textarea v-model="mainModel.itemCreate.description" @input="limitText($event,30)" rows="5" cols="33" class="form__field" placeholder="توضیح"></textarea>
+            </div>
+            <span class="iptLength">{{mainModel.itemCreate.description.length}}</span>
+
+            <div class="d-flex">
+                <button class="btn btn-green" v-on:click="createGroup()">ایجاد</button>
+                <button v-on:click="appModel.state = 'myGroup'" class="btn btn-line ">انصراف</button>
+            </div>
+        </div>
+    </div>
+</template>

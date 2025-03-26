@@ -1,11 +1,41 @@
 ﻿@{
-    ViewData["Title"] = "Pages";
+    ViewData["Title"] = "Pages / group";
+    var myGroup = System.IO.File.ReadAllText("./Views/Pages/Group/myGroup.html");
+    var searchGroup = System.IO.File.ReadAllText("./Views/Pages/Group/searchGroup.html");
 }
+@section css {
+    <link rel="stylesheet" href="~/css/group.css" />
+}
+@section Scripts2 {
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="~/lib/msgpack.min.js"></script>
+    <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
+}
+@section Scripts {
+    <script src="~/js/group.js"></script>
+}
+<div class="fading-image"></div>
 
+<div class="container" id="app" v-cloak>
 
-<a class="page-scroll" href="~/pages/Home" style="color:red">link</a>
-<a class="page-scroll" href="~/pages/Main25" style="color:red">Main25</a>
-<a class="page-scroll" href="~/pages/Main45" style="color:red">Main45</a>
-<a class="page-scroll" href="~/pages/Main68" style="color:red">Main68</a>
-<a class="page-scroll" href="~/pages/Main89" style="color:red">Main89</a>
+    <div class="mainCenter">
+        <group-component ref="childgroup" :app-model="appModel" :main-model="mainModel"></group-component>
+        <search-component ref="childsearch" :app-model="appModel" :search-model="searchModel"></search-component>
+    </div>
 
+    <div class="mainBottom" v-show="['searchGroup','myGroup'].indexOf(appModel.state) > -1 ">
+        <div class="item" style="border-left: 1px solid var(--TextColor2);"
+             v-on:click="changeState('myGroup')"
+             v-bind:style="{ backgroundColor: appModel.state =='myGroup' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+            گروه‌ها
+        </div>
+        <div class="item"
+             v-on:click="changeState('searchGroup')"
+             v-bind:style="{ backgroundColor: appModel.state =='searchGroup' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+            جستجو
+        </div>
+    </div>
+</div>
+
+@Html.Raw(myGroup)
+@Html.Raw(searchGroup)

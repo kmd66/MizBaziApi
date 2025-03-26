@@ -1,0 +1,72 @@
+﻿<template id="search-template">
+    <div v-show="appModel.state == 'searchGroup'">
+
+        <div class="mainBottom inpSearch inputText-group">
+            <div class="label" v-on:click="searchInit()">
+                <i class="iconsax" icon-name="search-normal-2"></i>
+            </div>
+            <input v-model="searchModel.name" class="inputText" placeholder="جستجو" autocomplete="off">
+
+        </div>
+
+        <div v-show="loding" class="lds-hourglass"></div>
+        <div v-show="!loding">
+            <div v-show="searchModel.list.length === 0" class="empty-message">
+                <p><span v-show="!name.isNullOrEmpty()">برای {{name}} </span> <span> موردی یافت نشد </span></p>
+            </div>
+
+            <div v-show="searchModel.list.length > 0" class="empty-message">
+                <div v-for="item in searchModel.list">
+
+                    <div class="groupItem" v-on:click="joinModal(item)">
+                        <div class="groupItemHeder">{{ item.uniqueName }}</div>
+                        <div class="groupItemMain">
+                            <div class="name">نام اتاق: {{ item.name }}</div>
+                            <div class="info">نوع: {{ item.type }}</div>
+                            <div class="info">ایجاد کننده: {{ item.createName }}</div>
+                            <div class="description">{{ item.description }}</div>
+                        </div>
+                        <div class="groupItemCount d-flex">
+                            <div>{{ item.count }} نفر</div>
+                            <div>{{ item.pDate }} </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal" v-bind:style="{ display:  modalForJoin == false ? 'none' : 'block'}">
+        <div class="modal-sandbox"></div>
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="close-modal" v-on:click="modalForJoin = false" data-modal="menuGame">&#10006;</div>
+                <div class="title"> گروه {{ item.uniqueName }}</div>
+            </div>
+            <div class="modal-body">
+                <div>آیا میخواهید عضو گروه  {{ item.name }} شوید؟</div>
+
+                <div v-show="item.password == 'true'">
+                    <div style=" margin-top: 20px;">رمز عبور را وارد کنید</div>
+                    <div style="color: var(--ErrorColor)"></div>
+                    <div class="form__group">
+                        <input v-model="password" type="password" class="form__field" placeholder="رمز عبور">
+                    </div>
+                </div>
+
+                <div style="margin:20px 0 0">
+                    <div class="d-flex">
+                        <button class="btn btn-green" v-on:click="join()">ورود</button>
+                        <button  v-on:click="modalForJoin = false"class="btn btn-line close-modal">انصراف</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</template>
+

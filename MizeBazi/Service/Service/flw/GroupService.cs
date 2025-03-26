@@ -67,14 +67,21 @@ public class GroupService : IService
         => new GroupDataSource().Get(id: id, uniqueName: uniqueName);
 
     public Task<Result<List<GroupView>>> List()
-       => new GroupDataSource().List(_requestInfo.model.UserId);
+        => new GroupDataSource().List(_requestInfo.model.UserId);
 
     public async Task<Result<List<GroupView>>> Search(string name)
     {
         if (string.IsNullOrEmpty(name) || name.Length < 3 || name.Length > 25)
             return Result<List<GroupView>>.Successful();
 
-        return await new GroupDataSource().Search(name);
+        var result = await new GroupDataSource().Search(name);
+
+        if (result.data != null)
+        {
+            result.data.ForEach(x => x.SafeData());
+        }
+
+        return result;
     }
 
     public Task<Result> Remove(long id)
@@ -94,11 +101,15 @@ public class GroupService : IService
         if(!string.IsNullOrEmpty(group.data.Password) && group.data.Password != model.Password)
             return Result.Failure(message: "رمز عبور اشتباه است");
 
+        var dataSource = new GroupMemberDataSource();
+        var join = await dataSource.IsJoin(model.Id, _requestInfo.model.UserId);
+        if(join.data)
+            return Result.Failure(message: "شما عضو این گروه هستید");
+
         var groupMember = new GroupMember {
             GroupId = model.Id,
             UserId = _requestInfo.model.UserId
         };
-        var dataSource = new GroupMemberDataSource();
         return await dataSource.Join(groupMember);
     }
 

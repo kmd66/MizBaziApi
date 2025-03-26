@@ -59,10 +59,13 @@ app.MapControllerRoute(
 #region hub link
 app.MapHub<MizeBazi.HubControllers.TestHub>("/testHub");
 app.MapHub<MizeBazi.HubControllers.RoomHub>("/room");
+
 app.MapHub<MizeBazi.HubControllers.NabardKhandeHub>("/nabardkhandehub");
 app.MapHub<MizeBazi.HubControllers.RangRazHub>("/rangrazhub");
 app.MapHub<MizeBazi.HubControllers.AfsonVajehHub>("/afsonvajehhub");
 app.MapHub<MizeBazi.HubControllers.MafiaHub>("/mafiahub");
+
+app.MapHub<MizeBazi.HubControllers.GroupHub>("/groupgub");
 #endregion
 
 app.ExceptionHandling();

@@ -23,6 +23,37 @@
 <hr style="margin:20px 0" />
 
 
+<div id="section1">
+    <div v-for="(img, index) in images" v-on:click="img.sel = !img.sel" v-bind:style="{ backgroundColor: img.sel ? 'green' : 'transparent'}">
+        {{img.url}}
+    </div>
+</div>
+
+<div id="app2">
+    {{state}}. {{model.title}} | {{model.d}}
+    <div>
+        <button v-on:click="changeState('1')">c1</button>
+        <button v-on:click="changeState('2')">c2</button>
+    </div>
+
+    <div v-show="state == '1'"><my-component1 :model="model"></my-component1></div>
+    <div v-show="state == '2'"><my-component2 :model="model"></my-component2></div>
+   
+    
+</div>
+
+
+ss
+<template id="my-template1">
+    <div><input v-model="model.title" placeholder="Name"></div>
+    <div><input v-model="model.d" type="number" placeholder="Age"></div>
+    
+    component1: {{model.title}} . {{model.d}}
+</template>
+<template id="my-template2">
+    component2: {{model.title}}. {{model.d}}
+</template>
+
 @section Scripts {
     <script>
         const { createApp, ref, computed } = Vue;
@@ -60,6 +91,72 @@
                 };
             }
         }).mount('#app');
+
+
+        const section1 = Vue.createApp({
+            data() {
+                return {
+                    images: [
+                        { url: 'img_burrito.svg', sel: false },
+                        { url: 'img_salad.svg', sel: false },
+                        { url: 'img_cake.svg', sel: false },
+                        { url: 'img_soup.svg', sel: false },
+                        { url: 'img_fish.svg', sel: false },
+                        { url: 'img_pizza.svg', sel: false },
+                        { url: 'img_rice.svg', sel: false }
+                    ]
+                }
+            },
+            methods: {
+                select(number) {
+                    this.images[number].sel = !this.images[number].sel
+                }
+            }
+        })
+        section1.mount('#section1')
+
+        const app2 = Vue.createApp({
+            data() {
+                return {
+                    state:'ss',
+                    model: {
+                        title:'salam',
+                        d:'khobi'
+                    }
+                }
+            },
+            methods: {
+                changeState(s) {
+                    this.state = s
+                }
+            }
+        })
+
+        app2.component('my-component1', {
+            props: {
+                model: {
+                    type: Object,
+                    required: true,
+                    default: () => ({})
+                }
+            },
+            template: '#my-template1',
+        });
+        app2.component('my-component2', {
+            props: {
+                model: {
+                    type: Object,
+                    required: true,
+                    default: () => ({})
+                }
+            },
+            created() {
+                this.appModel.state = 'myGroup'
+            },
+            template: '#my-template2',
+        });
+
+        app2.mount('#app2')
 
     </script>
 }

@@ -182,5 +182,88 @@ String.prototype.isOnlyDigits = function () {
     const regex = /^\d+$/;
     return regex.test(this);
 };
+String.prototype.toJalaaliString = function () {
+    try {
+
+        if (!this || this == '')
+            return '1/1/1';
+        let date = new Date(this);
+        var d = jalaali.toJalaali(date);
+        return d.jy + '/' + d.jm + '/' + d.jd
+    } catch {
+        return '0/0/1';
+    }
+};
 
 //---------extension-------
+async function appHttp(url = '', data = {}) {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Auth': publicToken,
+                'D-Id': publicDeviceId,
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.status === 200) {
+            const responseData = await response.json();
+
+            if (responseData.success) {
+                return responseData.data;
+            } else {
+
+                const error = new Error(responseData.message);
+                error.code = responseData.code;
+                throw error;
+            }
+
+        }
+        else {
+            const errorData = await response.json().catch(() => ({}));
+            const error = new Error(errorData.message || 'Request failed');
+            error.code = response.status;
+            throw error;
+
+        }
+
+
+    } catch (e) {
+        if (!e.code) {
+            e.code = -100;
+        }
+        if (e.code == 401)
+            error401(e)
+        else
+            pushErrorMessage({ comment: `code:${e.code}<br> ${e.message}`})
+        throw e;
+    }
+    
+}
+function pushErrorMessage({ comment, time = 2 }) {
+    pushMessage({ comment: comment, type: 'error', time: time });
+}
+function pushSuccessMessage({ comment, time = 2 }) {
+    pushMessage({ comment: comment, type: 'success', time: time });
+}
+function pushMessage({ comment, type = 'error', time = 2 }) {
+    const errorBox = document.getElementById('errorBox');
+    const element = document.createElement('div');
+    element.innerHTML = comment;
+    element.classList.add('pushMessage');
+    if (type == 'error')
+        element.classList.add('pushErrorMessage');
+    if (type == 'success')
+        element.classList.add('pushSuccessMessage');
+    errorBox.appendChild(element);
+
+    setTimeout(() => {
+        errorBox.removeChild(element);
+    }, time * 1000);
+}
+function error401(e) {
+    console.log('کد خطا 401:', error.code);
+    console.log('پیام:', error.message);
+}
