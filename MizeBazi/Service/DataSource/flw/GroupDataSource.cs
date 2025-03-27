@@ -19,7 +19,7 @@ public class GroupDataSource : BaseDataSource
         _context = new FlwContexts();
     }
 
-    public async Task<Result> Add(Group model)
+    public async Task<Result<GroupView>> Add(Group model)
     {
         try
         {
@@ -33,7 +33,7 @@ public class GroupDataSource : BaseDataSource
             _context.Add<GroupMember>(modelMember);
             await _context.SaveChangesAsync();
 
-            return Result.Successful();
+            return await Get(id: model.Id);
         }
         catch (Exception ex)
         {

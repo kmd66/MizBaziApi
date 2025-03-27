@@ -58,7 +58,7 @@ app.MapControllerRoute(
 
 #region hub link
 app.MapHub<MizeBazi.HubControllers.TestHub>("/testHub");
-app.MapHub<MizeBazi.HubControllers.RoomHub>("/room");
+app.MapHub<MizeBazi.HubControllers.RoomHub>("/roomhub");
 
 app.MapHub<MizeBazi.HubControllers.NabardKhandeHub>("/nabardkhandehub");
 app.MapHub<MizeBazi.HubControllers.RangRazHub>("/rangrazhub");

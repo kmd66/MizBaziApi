@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Views\Pages\Group\ChatGroup.html" />
 	  <None Remove="Views\Pages\Group\myGroup.html" />
 	  <None Remove="Views\Pages\Group\searchGroup.html" />
 	  <None Remove="Views\Pages\Main\main.html" />
@@ -15,6 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Views\Pages\Group\chatGroup.html" />
 	  <Content Include="Views\Pages\Group\myGroup.html" />
 	  <Content Include="Views\Pages\Group\searchGroup.html" />
 	  <Content Include="Views\Pages\Main\main.html" />

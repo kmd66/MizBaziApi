@@ -7,7 +7,7 @@ var usersInfo = null;
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("/room")
+        .withUrl("/roomhub")
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 

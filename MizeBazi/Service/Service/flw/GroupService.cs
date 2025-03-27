@@ -34,6 +34,9 @@ public class GroupService : IService
         if (group.data != null)
             return Result.Failure(message: "گروه با این شناسه وجود دارد");
 
+        var userDataSource = new UserDataSource();
+        var userResult = await userDataSource.GetViwe(_requestInfo.model.UserId);
+
         var groupModel = new Group
         {
             CreateId = _requestInfo.model.UserId,
@@ -42,7 +45,14 @@ public class GroupService : IService
             Password = model.Password,
             Description = model.Description
         };
-        return await groupDataSource.Add(groupModel);
+
+        var result = await groupDataSource.Add(groupModel);
+        var groupMessage = new GroupMessage(result.data.Id, result.data);
+        groupMessage.SetPinText("گروه ایجاد شد");
+
+        HubControllers.GroupHub.listGroup.Add(groupMessage);
+
+        return Result.Successful();
     }
 
     public async Task<Result> Edite(GroupEdit model)

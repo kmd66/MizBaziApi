@@ -11,7 +11,7 @@
             </div>
 
             <div v-show="mainModel.itemMyGroup.name">
-                <div class="groupItem" v-on:click="init(mainModel.itemMyGroup)">
+                <div class="groupItem" v-on:click="joinToGroup(mainModel.itemMyGroup)">
                     <div class="groupItemHeder">{{ mainModel.itemMyGroup.uniqueName }}</div>
                     <div class="groupItemMain">
                         <div class="name">نام اتاق: {{ mainModel.itemMyGroup.name }}</div>
@@ -32,7 +32,7 @@
 
             <div v-for="item in mainModel.list">
 
-                <div class="groupItem" v-on:click="init(item)">
+                <div class="groupItem" v-on:click="joinToGroup(item)">
                     <div class="groupItemHeder">{{ item.uniqueName }}</div>
                     <div class="groupItemMain">
                         <div class="name">نام اتاق: {{ item.name }}</div>
@@ -54,31 +54,31 @@
         <div v-show="!mainModel.loding">
             <div style="margin-top: 20px;">شناسه باید بین 5 تا 25 حرف باشد. شناسه باید از اعداد و حروف لاتین باشد</div>
             <div class="form__group">
-                <input v-model="mainModel.itemCreate.uniqueName" @input="limitText($event,30)" class="form__field" placeholder="شناسه">
+                <input v-model="mainModel.itemCreate.uniqueName" @input="limitText($event,25)" class="form__field" placeholder="شناسه">
             </div>
-            <span class="iptLength">{{mainModel.itemCreate.uniqueName.length}}</span>
+            <span class="iptLength">{{mainModel.itemCreate.uniqueName?.length}}</span>
             <hr />
 
             <div>نام باید بین 5 تا 25 حرف باشد</div>
             <div class="form__group">
-                <input v-model="mainModel.itemCreate.name" @input="limitText($event,30)" class="form__field" placeholder="نام">
+                <input v-model="mainModel.itemCreate.name" @input="limitText($event,25)" class="form__field" placeholder="نام">
             </div>
-            <span class="iptLength">{{mainModel.itemCreate.name.length}}</span>
+            <span class="iptLength">{{mainModel.itemCreate.name?.length}}</span>
             <hr />
 
             <div>درصورت خالی بودن رمزعبور ورود به گروه نیازی به رمز نخواهد داشت</div>
             <div>رمز عبور باید بین 5 تا 25 حرف باشد. رمز عبور باید از اعداد و حروف لاتین باشد</div>
             <div class="form__group">
-                <input v-model="mainModel.itemCreate.password" @input="limitText($event,30)" type="password" class="form__field" placeholder="رمز عبور">
+                <input v-model="mainModel.itemCreate.password" @input="limitText($event,25)" type="password" class="form__field" placeholder="رمز عبور">
             </div>
-            <span class="iptLength">{{mainModel.itemCreate.password.length}}</span>
+            <span class="iptLength">{{mainModel.itemCreate.password?.length}}</span>
             <hr />
 
             <div>توضیح باید بین 14 تا 110 حرف باشد</div>
             <div class="form__group">
-                <textarea v-model="mainModel.itemCreate.description" @input="limitText($event,30)" rows="5" cols="33" class="form__field" placeholder="توضیح"></textarea>
+                <textarea v-model="mainModel.itemCreate.description" @input="limitText($event,110)" rows="5" cols="33" class="form__field" placeholder="توضیح"></textarea>
             </div>
-            <span class="iptLength">{{mainModel.itemCreate.description.length}}</span>
+            <span class="iptLength">{{mainModel.itemCreate.description?.length}}</span>
 
             <div class="d-flex">
                 <button class="btn btn-green" v-on:click="createGroup()">ایجاد</button>

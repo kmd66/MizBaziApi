@@ -95,7 +95,7 @@ public class GroupMemberDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<List<long>>> List(long userId)
+    public async Task<Result<List<long>>> ListGroupsId(long userId)
     {
         try
         {

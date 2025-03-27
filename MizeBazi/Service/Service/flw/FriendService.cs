@@ -45,7 +45,6 @@ public class FriendService : IService
         return await friendDataSource.AddRequest(_requestInfo.model.UserId, userId);
     }
 
-
     public async Task<Result> RequestEdit(RequestEdit model)
     {
         if(model.Type == RequestEditType.Unknown)

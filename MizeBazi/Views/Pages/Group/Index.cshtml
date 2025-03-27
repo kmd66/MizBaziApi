@@ -2,6 +2,7 @@
     ViewData["Title"] = "Pages / group";
     var myGroup = System.IO.File.ReadAllText("./Views/Pages/Group/myGroup.html");
     var searchGroup = System.IO.File.ReadAllText("./Views/Pages/Group/searchGroup.html");
+    var chatGroup = System.IO.File.ReadAllText("./Views/Pages/Group/chatGroup.html");
 }
 @section css {
     <link rel="stylesheet" href="~/css/group.css" />
@@ -18,7 +19,7 @@
 
 <div class="container" id="app" v-cloak>
 
-    <div class="mainCenter">
+    <div class="mainCenter" v-show="['searchGroup','myGroup','createGroup'].indexOf(appModel.state) > -1 ">
         <group-component ref="childgroup" :app-model="appModel" :main-model="mainModel"></group-component>
         <search-component ref="childsearch" :app-model="appModel" :search-model="searchModel"></search-component>
     </div>
@@ -35,7 +36,11 @@
             جستجو
         </div>
     </div>
+
+    <chat-component ref="childchat" :app-model="appModel" :chat-model="chatModel"></chat-component>
+
 </div>
 
 @Html.Raw(myGroup)
 @Html.Raw(searchGroup)
+@Html.Raw(chatGroup)
