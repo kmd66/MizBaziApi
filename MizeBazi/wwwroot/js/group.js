@@ -47,9 +47,7 @@ function initSoket() {
 
     connection.on("ExitReceive", (b) => {
         if (b) {
-            vm.$refs.childchat.pinText = null;
-            vm.$refs.childchat.texts = [];
-            vm.$refs.childchat.joinItem = {};
+            childchatRestart();
             vm.appModel.state = 'myGroup';
         }
     });
@@ -70,16 +68,62 @@ function initSoket() {
 
     connection.on("DestroyReceive", (t) => {
         vm.appModel.state = 'myGroup';
-        vm.$refs.childchat.modalForRemove = false;
-        vm.$refs.childchat.pinText = null;
-        vm.$refs.childchat.texts = [];
-        vm.$refs.childchat.joinItem = {};
+        childchatRestart();
         myGroupInit(vm.mainModel);
+    });
+
+    connection.on("ListUserFromGroupReceive", (b, json) => {
+        vm.$refs.childchat.loding = false;
+        var obj = JSON.parse(json);
+        obj.map((item) => {
+            item.pDate = item.Date.toJalaaliString();
+        });
+        if (b)
+            vm.$refs.childchat.listBlockUser = obj;
+        else
+            vm.$refs.childchat.listUser = obj;
+    });
+
+    connection.on("RemoveFromGroupReceive", (b, userId) => {
+        vm.$refs.childchat.loding = false;
+        if (b) {
+            if (vm.$refs.childchat.listUser.length && vm.$refs.childchat.listUser.length > 0) {
+                var removeIndex = vm.$refs.childchat.listUser.map(item => item.UserId).indexOf(userId);
+                if (removeIndex > -1)
+                vm.$refs.childchat.listUser.splice(removeIndex, 1);
+            }
+            if (vm.$refs.childchat.listBlockUser.length && vm.$refs.childchat.listBlockUser.length > 0) {
+                var removeIndex = vm.$refs.childchat.listBlockUser.map(item => item.UserId).indexOf(userId);
+                if (removeIndex > -1)
+                    vm.$refs.childchat.listBlockUser.splice(removeIndex, 1);
+            }
+        }
+    });
+
+    connection.on("AddBlockReceive", (b, userId) => {
+        vm.$refs.childchat.loding = false;
+        if (b) {
+            if (vm.$refs.childchat.listUser.length && vm.$refs.childchat.listUser.length > 0) {
+                var removeIndex = vm.$refs.childchat.listUser.map(item => item.UserId).indexOf(userId);
+                var item = vm.$refs.childchat.listUser.splice(removeIndex, 1);
+                if (item.length > 0) 
+                vm.$refs.childchat.listBlockUser.push(item[0])
+            }
+        }
     });
 
     soketStart(connection, callbackSoketStart);
     function callbackSoketStart() {
         connection.invoke("Init", publicToken, publicDeviceId);
+    }
+
+    function childchatRestart() {
+        vm.$refs.childchat.modalForRemove = false;
+        vm.$refs.childchat.pinText = null;
+        vm.$refs.childchat.texts = [];
+        vm.$refs.childchat.joinItem = {};
+        vm.$refs.childchat.listUser = [];
+        vm.$refs.childchat.listBlockUser = [];
     }
 }
 
@@ -184,7 +228,7 @@ async function edite(obj) {
     obj.loding = true;
 
     appHttp(urlEdit, obj.itemEdite).then((data) => {
-        obj.info = false;
+        obj.chatState = 'main';
         obj.edite = false;
         obj.joinItem.name = obj.itemEdite.name;
         obj.joinItem.description = obj.itemEdite.description;
@@ -305,8 +349,8 @@ app.component('chat-component', {
     template: '#chat-template',
     data() {
         return {
+            chatState: 'main', // main edit user
             loding: false,
-            info: false,
             pinPreLine: false,
             edite: false,
             modalForRemove: false,
@@ -315,7 +359,13 @@ app.component('chat-component', {
             itemEdite: {},
             pinText: '',
             pinTextEdite: '',
-            texts: []
+            texts: [],
+            listUser: [],
+            listBlockUser: [],
+            userInit: false,
+            userBlockInit: false,
+            searchUserName: '',
+            searchName: ''
         }
     },
     props: {
@@ -332,7 +382,7 @@ app.component('chat-component', {
         exitFromGroup() {
             connection.invoke("Exit", key);
             this.itemEdite = {};
-            this.info = false;
+            this.chatState = 'main';
             this.edite = false;
         },
         editeGroup() {
@@ -353,9 +403,42 @@ app.component('chat-component', {
         sendPinMessage() {
             if (this.pinTextEdite.isNullOrEmpty())
                 return;
-            this.info= false;
-            this.edite= false;
+            this.chatState = 'main';
+            this.edite = false;
             connection.invoke("MessagePin", key, this.pinTextEdite);
+        },
+        listInit() {
+            this.chatState = 'user';
+            if (!this.userInit) {
+                this.userInit = true;
+                connection.invoke("ListUserFromGroup", key, false, null, null);
+            }
+        },
+        list() {
+            this.loding = true;
+            var blocked = false;
+            if (this.chatState == 'userBlock')
+                var blocked = true;
+            if (this.searchUserName == '')
+                this.searchUserName = null;
+            if (this.searchName == '')
+                this.searchName = null;
+            connection.invoke("ListUserFromGroup", key, blocked, this.searchUserName, this.searchName);
+        },
+        removeFromGroup(item) {
+            this.loding = true;
+            connection.invoke("RemoveFromGroup", key, item.UserId);
+        },
+        addBlock(item) {
+            this.loding = true;
+            connection.invoke("AddBlock", key, item.UserId);
+        },
+        changeState(s) {
+            if (!this.userBlockInit && s == 'userBlock') {
+                this.userBlockInit = true;
+                connection.invoke("ListUserFromGroup", key, true, null, null);
+            }
+            this.chatState = s;
         }
     }
 });

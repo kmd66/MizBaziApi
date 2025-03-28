@@ -98,7 +98,7 @@ public class GroupService : IService
        => new GroupDataSource().Remove(id, _requestInfo.model.UserId);
 
     public async Task<Result> Join(GroupJoin model)
-    {
+        {
         var groupDataSource = new GroupDataSource();
         var list = await groupDataSource.Count(_requestInfo.model.UserId);
         if(list.data>= 5)
@@ -112,8 +112,13 @@ public class GroupService : IService
             return Result.Failure(message: "رمز عبور اشتباه است");
 
         var dataSource = new GroupMemberDataSource();
+
+        var blocked = await dataSource.IsBlocked(model.Id, _requestInfo.model.UserId);
+        if (blocked.data)
+            return Result.Failure(message: "شما توسط مدیر این گروه مسدود شده‌اید");
+
         var join = await dataSource.IsJoin(model.Id, _requestInfo.model.UserId);
-        if(join.data)
+        if (join.data)
             return Result.Failure(message: "شما عضو این گروه هستید");
 
         var groupMember = new GroupMember {

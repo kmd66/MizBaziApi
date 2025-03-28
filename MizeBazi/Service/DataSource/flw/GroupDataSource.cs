@@ -187,11 +187,11 @@ public class GroupDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<int>> Count(long userId)
+    public async Task<Result<int>> Count(long userId, bool blocked = false)
     {
         try
         {
-            var ett = await _context.GroupMembers.Where(x => x.UserId == userId ).CountAsync();
+            var ett = await _context.GroupMembers.Where(x => x.UserId == userId && x.blocked == blocked).CountAsync();
 
             return Result<int>.Successful(data: ett);
         }

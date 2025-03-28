@@ -28,7 +28,7 @@ BEGIN
     INNER JOIN org.Users u ON u.Id = g.CreateId
     CROSS APPLY (
         SELECT COUNT(Id) [Count] FROM flw.GroupMembers m
-        WHERE m.GroupId = g.Id
+        WHERE m.GroupId = g.Id AND m.blocked = 0
     ) gm
     WHERE g.IsRemove = 0
         AND (@Id = 0 OR g.Id = @Id)

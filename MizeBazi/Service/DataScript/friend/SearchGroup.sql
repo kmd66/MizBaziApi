@@ -32,7 +32,7 @@ BEGIN
             COUNT(m.Id) [Count],
             m.GroupId 
         FROM  Groups g
-        LEFT JOIN flw.GroupMembers m ON m.GroupId = g.Id
+        LEFT JOIN flw.GroupMembers m ON m.GroupId = g.Id AND m.blocked = 0
         GROUP BY GroupId
     )
     SELECT g.*, [Count] FROM Groups g

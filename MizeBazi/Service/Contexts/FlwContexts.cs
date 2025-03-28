@@ -92,6 +92,8 @@ public class FlwContexts : DbContext
             .HasIndex(p => p.Id);
         modelBuilder.Entity<GroupMember>()
             .Property(e => e.Date).ValueGeneratedOnAdd().HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<GroupMember>()
+            .Property(b => b.blocked).HasDefaultValue(false);
 
         modelBuilder.Entity<GroupMember>()
             .HasOne<Group>()
@@ -154,6 +156,12 @@ public class FlwContexts : DbContext
                    eb.HasNoKey();
                    eb.ToView("MessageVeiw");
                });
+        modelBuilder
+               .Entity<ListGroupMember>(eb =>
+               {
+                   eb.HasNoKey();
+                   eb.ToView("ListGroupMember");
+               });
     }
 
     public DbSet<FriendRequest> FriendRequests { get; set; }
@@ -167,5 +175,6 @@ public class FlwContexts : DbContext
     public DbSet<GroupView> GroupViews { get; set; }
     public DbSet<NotificationVeiw> NotificationVeiws { get; set; }
     public DbSet<MessageVeiw> MessageVeiws { get; set; }
+    public DbSet<ListGroupMember> ListGroupMember { get; set; }
 
 }

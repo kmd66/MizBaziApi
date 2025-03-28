@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MizeBazi.HubControllers;
 
@@ -196,5 +197,67 @@ public class GroupHub : Hub
         }
     }
 
+    public async Task ListUserFromGroup(Guid key, bool blocked, string userName, string name)
+    {
+        var connectionId = Context.ConnectionId;
+        var user = listUser.FirstOrDefault(x => x.Key == key && x.ConnectionId == connectionId);
+        if (user == null)
+            return;
+        var dataSource = new DataSource.GroupMemberDataSource();
+        var result = await dataSource.List(user.GroupId, blocked, userName, name);
+
+        await Clients.Caller.SendAsync("ListUserFromGroupReceive", blocked, result.data.ToJson());
+    }
+
+    public async Task RemoveFromGroup(Guid key, long userId)
+    {
+        var connectionId = Context.ConnectionId;
+        var user = listUser.FirstOrDefault(x => x.Key == key && x.ConnectionId == connectionId);
+        if (user == null)
+        {
+            await Clients.Caller.SendAsync("RemoveFromGroupReceive", false, userId);
+            return;
+        }
+
+        var group = listGroup.FirstOrDefault(x => x.GroupId == user.GroupId);
+        if (group == null || group.View.CreateId != user.User.Id)
+            return;
+        if (group.View.CreateId == userId)
+        {
+            await Clients.Caller.SendAsync("RemoveFromGroupReceive", false, userId);
+            return;
+        }
+
+
+        var dataSource = new DataSource.GroupMemberDataSource();
+        await dataSource.RemoveFromGroup(userId, user.GroupId);
+
+        await Clients.Caller.SendAsync("RemoveFromGroupReceive", true, userId);
+    }
+
+    public async Task AddBlock(Guid key, long userId)
+    {
+        var connectionId = Context.ConnectionId;
+        var user = listUser.FirstOrDefault(x => x.Key == key && x.ConnectionId == connectionId);
+        if (user == null)
+        {
+            await Clients.Caller.SendAsync("AddBlockReceive", false, userId);
+            return;
+        }
+
+        var group = listGroup.FirstOrDefault(x => x.GroupId == user.GroupId);
+        if (group == null || group.View.CreateId != user.User.Id)
+            return;
+        if (group.View.CreateId == userId)
+        {
+            await Clients.Caller.SendAsync("AddBlockReceive", false, userId);
+            return;
+        }
+
+        var dataSource = new DataSource.GroupMemberDataSource();
+        await dataSource.AddBlock(userId, user.GroupId);
+
+        await Clients.Caller.SendAsync("AddBlockReceive", true, userId);
+    }
 }
 

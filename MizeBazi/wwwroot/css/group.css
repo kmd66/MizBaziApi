@@ -206,3 +206,22 @@
 .groupItemMain .info {
     padding: 0 14px;
 }
+.userChatMain {
+    margin: 15px -14px;
+    padding: 15px;
+    align-items: center;
+    background: #5d5d5d80;
+}
+    .userChatMain .chatUserName {
+        font-size: 0.8rem;
+        width: 100%;
+    }
+    .userChatMain .chatUserImg {
+        height: 55px;
+        width: 55px;
+    }
+.iconTextChat {
+    font-size: 0.6rem;
+    width: 55px;
+    text-align: center;
+}

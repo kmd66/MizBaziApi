@@ -1,165 +1,75 @@
-﻿<template id="chat-template">
-    <div v-show="appModel.state == 'chatGroup'" style="height: 100%;">
-        <div v-show="!info" style="height: 100%;">
-
-            <div class="d-flex mainTop">
-                <i class="iconsax" icon-name="logout-1" style="padding: 12px" v-on:click="exitFromGroup()"></i>
-
-                <div> {{joinItem?.name}} </div>
-
-                <i class="iconsax" icon-name="menu-meatballs" style="padding: 12px" v-on:click="info = true; pinTextEdite = pinText"></i>
-            </div>
-
-            <div id="chatList" class="mainCenter mainCenterChat">
-                <div class="pinMessage"
-                     v-on:click="pinPreLine = !pinPreLine"
-                     v-bind:style="{ 'white-space': pinPreLine ? 'pre-line' : 'nowrap'}">{{pinText}}</div>
-
-                <div v-for="(item, index) in texts">
-                    <div :class="['chatMain', 'd-flex', `item-${index}`]">
-                        <div class="chatImg">
-                            <div class="chatListUserImg ">
-                                <div class="chatUserImg">
-                                    <img :src="item.UserImg + '90.jpg'">
-                                </div>
-                            </div><div class="chatUserName">{{item.UserName}}</div>
-                        </div>
-                        <div class="chatText">
-                            <div class="chatBox">
-                                <div class="chatInfo">{{item.Name}}</div>
-                                <div class="chatInfo">{{item.pDate}}</div>
-                                <div class="chatMsg">{{item.Text}}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="mainBottom inputText-group mainBottomChat">
-                <div class="label" v-on:click="sendMessage()">
-                    <i class="iconsax" icon-name="send-1"></i>
-                </div>
-                <input v-model="message" class="inputText" placeholder="ارسال پیام" autocomplete="off">
-            </div>
-
+﻿<div class="modal" v-bind:style="{ display:  modalForRemove == false ? 'none' : 'block'}">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="close-modal" v-on:click="modalForRemove = false" data-modal="menuGame">&#10006;</div>
+            <div class="title" v-show="joinItem.isCreate"> حذف گروه {{ joinItem.uniqueName }}</div>
+            <div class="title" v-show="!joinItem.isCreate"> ترک گروه {{ joinItem.uniqueName }}</div>
         </div>
+        <div class="modal-body">
+            <div v-show="joinItem.isCreate">آیا میخواهید گروه  {{ joinItem.name }} را حذف کنید؟</div>
+            <div v-show="!joinItem.isCreate">آیا میخواهید گروه  {{ joinItem.name }} را ترک کنید؟</div>
 
-        <div v-show="info && !loding" style="height:100%">
-
-            <div v-show="!edite" class="info">
-
-                <div v-show="joinItem.isCreate">
-                    <div>متن سنجاق شده</div>
-                    <div class="form__group">
-                        <textarea v-model="pinTextEdite" @input="limitText($event,110)" rows="5" cols="33" class="form__field" placeholder="متن سنجاق شده"></textarea>
-                    </div>
-                    <span class="iptLength">{{pinTextEdite?.length}}</span>
-                    <div>
-                        <button class="btn btn-green" v-on:click="sendPinMessage()">ویرایش متن</button>
-                    </div>
-                    <hr />
-                </div>
-
-                <p><span class="t">نام گروه:</span><span class="i">{{joinItem.name}}</span></p>
-                <p><span class="t">شناسه گروه:</span><span class="i">{{joinItem.uniqueName}}</span></p>
-                <p><span class="t">ایجادکننده:</span><span class="i">{{joinItem.createName}}</span></p>
-                <p><span class="t">تعداداعضا:</span><span class="i">{{joinItem.count}}</span></p>
-                <p><span class="t">تاریخ ایجاد:</span><span class="i">{{joinItem.pDate}}</span></p>
-                <p><span class="t">توضیح:</span><span class="i">{{joinItem.description}}</span></p>
-
-                <p v-show="joinItem.isCreate">
-                    <button class="btn btn-green" v-on:click="edite = true; itemEdite = Object.assign({}, joinItem)">ویرایش گروه</button>
-                </p>
-            </div>
-
-            <div v-show="edite" class="info">
-
-                <div>نام باید بین 5 تا 25 حرف باشد</div>
-                <div class="form__group">
-                    <input v-model="itemEdite.name" @input="limitText($event,25)" class="form__field" placeholder="نام">
-                </div>
-                <span class="iptLength">{{itemEdite.name?.length}}</span>
-                <hr />
-
-                <div>درصورت خالی بودن رمزعبور ورود به گروه نیازی به رمز نخواهد داشت</div>
-                <div>رمز عبور باید بین 5 تا 25 حرف باشد. رمز عبور باید از اعداد و حروف لاتین باشد</div>
-                <div class="form__group">
-                    <input v-model="itemEdite.password" @input="limitText($event,25)" type="password" class="form__field" placeholder="رمز عبور">
-                </div>
-                <span class="iptLength">{{itemEdite.password?.length}}</span>
-                <hr />
-
-                <div>توضیح باید بین 14 تا 110 حرف باشد</div>
-                <div class="form__group">
-                    <textarea v-model="itemEdite.description" @input="limitText($event,110)" rows="5" cols="33" class="form__field" placeholder="توضیح"></textarea>
-                </div>
-                <span class="iptLength">{{itemEdite.description?.length}}</span>
-
+            <div style="margin:20px 0 0">
                 <div class="d-flex">
-                    <button class="btn btn-green" v-on:click="editeGroup()">ویرایش</button>
-                    <button v-on:click="info = false; edite = false" class="btn btn-line ">انصراف</button>
+                    <button v-show="joinItem.isCreate" class="btn btn-red" v-on:click="removeGroup()">حذف گروه</button>
+                    <button v-show="!joinItem.isCreate" class="btn btn-red" v-on:click="leftGroup()">ترک گروه</button>
+                    <button v-on:click="modalForRemove = false" class="btn btn-line close-modal">انصراف</button>
                 </div>
-
-
-            </div>
-
-            <div class="infoBottom d-flex">
-
-                <div class="infoBottomItem" v-on:click="info = false; edite = false">
-                    <i class="iconsax" icon-name="chevron-right"></i>
-                    <div class="text">بازگشت</div>
-                </div>
-
-                <div class="infoBottomItem" v-on:click="exitFromGroup()">
-                    <i class="iconsax" icon-name="logout-1"></i>
-                    <div class="text">خروج ازگروه</div>
-                </div>
-
-                <div class="infoBottomItem" v-show="joinItem.isCreate" v-on:click="modalForRemove = true">
-                    <i class="iconsax" icon-name="trash"></i>
-                    <div class="text">حذف گروه</div>
-                </div>
-
-                <div class="infoBottomItem" v-show="!joinItem.isCreate" v-on:click="modalForRemove = true">
-                    <i class="iconsax" icon-name="user-1-delete"></i>
-                    <div class="text">ترک گروه</div>
-                </div>
-
             </div>
 
         </div>
+    </div>
+</div>
 
-        <div v-show="info && loding" style="height:100%">
-            <div class="lds-hourglass"></div>
+<div v-show="loding" style="height:100%">
+    <div class="lds-hourglass"></div>
+</div>
+
+<!------------------------------------->
+
+<div v-show="chatState == 'main' && !loding" style="height: 100%;">
+
+    <div class="d-flex mainTop">
+        <i class="iconsax" icon-name="logout-1" style="padding: 12px" v-on:click="exitFromGroup()"></i>
+
+        <div> {{joinItem?.name}} </div>
+
+        <i class="iconsax" icon-name="menu-meatballs" style="padding: 12px" v-on:click="chatState = 'info'; pinTextEdite = pinText"></i>
+    </div>
+
+    <div id="chatList" class="mainCenter mainCenterChat">
+        <div class="pinMessage"
+             v-on:click="pinPreLine = !pinPreLine"
+             v-bind:style="{ 'white-space': pinPreLine ? 'pre-line' : 'nowrap'}">{{pinText}}</div>
+
+        <div v-for="(item, index) in texts">
+            <div :class="['chatMain', 'd-flex', `item-${index}`]">
+                <div class="chatImg">
+                    <div class="chatListUserImg ">
+                        <div class="chatUserImg">
+                            <img :src="item.UserImg + '90.jpg'">
+                        </div>
+                    </div><div class="chatUserName">{{item.UserName}}</div>
+                </div>
+                <div class="chatText">
+                    <div class="chatBox">
+                        <div class="chatInfo">{{item.Name}}</div>
+                        <div class="chatInfo">{{item.pDate}}</div>
+                        <div class="chatMsg">{{item.Text}}</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
-
-        <div class="modal" v-bind:style="{ display:  modalForRemove == false ? 'none' : 'block'}">
-            <div class="modal-sandbox"></div>
-            <div class="modal-box">
-                <div class="modal-header">
-                    <div class="close-modal" v-on:click="modalForRemove = false" data-modal="menuGame">&#10006;</div>
-                    <div class="title" v-show="joinItem.isCreate"> حذف گروه {{ joinItem.uniqueName }}</div>
-                    <div class="title" v-show="!joinItem.isCreate"> ترک گروه {{ joinItem.uniqueName }}</div>
-                </div>
-                <div class="modal-body">
-                    <div v-show="joinItem.isCreate">آیا میخواهید گروه  {{ joinItem.name }} را حذف کنید؟</div>
-                    <div v-show="!joinItem.isCreate">آیا میخواهید گروه  {{ joinItem.name }} را ترک کنید؟</div>
-
-                    <div style="margin:20px 0 0">
-                        <div class="d-flex">
-                            <button v-show="joinItem.isCreate" class="btn btn-red" v-on:click="removeGroup()">حذف گروه</button>
-                            <button v-show="!joinItem.isCreate" class="btn btn-red" v-on:click="leftGroup()">ترک گروه</button>
-                            <button v-on:click="modalForRemove = false" class="btn btn-line close-modal">انصراف</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+    <div class="mainBottom inputText-group mainBottomChat">
+        <div class="label" v-on:click="sendMessage()">
+            <i class="iconsax" icon-name="send-1"></i>
         </div>
+        <input v-model="message" class="inputText" placeholder="ارسال پیام" autocomplete="off">
+    </div>
 
-</template>
+</div>

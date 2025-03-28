@@ -25,14 +25,14 @@ BEGIN
         FROM flw.GroupMembers gm 
         INNER JOIN flw.Groups g ON g.Id = gm.GroupId
         INNER JOIN org.Users u ON u.Id = g.CreateId
-        WHERE gm.UserId = @UserId
+        WHERE gm.UserId = @UserId AND gm.blocked = 0
     ),
     LatestMessage AS (
         SELECT 
             COUNT(m.Id) [Count],
             m.GroupId 
         FROM  Groups g
-        LEFT JOIN flw.GroupMembers m ON m.GroupId = g.Id
+        LEFT JOIN flw.GroupMembers m ON m.GroupId = g.Id AND m.blocked = 0
         GROUP BY GroupId
     )
     SELECT * FROM Groups g

@@ -3,6 +3,8 @@
     var myGroup = System.IO.File.ReadAllText("./Views/Pages/Group/myGroup.html");
     var searchGroup = System.IO.File.ReadAllText("./Views/Pages/Group/searchGroup.html");
     var chatGroup = System.IO.File.ReadAllText("./Views/Pages/Group/chatGroup.html");
+    var chatGroupEdite = System.IO.File.ReadAllText("./Views/Pages/Group/chatGroupEdite.html");
+    var chatGroupUser = System.IO.File.ReadAllText("./Views/Pages/Group/chatGroupUser.html");
 }
 @section css {
     <link rel="stylesheet" href="~/css/group.css" />
@@ -43,4 +45,11 @@
 
 @Html.Raw(myGroup)
 @Html.Raw(searchGroup)
-@Html.Raw(chatGroup)
+
+<template id="chat-template">
+    <div v-show="appModel.state == 'chatGroup'" style="height: 100%;">
+        @Html.Raw(chatGroup)
+        @Html.Raw(chatGroupEdite)
+        @Html.Raw(chatGroupUser)
+    </div>
+</template>

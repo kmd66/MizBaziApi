@@ -1,0 +1,87 @@
+﻿<div v-show="chatState == 'info'  && !loding" style="height:100%">
+
+    <div v-show="!edite" class="info">
+
+
+        <div v-show="joinItem.isCreate">
+            <div>متن سنجاق شده</div>
+            <div class="form__group">
+                <textarea v-model="pinTextEdite" @input="limitText($event,110)" rows="5" cols="33" class="form__field" placeholder="متن سنجاق شده"></textarea>
+            </div>
+            <span class="iptLength">{{pinTextEdite?.length}}</span>
+            <div>
+                <button class="btn btn-green" v-on:click="sendPinMessage()">ویرایش متن</button>
+            </div>
+            <hr />
+            <button class="btn btn-red" v-on:click="listInit()">مدیریت کاربران</button>
+            <hr />
+        </div>
+
+        <p><span class="t">نام گروه:</span><span class="i">{{joinItem.name}}</span></p>
+        <p><span class="t">شناسه گروه:</span><span class="i">{{joinItem.uniqueName}}</span></p>
+        <p><span class="t">ایجادکننده:</span><span class="i">{{joinItem.createName}}</span></p>
+        <p><span class="t">تعداداعضا:</span><span class="i">{{joinItem.count}}</span></p>
+        <p><span class="t">تاریخ ایجاد:</span><span class="i">{{joinItem.pDate}}</span></p>
+        <p><span class="t">توضیح:</span><span class="i" style="white-space: pre-line;">{{joinItem.description}}</span></p>
+
+        <p v-show="joinItem.isCreate">
+            <button class="btn btn-green" v-on:click="edite = true; itemEdite = Object.assign({}, joinItem)">ویرایش گروه</button>
+        </p>
+    </div>
+
+    <div v-show="edite" class="info">
+
+        <div>نام باید بین 5 تا 25 حرف باشد</div>
+        <div class="form__group">
+            <input v-model="itemEdite.name" @input="limitText($event,25)" class="form__field" placeholder="نام">
+        </div>
+        <span class="iptLength">{{itemEdite.name?.length}}</span>
+        <hr />
+
+        <div>درصورت خالی بودن رمزعبور ورود به گروه نیازی به رمز نخواهد داشت</div>
+        <div>رمز عبور باید بین 5 تا 25 حرف باشد. رمز عبور باید از اعداد و حروف لاتین باشد</div>
+        <div class="form__group">
+            <input v-model="itemEdite.password" @input="limitText($event,25)" type="password" class="form__field" placeholder="رمز عبور">
+        </div>
+        <span class="iptLength">{{itemEdite.password?.length}}</span>
+        <hr />
+
+        <div>توضیح باید بین 14 تا 110 حرف باشد</div>
+        <div class="form__group">
+            <textarea v-model="itemEdite.description" @input="limitText($event,110)" rows="5" cols="33" class="form__field" placeholder="توضیح"></textarea>
+        </div>
+        <span class="iptLength">{{itemEdite.description?.length}}</span>
+
+        <div class="d-flex">
+            <button class="btn btn-green" v-on:click="editeGroup()">ویرایش</button>
+            <button v-on:click="info = false; edite = false" class="btn btn-line ">انصراف</button>
+        </div>
+
+
+    </div>
+
+    <div class="infoBottom d-flex">
+
+        <div class="infoBottomItem" v-on:click="chatState = 'main'; edite = false">
+            <i class="iconsax" icon-name="chevron-right"></i>
+            <div class="text">بازگشت</div>
+        </div>
+
+        <div class="infoBottomItem" v-on:click="exitFromGroup()">
+            <i class="iconsax" icon-name="logout-1"></i>
+            <div class="text">خروج ازگروه</div>
+        </div>
+
+        <div class="infoBottomItem" v-show="joinItem.isCreate" v-on:click="modalForRemove = true">
+            <i class="iconsax" icon-name="trash"></i>
+            <div class="text">حذف گروه</div>
+        </div>
+
+        <div class="infoBottomItem" v-show="!joinItem.isCreate" v-on:click="modalForRemove = true">
+            <i class="iconsax" icon-name="user-1-delete"></i>
+            <div class="text">ترک گروه</div>
+        </div>
+
+    </div>
+
+</div>
