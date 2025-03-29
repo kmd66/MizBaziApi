@@ -7,36 +7,25 @@ GO
 CREATE PROCEDURE flw.ListFriend
 	@UserId BIGINT,
 	@UserName NVARCHAR(max),
-	@FirstName NVARCHAR(max),
-	@LastName NVARCHAR(max)
+	@Name NVARCHAR(max)
 --WITH ENCRYPTION
 AS
 BEGIN
     SET NOCOUNT ON;
 	
-	;WITH friend AS(
-		SELECT *
-		FROM flw.Friends
-		WHERE User1Id = @UserId OR User2Id = @UserId
-	)
-	SELECT 
-		usr.Id,
-		usr.UnicId,
-		usr.FirstName,
-		usr.LastName,
+	SELECT TOP 30
+		usr.Id UserId,
+		frd.[Date],
 		usr.UserName,
-		'' Phone,
-		usr.[Type],
-		usr.[Date],
-		usr.[BirthDate],
-		usx.img,
-		Bio = ''
-	FROM friend frd
+		usr.FirstName +  ' ' + usr.LastName [Name],
+		usx.img
+	FROM flw.Friends frd
 	INNER JOIN org.Users usr ON usr.Id = frd.User1Id OR usr.Id = frd.User2Id
 	INNER JOIN org.UsersExtra usx ON usx.Id =  usr.Id
-	WHERE usr.Id != @UserId
-	AND(@FirstName IS NULL OR FirstName = @FirstName)
-	AND(@LastName IS NULL OR LastName = @LastName)
-	AND(@UserName IS NULL OR UserName = @UserName)
+	WHERE (User1Id = @UserId OR User2Id = @UserId)
+	AND usr.Id != @UserId
+	AND (@UserName IS NULL OR UserName LIKE @UserName + '%')
+	AND (@Name IS NULL OR usr.FirstName LIKE @Name + '%' OR usr.LastName LIKE @Name + '%')
+	ORDER BY frd.[Date] DESC
 
 END 

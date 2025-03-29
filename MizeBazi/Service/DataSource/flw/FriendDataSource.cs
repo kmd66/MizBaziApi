@@ -276,19 +276,17 @@ public class FriendDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<List<UserView>>> List(long id, FriendSearch model)
+    public async Task<Result<List<ListMember>>> List(long id, FriendSearch model)
     {
-        var contexts = new OrgContexts();
         try
         {
             var query = $"flw.ListFriend @UserId = {id.Query()}" +
                 $", @UserName = {model.UserName.Query()}" +
-                $", @FirstName = {model.FirstName.Query()}" +
-                $", @LastName = {model.LastName.Query()}";
+                $", @Name = {model.Name.Query()}";
 
-            var ett = await contexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+            var ett = await _context.ListMember.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-            return Result<List<UserView>>.Successful(data: ett);
+            return Result<List<ListMember>>.Successful(data: ett);
         }
         catch (Exception ex)
         {
@@ -296,23 +294,21 @@ public class FriendDataSource : BaseDataSource
         }
         finally
         {
-            contexts.ChangeTracker.Clear();
+            _context.ChangeTracker.Clear();
         }
     }
 
-    public async Task<Result<List<UserView>>> ListRequest(long id, FriendSearch model)
+    public async Task<Result<List<ListMember>>> ListRequest(long id, FriendSearch model)
     {
-        var contexts = new OrgContexts();
         try
         {
             var query = $"flw.ListRequest @UserId = {id.Query()}" +
                 $", @UserName = {model.UserName.Query()}" +
-                $", @FirstName = {model.FirstName.Query()}" +
-                $", @LastName = {model.LastName.Query()}";
+                $", @Name = {model.Name.Query()}";
 
-            var ett = await contexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+            var ett = await _context.ListMember.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-            return Result<List<UserView>>.Successful(data: ett);
+            return Result<List<ListMember>>.Successful(data: ett);
         }
         catch (Exception ex)
         {
@@ -320,23 +316,21 @@ public class FriendDataSource : BaseDataSource
         }
         finally
         {
-            contexts.ChangeTracker.Clear();
+            _context.ChangeTracker.Clear();
         }
     }
 
-    public async Task<Result<List<UserView>>> ListBlock(long id, FriendSearch model)
+    public async Task<Result<List<ListMember>>> ListBlock(long id, FriendSearch model)
     {
-        var contexts = new OrgContexts();
         try
         {
             var query = $"flw.ListBlock @UserId = {id.Query()}" +
                 $", @UserName = {model.UserName.Query()}" +
-                $", @FirstName = {model.FirstName.Query()}" +
-                $", @LastName = {model.LastName.Query()}";
+                $", @Name = {model.Name.Query()}";
 
-            var ett = await contexts.UsersView.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+            var ett = await _context.ListMember.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-            return Result<List<UserView>>.Successful(data: ett);
+            return Result<List<ListMember>>.Successful(data: ett);
         }
         catch (Exception ex)
         {
@@ -344,7 +338,7 @@ public class FriendDataSource : BaseDataSource
         }
         finally
         {
-            contexts.ChangeTracker.Clear();
+            _context.ChangeTracker.Clear();
         }
     }
 }

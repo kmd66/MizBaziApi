@@ -9,6 +9,7 @@
     --BtnShadowColor: rgb(207 216 236 / 30%);
     --ErrorColor: rgb(207 102 121);
     --SuccessColor: rgb(76 175 80);
+    --AlertColor: #939000;
     --IconsaxSize: 1.5rem;
 }
 
@@ -271,6 +272,9 @@ a {
 }
 .btn-red {
     background-color: var(--ErrorColor);
+}
+.btn-yellow {
+    background-color: var(--AlertColor);
 }
 .btn-green {
     background: rgb(14 109 18);

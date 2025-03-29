@@ -1,7 +1,7 @@
 ﻿namespace MizeBazi.Models;
 
 public record RequestEdit(RequestEditType Type, long UserId);
-public record FriendSearch(string UserName, string FirstName, string LastName);
+public record FriendSearch(string UserName, string Name);
 
 public class Friend
 {

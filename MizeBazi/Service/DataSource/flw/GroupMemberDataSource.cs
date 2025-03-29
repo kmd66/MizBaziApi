@@ -116,7 +116,7 @@ public class GroupMemberDataSource : BaseDataSource
         }
     }
 
-    public async Task<Result<List<ListGroupMember>>> List(long groupId, bool blocked, string userName, string name)
+    public async Task<Result<List<ListMember>>> List(long groupId, bool blocked, string userName, string name)
     {
         try
         {
@@ -125,9 +125,9 @@ public class GroupMemberDataSource : BaseDataSource
                 $" @UserName = {userName.Query()}," +
                 $" @Name = {name.Query()}";
 
-            var ett = await _context.ListGroupMember.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+            var ett = await _context.ListMember.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-            return Result<List<ListGroupMember>>.Successful(data: ett);
+            return Result<List<ListMember>>.Successful(data: ett);
         }
         catch (Exception ex)
         {

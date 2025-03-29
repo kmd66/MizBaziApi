@@ -33,15 +33,15 @@ namespace MizeBazi.Controllers
             => _service.RemoveBlock(userId);
 
         [HttpPost, Route("List")]
-        public Task<Models.Result<List<Models.UserView>>> List([FromBody] Models.FriendSearch model)
+        public Task<Models.Result<List<Models.ListMember>>> List([FromBody] Models.FriendSearch model)
             => _service.List(model);
 
         [HttpPost, Route("ListRequest")]
-        public Task<Models.Result<List<Models.UserView>>> ListRequest([FromBody] Models.FriendSearch model)
+        public Task<Models.Result<List<Models.ListMember>>> ListRequest([FromBody] Models.FriendSearch model)
             => _service.ListRequest(model);
 
         [HttpPost, Route("ListBlock")]
-        public Task<Models.Result<List<Models.UserView>>> ListBlock([FromBody] Models.FriendSearch model)
+        public Task<Models.Result<List<Models.ListMember>>> ListBlock([FromBody] Models.FriendSearch model)
             => _service.ListBlock(model);
 
     }

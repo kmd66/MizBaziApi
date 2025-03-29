@@ -57,12 +57,16 @@ public class FriendService : IService
             return Result.Failure(message: "user null");
 
         if (model.Type == RequestEditType.مسدود_کردن)
-            return await friendDataSource.AddBlock(model.UserId, _requestInfo.model.UserId);
+            return await friendDataSource.AddBlock(_requestInfo.model.UserId, model.UserId);
 
 
         if (model.Type == RequestEditType.قبول_کردن)
+        {
+            var isFriend = await friendDataSource.IsFriend(model.UserId, _requestInfo.model.UserId);
+            if (isFriend.data)
+                return await friendDataSource.RemoveRequest(model.UserId, _requestInfo.model.UserId);
             return await friendDataSource.AddFriend(model.UserId, _requestInfo.model.UserId);
-
+        }
         return await friendDataSource.RemoveRequest(model.UserId, _requestInfo.model.UserId);
     }
 
@@ -75,13 +79,13 @@ public class FriendService : IService
     public Task<Result> RemoveBlock(long userId)
         => new FriendDataSource().RemoveBlock(_requestInfo.model.UserId, userId);
 
-    public Task<Result<List<UserView>>> List(FriendSearch model)
+    public Task<Result<List<ListMember>>> List(FriendSearch model)
         => new FriendDataSource().List(_requestInfo.model.UserId, model);
 
-    public Task<Result<List<UserView>>> ListRequest(FriendSearch model)
+    public Task<Result<List<ListMember>>> ListRequest(FriendSearch model)
         => new FriendDataSource().ListRequest(_requestInfo.model.UserId, model);
 
-    public Task<Result<List<UserView>>> ListBlock(FriendSearch model)
+    public Task<Result<List<ListMember>>> ListBlock(FriendSearch model)
         => new FriendDataSource().ListBlock(_requestInfo.model.UserId, model);
 }
 

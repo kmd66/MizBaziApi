@@ -55,4 +55,6 @@ public enum NotificationType : byte
     Unknown = 0,
     پیام = 1,
     درخواست_دوستی = 2,
+    قبول_درخواست = 3,
+    رد_درخواست = 4,
 }

@@ -157,10 +157,10 @@ public class FlwContexts : DbContext
                    eb.ToView("MessageVeiw");
                });
         modelBuilder
-               .Entity<ListGroupMember>(eb =>
+               .Entity<ListMember>(eb =>
                {
                    eb.HasNoKey();
-                   eb.ToView("ListGroupMember");
+                   eb.ToView("ListMember");
                });
     }
 
@@ -175,6 +175,6 @@ public class FlwContexts : DbContext
     public DbSet<GroupView> GroupViews { get; set; }
     public DbSet<NotificationVeiw> NotificationVeiws { get; set; }
     public DbSet<MessageVeiw> MessageVeiws { get; set; }
-    public DbSet<ListGroupMember> ListGroupMember { get; set; }
+    public DbSet<ListMember> ListMember { get; set; }
 
 }

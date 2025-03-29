@@ -34,11 +34,14 @@
 
 
     <div class="mainCenter">
-        <request-component ref="childrequest" :app-model="appModel"></request-component>
-        <message-component ref="childmessage" :app-model="appModel"></message-component>
-        <chat-component ref="childchat" :app-model="appModel"></chat-component>
-        <friend-component ref="childfriend" :app-model="appModel"></friend-component>
-        <block-component ref="childblock" :app-model="appModel"></block-component>
+        <div v-show="appModel.loding" class="lds-hourglass"></div>
+        <div v-show="!appModel.loding">
+            <request-component ref="childrequest" :app-model="appModel"></request-component>
+            <message-component ref="childmessage" :app-model="appModel"></message-component>
+            <chat-component ref="childchat" :app-model="appModel"></chat-component>
+            <friend-component ref="childfriend" :app-model="appModel"></friend-component>
+            <block-component ref="childblock" :app-model="appModel"></block-component>
+        </div>
     </div>
 
     <div class="mainBottom">

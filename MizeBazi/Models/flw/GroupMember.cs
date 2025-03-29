@@ -1,6 +1,6 @@
 ﻿namespace MizeBazi.Models;
 
-public record ListGroupMember(long UserId, DateTime Date, string UserName, string Name, string img);
+public record ListMember(long UserId, DateTime Date, string UserName, string Name, string img);
 public class GroupMember
 {
     public Guid Id { get; set; }

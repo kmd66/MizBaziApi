@@ -1,1 +1,65 @@
-﻿friend
+﻿<div class="d-flex">
+    <div class="form__group" style="margin-left: 5px;">
+        <input v-model="searchModel.UserName" @input="limitText($event,25)" class="form__field" placeholder="نام کاربری">
+    </div>
+    <div class="form__group" style="margin-left: 5px;">
+        <input v-model="searchModel.Name" @input="limitText($event,25)" class="form__field" placeholder="نام">
+    </div>
+</div>
+
+<div style="margin-top: 14px;"><button v-on:click="search()" class="btn btn-line close-modal">جستجو</button></div>
+
+<div v-for="item in list">
+
+    <div class="listMainMember d-flex">
+        <div class="userImg" style="margin: 0 5px;">
+            <img :src="item.img + '90.jpg'">
+        </div>
+        <div>
+            <div class="userInfo">{{item.name}}</div>
+            <div class="userInfo">{{item.userName}}</div>
+        </div>
+
+    </div>
+
+    <div class="d-flex" style="margin: 0 -14px">
+        <div class="userActionBox" v-on:click="modal.item = item; modal.type = 2" style="background: var(--AlertColor)"> حذف </div>
+        <div class="userActionBox" v-on:click="modal.item = item; modal.type = 3" style="background: var(--ErrorColor)"> مسدود </div>
+    </div>
+</div>
+<p style="margin-top:25px" v-show="list.length == 0">مطلبی برای نمایش وجود ندارد</p>
+
+<div class="modal" v-bind:style="{ display: modal.type == 0 ? 'none' : 'block'}">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="close-modal" @click="resetModal(modal)" data-modal="menuGame">&#10006;</div>
+            <div class="title">
+                {{
+					modal.type === 3 ? `مسدود کردن کاربر ${modal.item.userName}` : `حذف کاربر ${modal.item.userName}`
+                }}
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>
+                {{
+					modal.type === 3 ? `آیا میخواهید کاربر ${modal.item.name} را مسدود ` :
+                    `آیا میخواهید کاربر ${modal.item.name} را از لیست دوستان خود حذف `
+                }}کنید؟
+            </p>
+            <div style="margin:20px 0 0">
+                <div class="d-flex">
+                    <button :class="['btn',
+                            modal.type === 3 ? 'btn-red' :
+                            'btn-yellow'
+						]" v-on:click="okModal()">
+                        تایید
+                    </button>
+                    <button @click="resetModal(modal)" class="btn btn-line close-modal">انصراف</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

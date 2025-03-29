@@ -7,35 +7,25 @@ GO
 CREATE PROCEDURE flw.ListRequest
 	@UserId BIGINT,
 	@UserName NVARCHAR(max),
-	@FirstName NVARCHAR(max),
-	@LastName NVARCHAR(max)
+	@Name NVARCHAR(max)
 --WITH ENCRYPTION
 AS
 BEGIN
     SET NOCOUNT ON;
 	
-	;WITH friend AS(
-		SELECT SenderID
-		FROM flw.FriendRequests
-		WHERE ReceiverID = @UserId 
-	)
-	SELECT 
-		usr.Id,
-		usr.UnicId,
-		usr.FirstName,
-		usr.LastName,
+	SELECT TOP 30 
+		usr.Id UserId,
+		frd.[Date],
 		usr.UserName,
-		'' Phone,
-		usr.[Type],
-		usr.[Date],
-		usr.[BirthDate],
-		usx.img,
-		Bio = ''
-	FROM friend frd
-	INNER JOIN org.Users usr ON usr.Id = SenderID
-	INNER JOIN org.UsersExtra usx ON usr.Id = usx.Id 
-	WHERE (@FirstName IS NULL OR FirstName = @FirstName)
-	AND(@LastName IS NULL OR LastName = @LastName)
-	AND(@UserName IS NULL OR UserName = @UserName)
+		usr.FirstName +  ' ' + usr.LastName [Name],
+		usx.img
+	FROM flw.FriendRequests frd
+	INNER JOIN org.Users usr ON usr.Id = frd.SenderID
+	INNER JOIN org.UsersExtra usx ON usx.Id =  usr.Id
+	WHERE ReceiverID = @UserId
+	AND (@UserName IS NULL OR UserName LIKE @UserName + '%')
+	AND (@Name IS NULL OR usr.FirstName LIKE @Name + '%' OR usr.LastName LIKE @Name + '%')
+	ORDER BY frd.[Date] DESC
 
 END 
+
