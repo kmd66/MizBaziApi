@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Views\Pages\Friend\block.html" />
+	  <None Remove="Views\Pages\Friend\chat.html" />
+	  <None Remove="Views\Pages\Friend\friend.html" />
+	  <None Remove="Views\Pages\Friend\message.html" />
+	  <None Remove="Views\Pages\Friend\request.html" />
 	  <None Remove="Views\Pages\Group\ChatGroup.html" />
 	  <None Remove="Views\Pages\Group\chatGroupEdite.html" />
 	  <None Remove="Views\Pages\Group\chatGroupUser.html" />
@@ -18,6 +23,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Views\Pages\Friend\message.html" />
+	  <Content Include="Views\Pages\Friend\block.html" />
+	  <Content Include="Views\Pages\Friend\request.html" />
+	  <Content Include="Views\Pages\Friend\friend.html" />
+	  <Content Include="Views\Pages\Friend\chat.html" />
 	  <Content Include="Views\Pages\Group\chatGroupUser.html" />
 	  <Content Include="Views\Pages\Group\chatGroupEdite.html" />
 	  <Content Include="Views\Pages\Group\chatGroup.html" />

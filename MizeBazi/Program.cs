@@ -65,7 +65,8 @@ app.MapHub<MizeBazi.HubControllers.RangRazHub>("/rangrazhub");
 app.MapHub<MizeBazi.HubControllers.AfsonVajehHub>("/afsonvajehhub");
 app.MapHub<MizeBazi.HubControllers.MafiaHub>("/mafiahub");
 
-app.MapHub<MizeBazi.HubControllers.GroupHub>("/groupgub");
+app.MapHub<MizeBazi.HubControllers.GroupHub>("/grouphub");
+app.MapHub<MizeBazi.HubControllers.FriendHub>("/friendhub");
 #endregion
 
 app.ExceptionHandling();

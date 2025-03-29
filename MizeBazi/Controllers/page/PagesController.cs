@@ -38,6 +38,7 @@ namespace MizeBazi.Controllers
         }
 
         public ActionResult Group()=> View($"~/Views/Pages/Group/Index.cshtml");
+        public ActionResult Friend()=> View($"~/Views/Pages/Friend/Index.cshtml");
 
 
     }

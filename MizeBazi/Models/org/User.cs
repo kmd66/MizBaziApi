@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MizeBazi.Models;
 
+public record UserHub(Guid Key, string ConnectionId, UserView User);
 public record UserEdit(string FirstName, string LastName, string UserName);
 
 public record UserDto(long Id, Guid UnicId, string FirstName, string LastName, string Phone, string UserName, byte Type, DateTime Date);

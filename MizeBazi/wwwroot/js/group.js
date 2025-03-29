@@ -13,7 +13,7 @@ var urlEdit = '/api/v1/Group/Edit';
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("/groupgub")
+        .withUrl("/grouphub")
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
