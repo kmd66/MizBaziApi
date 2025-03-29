@@ -91,6 +91,7 @@ app.component('request-component', {
             this.appModel.loding = true
             appHttp(urlListRequest, this.searchModel).then((data) => {
                 data.map((item) => {
+                    item.pDate = item.date.toJalaaliString();
                 });
                 this.list = data
             }).finally(() => this.appModel.loding = false);
@@ -184,6 +185,7 @@ app.component('friend-component', {
             this.appModel.loding = true
             appHttp(urlList, this.searchModel).then((data) => {
                 data.map((item) => {
+                    item.pDate = item.date.toJalaaliString();
                 });
                 this.list = data
             }).finally(() => this.appModel.loding = false);
@@ -238,6 +240,7 @@ app.component('block-component', {
             this.appModel.loding = true
             appHttp(urlListBlock, this.searchModel).then((data) => {
                 data.map((item) => {
+                    item.pDate = item.date.toJalaaliString();
                 });
                 this.list = data
             }).finally(() => this.appModel.loding = false);
