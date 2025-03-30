@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -63,7 +64,7 @@ public class UserView : User
         Type = 0;
         Id = 0;
     }
-    public static IEnumerable<object> SafeDictionary(Dictionary<string, UserView> initUser)
+    public static IEnumerable<object> SafeDictionary(ConcurrentDictionary<string, UserView> initUser)
         => initUser.Select(x => new
         {
             connectionId = x.Key,

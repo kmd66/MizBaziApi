@@ -33,7 +33,7 @@ function initSoket() {
     connection.on("JoinReceive", (texts, pinText) => {
         var objTexts = JSON.parse(texts);
         objTexts.map((item) => {
-            setPdate(item)
+            item.pDate = item.Date.toJalaaliString() + ' ' + item.Date.getTime();
         });
         vm.mainModel.loding = false;
         vm.$refs.childchat.pinText = pinText;
@@ -54,7 +54,7 @@ function initSoket() {
 
     connection.on("MessageReceive", (t) => {
         var item = JSON.parse(t);
-        setPdate(item)
+        item.pDate = item.Date.toJalaaliString() + ' ' + item.Date.getTime();
         vm.$refs.childchat.texts.push(item);
         setTimeout(() => {
             scrollEl('#chatList');
@@ -112,6 +112,14 @@ function initSoket() {
         }
     });
 
+    connection.on("targetRemoveReceive", (k, n) => {
+        pushErrorMessage({ comment: `شما از گروه ${n} اخراج شدید.` });
+        vm.mainModel.list
+        vm.appModel.state = 'myGroup';
+        var removeIndex = vm.mainModel.list.map(x => x.Id).indexOf(k);
+        vm.mainModel.list.splice(removeIndex, 1);
+    });
+
     soketStart(connection, callbackSoketStart);
     function callbackSoketStart() {
         connection.invoke("Init", publicToken, publicDeviceId);
@@ -125,16 +133,6 @@ function initSoket() {
         vm.$refs.childchat.listUser = [];
         vm.$refs.childchat.listBlockUser = [];
     }
-}
-
-async function setPdate(item) {
-    const date = new Date(item.Date);
-    const timeString = date.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false // فرمت 24 ساعته
-    });
-    item.pDate = item.Date.toJalaaliString() + ' ' + timeString;
 }
 async function searchInit(obj) {
     if (vm.$refs.childsearch.loding)

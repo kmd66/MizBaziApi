@@ -1,6 +1,8 @@
 ﻿let vm;
 var connection;
 var key;
+var userId;
+var roomId;
 
 var urlListRequest = '/api/v1/Friend/ListRequest';
 var urlList = '/api/v1/Friend/List';
@@ -10,14 +12,25 @@ var urlRemoveBlock = '/api/v1/Friend/RemoveBlock?userId=';
 var urlRemoveFriend = '/api/v1/Friend/RemoveFriend?userId=';
 var urlBlock = '/api/v1/Friend/Block?userId=';
 
+var urlMessageList = '/api/v1/Message/List';
+var urlMessageListForRoom = '/api/v1/Message/ListForRoom';
+var urlMessageAdd= '/api/v1/Message/Add';
+var urlMessageRemove = '/api/v1/Message/Remove';
+
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
         .withUrl("/friendhub")
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
-    connection.on("InitReceive", (k) => {
+    connection.on("InitReceive", (k,i) => {
         key = k;
+        userId = i;
+        let params = new URLSearchParams(document.location.search);
+        let state = params.get("state");
+        if (!state)
+            state = 'message';
+        vm.changeState(state);
     });
 
     soketStart(connection, callbackSoketStart);
@@ -34,7 +47,8 @@ const app = Vue.createApp({
             appModel: {
                 state: '_state',
                 title: '',
-                loding:false 
+                startInit: false,
+                loding: false 
             },
         }
     },
@@ -58,6 +72,65 @@ const app = Vue.createApp({
         }
     }
 })
+
+app.component('chat-component', {
+    template: '#chat-template',
+    data() {
+        return {
+            startInit: false
+        }
+    },
+    props: {
+        appModel: {
+            type: Object,
+            required: true,
+            default: () => ({})
+        },
+    },
+    methods: {
+        init() {
+            this.appModel.title = 'پیام';
+        }
+    }
+});
+
+app.component('message-component', {
+    template: '#message-template',
+    data() {
+        return {
+            list: []
+        }
+    },
+    props: {
+        appModel: {
+            type: Object,
+            required: true,
+            default: () => ({})
+        },
+    },
+    methods: {
+        init() {
+            this.appModel.title = 'پیام';
+            if (!this.appModel.startInit) {
+                this.appModel.startInit = true;
+                this.listMessage();
+            }
+        },
+        listMessage() {
+            this.appModel.loding = true
+            appHttp(urlMessageList).then((data) => {
+                data.map((item) => {
+                    item.text2 = item.text;
+                    if (item.text2.length > 30)
+                        item.text2 = item.text2.substring(2, 30) + '...'
+                    item.pTime = item.lastDate.getTime();
+                    item.pDate = item.lastDate.toJalaaliString();
+                });
+                this.list = data
+            }).finally(() => this.appModel.loding = false);
+        }
+    }
+});
 
 app.component('request-component', {
     template: '#request-template',
@@ -107,48 +180,6 @@ app.component('request-component', {
                 var removeIndex = this.list.map(x => x.userId).indexOf(model.userId);
                 this.list.splice(removeIndex, 1);
             }).finally(() => this.appModel.loding = false);
-        }
-    }
-});
-
-app.component('message-component', {
-    template: '#message-template',
-    data() {
-        return {
-            startInit: false
-        }
-    },
-    props: {
-        appModel: {
-            type: Object,
-            required: true,
-            default: () => ({})
-        },
-    },
-    methods: {
-        init() {
-            this.appModel.title = 'پیام';
-        }
-    }
-});
-
-app.component('chat-component', {
-    template: '#chat-template',
-    data() {
-        return {
-            startInit: false
-        }
-    },
-    props: {
-        appModel: {
-            type: Object,
-            required: true,
-            default: () => ({})
-        },
-    },
-    methods: {
-        init() {
-            this.appModel.title = 'پیام';
         }
     }
 });

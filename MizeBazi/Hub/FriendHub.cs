@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MizeBazi.Models;
 using MizeBazi.Helper;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace MizeBazi.HubControllers;
 
 public class FriendHub : Hub
 {
-
-    public static List<UserHub> listUser = new List<UserHub>();
+    static ConcurrentDictionary<long, UserHub> listUser = new ConcurrentDictionary<long, UserHub>();
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
@@ -47,14 +43,20 @@ public class FriendHub : Hub
 
         var connectionId = Context.ConnectionId;
 
-        var remove = listUser.Where(x => x.User.Id == userResult.data.Id).ToList();
+        var remove = listUser.Where(x => x.Key == userResult.data.Id).ToList();
         if (remove.Count > 0)
-            remove.ForEach(r => listUser.Remove(r));
+            remove.ForEach(r => listUser.TryRemove(r.Key, out _));
 
         var key = Guid.NewGuid();
         var user = new UserHub(key, connectionId, userResult.data);
+        listUser.TryAdd(userResult.data.Id, user);
 
-        await Clients.Caller.SendAsync("InitReceive", key);
+        await Clients.Caller.SendAsync("InitReceive", key, userResult.data.Id);
+    }
+
+    async Task ProcessMessageAsync(Message message)
+    {
+        await Task.Delay(5000);
     }
 }
 

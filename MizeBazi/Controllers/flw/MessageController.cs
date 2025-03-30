@@ -17,28 +17,22 @@ namespace MizeBazi.Controllers
         }
 
 
-        [HttpPost, Route("Add")]
-        public async Task<Result> Add(MessageAdd model) {
-            var message = model.Validate();
-            message.SenderID = _requestInfo.model.UserId;
-            message.ReceiverID = model.ReceiverID;
-            var result = await _dtaSource.Add(message);
+        //[HttpPost, Route("Add")]
+        //public async Task<Result> Add(MessageAdd model) {
+        //    var message = model.Validate();
+        //    message.SenderID = _requestInfo.model.UserId;
+        //    message.ReceiverID = model.ReceiverID;
+        //    var result = await _dtaSource.Add(message);
             
-            if (result.success)
-            {
-                _ = Task.Run(async () =>
-                {
-                    await ProcessMessageAsync(message);
-                });
-            }
-            return result;
-        }
-
-        private async Task ProcessMessageAsync(Message message)
-        {
-            await Task.Delay(5000);
-        }
-
+        //    if (result.success)
+        //    {
+        //        _ = Task.Run(async () =>
+        //        {
+        //            await ProcessMessageAsync(message);
+        //        });
+        //    }
+        //    return result;
+        //}
 
         [HttpPost, Route("Remove")]
         public Task<Result> Remove(long id)

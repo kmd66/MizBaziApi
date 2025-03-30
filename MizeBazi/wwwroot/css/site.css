@@ -423,6 +423,7 @@ a {
     -webkit-box-pack: justify !important;
     -ms-flex-pack: justify !important;
     justify-content: space-between !important;
+    overflow: hidden;
 }
 .d-none {
     display:none !important;

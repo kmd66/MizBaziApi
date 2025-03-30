@@ -1,1 +1,21 @@
-﻿message
+﻿
+<div v-for="item in list">
+
+    <div class="listMainMember listMessage d-flex">
+        <div class="asdgfjasd1">
+            <div class="userImg">
+                <img :src="item.img + '90.jpg'">
+            </div>
+            <div class="asdgfjasd2">
+                <div class="userInfoName">{{item.name}}</div>
+                <div class="userInfoText">{{item.text2}}</div>
+            </div>
+        </div>
+        <div>
+            <div class="userInfo">{{item.pDate}}</div>
+            <div class="userInfo">{{item.pTime}}</div>
+        </div>
+    </div>
+
+</div>
+<p style="margin-top:25px" v-show="list.length == 0">پیامی برای نمایش وجود ندارد</p>

@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MizeBazi.Models;
-using MizeBazi.Helper;
+using System.Collections.Concurrent;
 
 namespace MizeBazi.HubControllers;
 
 public class NabardKhandeHub : MainHub
 {
-    static Dictionary<string, UserView> initUser = new Dictionary<string, UserView>();
+    static ConcurrentDictionary<string, UserView> initUser = new ConcurrentDictionary<string, UserView>();
     public NabardKhandeHub() : base(GameType.نبرد_خنده)
     {
     }
@@ -27,7 +27,7 @@ public class NabardKhandeHub : MainHub
         var keys = initUser.Keys.Take(_count).ToList();
         foreach (var key in keys)
         {
-            initUser.Remove(key);
+            initUser.TryRemove(key, out _);
         }
         await Clients.Clients(keys).SendAsync("InitGameReceive", _type.GameLink());
     }

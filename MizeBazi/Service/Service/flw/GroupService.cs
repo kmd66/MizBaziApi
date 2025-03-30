@@ -50,7 +50,7 @@ public class GroupService : IService
         var groupMessage = new GroupMessage(result.data.Id, result.data);
         groupMessage.SetPinText("گروه ایجاد شد");
 
-        HubControllers.GroupHub.listGroup.Add(groupMessage);
+        HubControllers.GroupHub.listGroup.TryAdd(result.data.Id, groupMessage);
 
         return Result.Successful();
     }

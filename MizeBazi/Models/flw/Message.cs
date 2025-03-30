@@ -2,7 +2,7 @@
 
 namespace MizeBazi.Models;
 
-public record MessageVeiw(long SenderID, string SenderName, string SenderUserName, string img, DateTime LastDate, string Text);
+public record MessageVeiw(long SenderID, long ReceiverID, string Name, string UserName, string img, DateTime LastDate, string Text);
 
 public class MessageAdd
 {

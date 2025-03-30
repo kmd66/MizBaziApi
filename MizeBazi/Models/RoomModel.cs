@@ -1,4 +1,6 @@
-﻿namespace MizeBazi.Models;
+﻿using System.Collections.Concurrent;
+
+namespace MizeBazi.Models;
 
 public class RoomModel
 {
@@ -14,7 +16,7 @@ public class RoomModel
         Count = type.HubCount();
         Key = Guid.NewGuid();
         Date = DateTime.Now.AddMinutes(30);
-        initUser = new Dictionary<string, UserView>();
+        initUser = new ConcurrentDictionary<string, UserView>();
     }
 
     public Guid Id { get; set; }
@@ -27,7 +29,7 @@ public class RoomModel
 
     public Guid Key { get; set; }
     public DateTime Date { get; private set; }
-    public Dictionary<string, UserView> initUser { get; set; }
+    public ConcurrentDictionary<string, UserView> initUser { get; set; }
 
     public object SafeModel(bool create = false)
         => new

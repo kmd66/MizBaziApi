@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <div class="mainBottom">
+    <div class="mainBottom" v-show="appModel.startInit" style="display: none;">
         <div class="item" style="border-left: 1px solid var(--TextColor2);"
              v-on:click="changeState('message')"
              v-bind:style="{ backgroundColor: appModel.state =='message' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">

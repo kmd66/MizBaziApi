@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MizeBazi.Models;
 using MizeBazi.Helper;
-using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace MizeBazi.HubControllers;
 
 public class RoomHub : Hub
 {
     static DateTime removeTime = DateTime.Now;
-    static List<RoomModel> list = new List<RoomModel>();
+    static ConcurrentDictionary<long, RoomModel> list = new ConcurrentDictionary<long, RoomModel>();
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
@@ -25,9 +25,9 @@ public class RoomHub : Hub
             //    initUser.Remove(key);
             //}
 
-            if (room.initUser.ContainsKey(connectionId))
+            if (room.Value.initUser.ContainsKey(connectionId))
             {
-                await updateUser(false, connectionId, room, false);
+                await updateUser(false, connectionId, room.Value, false);
             }
         }
         await base.OnDisconnectedAsync(exception);
@@ -39,15 +39,15 @@ public class RoomHub : Hub
 
         await removeInSearch();
 
-        var model = list.Where(x => string.IsNullOrEmpty(name) || x.Name.Contains(name)).TakeLast(40)
+        var model = list.Where(x => string.IsNullOrEmpty(name) || x.Value.Name.Contains(name)).TakeLast(40)
             .Select(x => new {
-                id = x.Id,
-                name = x.Name.Replace("-", " "),
-                createName = x.CreateName,
-                type = x.Type,
-                typeString = x.Type.EnumToString(),
-                date = x.Date,
-                count= x.initUser.Count
+                id = x.Value.Id,
+                name = x.Value.Name.Replace("-", " "),
+                createName = x.Value.CreateName,
+                type = x.Value.Type,
+                typeString = x.Value.Type.EnumToString(),
+                date = x.Value.Date,
+                count= x.Value.initUser.Count
             }).ToList();
         await Clients.Caller.SendAsync("SearchReceive", model.ToJson());
     }
@@ -58,21 +58,24 @@ public class RoomHub : Hub
             return;
         removeTime = DateTime.Now.AddMinutes(2);
 
-        var model = list.Where(x => x.Date < DateTime.Now).ToList();
+        var model = list.Where(x => x.Value.Date < DateTime.Now).ToList();
         foreach (var item in model)
         {
-            var keys = item.initUser.Keys.ToList();
+            var keys = item.Value.initUser.Keys.ToList();
             if (keys.Count > 0)
                 await Clients.Clients(keys).SendAsync("DestroyReceive");
         }
         if (model.Count > 0)
-            list = list.Where(x => x.Date > DateTime.Now).ToList();
+        {
+            var filter = list.Where(x => x.Value.Date >= DateTime.Now);
+            list = new ConcurrentDictionary<long, RoomModel>(filter);
+        }
     }
 
     public async Task Create(string auth, string dId, string name, string password, GameType type)
         {
 
-        name = name.Replace(" ", "-");
+       name = name.Replace(" ", "-");
 
         if (type == GameType.Unknown)
         {
@@ -98,7 +101,7 @@ public class RoomHub : Hub
             return;
         }
 
-        if (list.Any(x => x.Name == name && x.Type == type))
+        if (list.Any(x => x.Value.Name == name && x.Value.Type == type))
         {
             await Clients.Caller.SendAsync("CreateReceive", false, "یک اتاق با این نام وجود دارد");
             return;
@@ -117,21 +120,20 @@ public class RoomHub : Hub
             Context.Abort();
             throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
+        list.TryGetValue(userResult.data.Id, out RoomModel roomCheck);
 
-        // اصلاح
-        //if (list.Any(x => x.CreateUserId == jwtModel.UserId))
-        //{
-        //    var f = list.First(x => x.CreateUserId == jwtModel.UserId);
-        //    await Clients.Caller.SendAsync("CreateReceive", false,
-        //        $"شما قبلا یک اتاق با نام {f.Name} برای {f.Type.EnumToString()} ایجاد کرده اید"
-        //    );
-        //    return;
-        //}
+        if (roomCheck != null)
+        {
+            await Clients.Caller.SendAsync("CreateReceive", false,
+                $"شما قبلا یک اتاق با نام {roomCheck.Name} برای {roomCheck.Type.EnumToString()} ایجاد کرده اید"
+            );
+            return;
+        }
 
         var createName = $"{userResult.data.FirstName} {userResult.data.LastName}";
         var id = Guid.NewGuid();
         RoomModel model = new RoomModel(id, jwtModel.UserId, createName, name, password, type);
-        list.Add(model);
+        list.TryAdd(userResult.data.Id, model);
         await Clients.Caller.SendAsync("CreateReceive", true, model.SafeModel(true).ToJson());
 
         //throw new NotImplementedException();
@@ -140,13 +142,13 @@ public class RoomHub : Hub
     public async Task Exit(Guid id, Guid roomKey)
     {
         var connectionId = Context.ConnectionId;
-        var room = list.FirstOrDefault(x => x.Id == id);
-        if (room != null && room.Key == roomKey)
+        var room = list.FirstOrDefault(x => x.Value.Id == id);
+        if (room.Key != 0 && room.Value.Key == roomKey)
         {
-            if (room.initUser.ContainsKey(connectionId))
+            if (room.Value.initUser.ContainsKey(connectionId))
             {
                 await Clients.Caller.SendAsync("ExitReceive");
-                await updateUser(false, connectionId, room, false);
+                await updateUser(false, connectionId, room.Value, false);
             }
         }
     }
@@ -159,16 +161,18 @@ public class RoomHub : Hub
             Context.Abort();
             throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
-        if (list.Any(x => x.CreateUserId == model.UserId))
+        if (list.Any(x => x.Value.CreateUserId == model.UserId))
         {
-            var items = list.Where(x => x.CreateUserId == model.UserId).ToList();
+            var items = list.Where(x => x.Value.CreateUserId == model.UserId).ToList();
             foreach(var item in items)
             {
-                var keys = item.initUser.Keys.ToList();
+                var keys = item.Value.initUser.Keys.ToList();
                 if (keys.Count > 0)
                     await Clients.Clients(keys).SendAsync("DestroyReceive");
             }
-            list = list.Where(x => x.CreateUserId != model.UserId).ToList();
+
+            var filter = list.Where(x => x.Value.CreateUserId != model.UserId);
+            list = new ConcurrentDictionary<long, RoomModel>(filter);
         }
     }
 
@@ -176,10 +180,10 @@ public class RoomHub : Hub
     {
         if (mes.Length > 0 && mes.Length < 200)
         {
-            var room = list.FirstOrDefault(x => x.Id == id);
-            if (room != null && room.Key == roomKey)
+            var room = list.FirstOrDefault(x => x.Value.Id == id);
+            if (room.Key !=0 && room.Value.Key == roomKey)
             {
-                var keys = room.initUser.Keys.ToList();
+                var keys = room.Value.initUser.Keys.ToList();
                 await Clients.Clients(keys).SendAsync("MessageReceive", Context.ConnectionId, mes);
             }
         }
@@ -187,14 +191,14 @@ public class RoomHub : Hub
 
     public async Task Join(string auth, string dId, Guid roomId, string password)
     {
-        var room = list.FirstOrDefault(x => x.Id == roomId);
-        if (room == null)
+        var room = list.FirstOrDefault(x => x.Value.Id == roomId);
+        if (room.Key == 0)
         {
             await Clients.Caller.SendAsync("JoinReceive", false, "اتاقی وجود ندارد . ممکن است اعضای اتاق وارد بازی شده باشند", null, null);
             return;
         }
 
-        if (room.Password != password)
+        if (room.Value.Password != password)
         {
             await Clients.Caller.SendAsync("JoinReceive", false, "رمز عبور اشتباه است", null, null);
             return;
@@ -232,40 +236,41 @@ public class RoomHub : Hub
 
     private async Task init(Guid id, string connectionId, UserView user)
     {
-        var room = list.FirstOrDefault(x => x.Id == id);
+        var room = list.FirstOrDefault(x => x.Value.Id == id);
 
-        if (room == null || room.initUser.Count >= room.Count)
+        if (room.Key == 0 || room.Value.initUser.Count >= room.Value.Count)
         {
             await Clients.Caller.SendAsync("JoinReceive", false, "اتاقی وجود ندارد . ممکن است اعضای اتاق وارد بازی شده باشند", null, null);
             return;
         }
 
-        foreach (var t in room.initUser)
+        foreach (var t in room.Value.initUser)
         {
             // اصلاح
             //if (t.Value.Id == user.Id)
             //    return;
         }
 
-        room.initUser.Add(connectionId, user);
+        room.Value.initUser.TryAdd(connectionId, user);
 
-        if (room.initUser.Count == room.Count)
+        if (room.Value.initUser.Count == room.Value.Count)
         {
-            await start(room);
+            await start(room.Key);
         }
         else
         {
-            await updateUser(true, connectionId, room, room.CreateUserId == user.Id);
+            await updateUser(true, connectionId, room.Value, room.Value.CreateUserId == user.Id);
 
         }
 
     }
 
-    private async Task start(RoomModel model)
+    private async Task start(long modelId)
     {
+        list.TryGetValue(modelId, out RoomModel model);
         var users = model.initUser.Values.ToList();
         var keys = model.initUser.Keys.ToList();
-        list.Remove(model);
+        list.TryRemove(modelId, out _);
         await Clients.Clients(keys).SendAsync("InitGameReceive");
     }
 
@@ -281,7 +286,7 @@ public class RoomHub : Hub
             var user = room.initUser[connectionId];
             var keys = room.initUser.Keys.Where(x => x != connectionId).ToList();
             if(!join)
-                room.initUser.Remove(connectionId);
+                room.initUser.TryRemove(connectionId, out _);
             await Clients.Clients(keys).SendAsync("UpdateReceive", join, connectionId, user.SafeModelwithoutBio().ToJson());
         }
     }

@@ -194,7 +194,21 @@ String.prototype.toJalaaliString = function () {
         return '0/0/1';
     }
 };
+String.prototype.getTime = function () {
+    try {
 
+        if (!this || this == '')
+            return '1:1:1';
+        const date = new Date(this);
+        return date.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false // فرمت 24 ساعته
+        });
+    } catch {
+        return '0:0:1';
+    }
+};
 //---------extension-------
 async function appHttp(url = '', data = {}) {
     try {

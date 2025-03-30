@@ -19,13 +19,13 @@ public class MessageDataSource : BaseDataSource
     {
         try
         {
-            var ett = await _context.Friends.Where(x =>
-                (x.User1Id == model.SenderID && x.User2Id == model.ReceiverID)
-                || (x.User1Id == model.ReceiverID && x.User2Id == model.SenderID)
-            ).AsNoTracking().Take(1).FirstOrDefaultAsync();
+            //var ett = await _context.Friends.Where(x =>
+            //    (x.User1Id == model.SenderID && x.User2Id == model.ReceiverID)
+            //    || (x.User1Id == model.ReceiverID && x.User2Id == model.SenderID)
+            //).AsNoTracking().Take(1).FirstOrDefaultAsync();
            
-            if(ett == null)
-                return Result.Failure(message : "User null");
+            //if(ett == null)
+            //    return Result.Failure(message : "User null");
 
             _context.Add<Message>(model);
             await _context.SaveChangesAsync();

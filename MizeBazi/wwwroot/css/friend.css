@@ -82,3 +82,33 @@
     text-align: center;
     font-size: 0.8rem;
 }
+.listMessage .userInfo {
+    font-size: .6rem;
+}
+.listMessage.listMainMember {
+    margin: 15px -14px 0 -14px;
+    padding: 5px 12px;
+}
+.userInfoName, .userInfoText {
+    font-size: .8rem;
+}
+.userInfoText {
+    font-size: .8rem;
+    color: var(--TextColor2);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.asdgfjasd1 .userImg {
+    height: 55px;
+    width: 55px;
+    display: inline-block;
+}
+.asdgfjasd1 {
+    align-items: center;
+    display: flex;
+}
+.asdgfjasd2 {
+    display: inline-block;
+    margin-right: 7px;
+}

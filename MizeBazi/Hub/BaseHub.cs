@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MizeBazi.Helper;
 using MizeBazi.Models;
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 
 namespace MizeBazi.HubControllers;
 public abstract class MainHub : Hub
@@ -21,7 +20,7 @@ public abstract class MainHub : Hub
         _jwt = new JwtHelper();
     }
 
-    protected async Task _disconnected(Dictionary<string, UserView> initUser)
+    protected async Task _disconnected(ConcurrentDictionary<string, UserView> initUser)
     {
         var connectionId = Context.ConnectionId;
         if (initUser.ContainsKey(connectionId))
@@ -33,14 +32,14 @@ public abstract class MainHub : Hub
             //{
             //    initUser.Remove(key);
             //}
-            initUser.Remove(connectionId);
+            initUser.TryRemove(connectionId, out _);
             if (initUser.Count > 0)
                await Clients.All.SendAsync("InitReceive", UserView.SafeDictionary(initUser).ToJson());
         }
 
     }
 
-    protected async Task _init(string auth, string dId, Dictionary<string, UserView> initUser)
+    protected async Task _init(string auth, string dId, ConcurrentDictionary<string, UserView> initUser)
     {
         var connectionId = Context.ConnectionId;
         if (initUser.ContainsKey(connectionId))
@@ -79,7 +78,7 @@ public abstract class MainHub : Hub
             throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
 
-        initUser.Add(connectionId, userResult.data);
+        initUser.TryAdd(connectionId, userResult.data);
 
         if (initUser.Count == _count)
             await start();

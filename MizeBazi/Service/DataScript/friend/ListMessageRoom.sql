@@ -11,20 +11,17 @@ CREATE PROCEDURE flw.ListMessageRoom
 AS
 BEGIN
     SET NOCOUNT ON;
-	
-	SELECT TOP 30
+	SELECT TOP 50
 		m.SenderID,
-		u.FirstName + ' ' + u.LastName AS [SenderName], 
-		u.UserName AS [SenderUserName], 
-		ux.img,
+		m.ReceiverID,
 		m.[Date] LastDate ,
-		[Text]
-	FROM  flw.Messages m --On m.SenderID = lm.SenderID AND m.Date = lm.lastDate
-	INNER JOIN org.Users u On u.Id = m.SenderID  
-	INNER JOIN org.UsersExtra ux ON ux.Id = u.Id
+		[Text],
+		'' [Name],
+		'' [UserName], 
+		'' img
+	FROM  flw.Messages m
 	WHERE IsRemove = 0 
 	AND (SenderID = @User1Id OR SenderID = @User2Id)
 	AND (ReceiverID = @User1Id OR ReceiverID = @User2Id)
 	ORDER BY m.[Date] DESC
-
 END 
