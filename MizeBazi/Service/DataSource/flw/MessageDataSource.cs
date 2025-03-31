@@ -127,4 +127,24 @@ public class MessageDataSource : BaseDataSource
             _context.ChangeTracker.Clear();
         }
     }
+
+    public async Task<Result> AddNotification(Notification model)
+    {
+        try
+        {
+            _context.Add<Notification>(model);
+
+            await _context.SaveChangesAsync();
+
+            return Result.Successful();
+        }
+        catch (Exception ex)
+        {
+            throw MizeBaziException.Error(message: ex.Message);
+        }
+        finally
+        {
+            _context.ChangeTracker.Clear();
+        }
+    }
 }

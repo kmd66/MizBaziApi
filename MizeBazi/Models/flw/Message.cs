@@ -2,28 +2,23 @@
 
 namespace MizeBazi.Models;
 
-public record MessageVeiw(long SenderID, long ReceiverID, string Name, string UserName, string img, DateTime LastDate, string Text);
-
-public class MessageAdd
+public class UserHub
 {
-    public Message Validate()
+    public UserHub(Guid key, string connectionId, UserView user)
     {
-        var t = Text.Replace(" ", "");
-        if (string.IsNullOrEmpty(t))
-            throw MizeBaziException.Error(message: "متن را وارد کنید");
-        if (Text.Length > 140) Text = Text.Substring(0, 140);
-
-        return new Message
-        {
-            Id = Guid.NewGuid(),
-            IsRemove = false,
-            Date = DateTime.Now,
-            Text = Text
-        };
+        Key = key;
+        ConnectionId = connectionId;
+        User = user;
+        Friends = new List<long>();
     }
-    public long ReceiverID { get; set; }
-    public string Text { get; set; }
-}
+
+    public Guid Key { get; private set; }
+    public string ConnectionId { get; private set; }
+    public UserView User { get; private set; }
+    public List<long> Friends { get; private set; }
+};
+
+public record MessageVeiw(long SenderID, long ReceiverID, string Name, string UserName, string img, DateTime LastDate, string Text);
 
 public class Message
 {

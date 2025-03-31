@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 
 namespace MizeBazi.Models;
 
-public record UserHub(Guid Key, string ConnectionId, UserView User);
 public record UserEdit(string FirstName, string LastName, string UserName);
 
 public record UserDto(long Id, Guid UnicId, string FirstName, string LastName, string Phone, string UserName, byte Type, DateTime Date);
@@ -61,8 +60,8 @@ public class UserView : User
     public void SafeData()
     {
         Phone = "";
-        Type = 0;
-        Id = 0;
+        //Type = 0;
+        //Id = 0;
     }
     public static IEnumerable<object> SafeDictionary(ConcurrentDictionary<string, UserView> initUser)
         => initUser.Select(x => new

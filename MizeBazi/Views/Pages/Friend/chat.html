@@ -1,1 +1,40 @@
-﻿chat
+﻿
+<div class="mainTop d-flex" style="height: 70px;">
+    <div class="mainTopItem d-flex">
+        <div style="margin-left: 12px;">
+            <div class="userImg"><img :src="listUser[userIndex]?.Img + '90.jpg'"></div>
+        </div>
+        <div style="font-size : 0.65rem">
+            <div>{{listUser[userIndex]?.FirstName}} {{listUser[userIndex]?.LastName}}</div>
+            <div>{{listUser[userIndex]?.UserName}}</div>
+        </div>
+    </div>
+    <div class="mainTopItem" @click="resetModal(modal)">
+        <span>بازگشت</span>
+        <i class="iconsax" icon-name="sidebar-left"></i>
+    </div>
+</div>
+
+<div class="mainCenter" id="roomList">
+    <div v-show="appModel.loding" class="lds-hourglass"></div>
+    <div v-show="!appModel.loding">
+
+        <div v-for="item in list[index]?.chat" :class="['asd78ja8d1',item.my? 'asdMy' : 'asdMyf']">
+            <div class="asdBax">
+                <div v-show="!item.loding" class="asdText">{{item.text}}</div>
+                <div v-show="item.loding" class="lds-hourglass"></div>
+                <div class="asdInfo d-flex">
+                    <span>{{item.pTime}}</span>
+                    <span>{{item.pDate}}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="mainBottom inputText-group mainBottomChat">
+    <div class="label">
+        <i class="iconsax" icon-name="send-1" @click="addMessage()"></i>
+    </div><input v-model="message" class="inputText" placeholder="ارسال پیام" autocomplete="off">
+</div>

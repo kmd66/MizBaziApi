@@ -13,7 +13,7 @@ var urlRemoveFriend = '/api/v1/Friend/RemoveFriend?userId=';
 var urlBlock = '/api/v1/Friend/Block?userId=';
 
 var urlMessageList = '/api/v1/Message/List';
-var urlMessageListForRoom = '/api/v1/Message/ListForRoom';
+var urlMessageListForRoom = '/api/v1/Message/ListForRoom?userId=';
 var urlMessageAdd= '/api/v1/Message/Add';
 var urlMessageRemove = '/api/v1/Message/Remove';
 
@@ -23,7 +23,7 @@ function initSoket() {
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
-    connection.on("InitReceive", (k,i) => {
+    connection.on("InitReceive", (k, i) => {
         key = k;
         userId = i;
         let params = new URLSearchParams(document.location.search);
@@ -31,6 +31,43 @@ function initSoket() {
         if (!state)
             state = 'message';
         vm.changeState(state);
+    });
+
+    connection.on("InitMessageReceive", (json) => {
+        if (json) {
+            var obj = JSON.parse(json);
+            vm.$refs.childchat.listUser.push(obj);
+            vm.$refs.childchat.getUser();
+        }
+    });
+
+    connection.on("AddMessageReceive", (mes, json, i) => {
+        if (mes && !mes.isNullOrEmpty()) {
+            pushErrorMessage(mes);
+            return
+        }
+        var obj = JSON.parse(json);
+        vm.$refs.childchat.setMessage(obj, i);
+    });
+
+    connection.on("TargetMessageReceive", (friendData, msgJson) => {
+
+        var objMsg = JSON.parse(msgJson);
+
+        if (!friendData.isNullOrEmpty()) {
+            var objFriend = JSON.parse(friendData);
+            vm.$refs.childchat.listUser.push(objFriend);
+        }
+        let userIndex = vm.$refs.childchat.listUser.map(x => x.Id).indexOf(objMsg.SenderID);
+        if (userIndex > -1)
+            vm.$refs.childmessage.setTargetMessage(friendData, {
+                userName: vm.$refs.childchat.listUser[userIndex].UserName,
+                Text: objMsg.Text,
+                Date: objMsg.Date
+            });
+
+        vm.$refs.childchat.setTargetMessage(objMsg);
+
     });
 
     soketStart(connection, callbackSoketStart);
@@ -53,22 +90,24 @@ const app = Vue.createApp({
         }
     },
     created() {
+        this.startInit = true;
     },
     methods: {
         changeState(state) {
             switch (state) {
-                case 'request':
-                    vm.$refs.childrequest.init(); break;
+                //case 'chat':
+                //    vm.$refs.childchat.init(userName); break;
                 case 'message':
                     vm.$refs.childmessage.init(); break;
-                case 'chat':
-                    vm.$refs.childchat.init(); break;
+                case 'request':
+                    vm.$refs.childrequest.init(); break;
                 case 'friend':
                     vm.$refs.childfriend.init(); break;
                 case 'block':
                     vm.$refs.childblock.init(); break;
             }
             this.appModel.state = state
+
         }
     }
 })
@@ -77,7 +116,12 @@ app.component('chat-component', {
     template: '#chat-template',
     data() {
         return {
-            startInit: false
+            message:'',
+            item: {},
+            index: -1,
+            list: [], //{ userId: 0,chat: []}
+            userIndex: -1,
+            listUser: [],
         }
     },
     props: {
@@ -88,8 +132,114 @@ app.component('chat-component', {
         },
     },
     methods: {
-        init() {
-            this.appModel.title = 'پیام';
+        init(item) {
+            this.item = item;
+            this.getUser();
+        },
+        getUser() {
+            this.appModel.loding = true;
+
+            var targetUserId = this.item.senderID
+            if (targetUserId == userId)
+                targetUserId = this.item.receiverID;
+
+            this.userIndex = this.listUser.map(x => x.Id).indexOf(targetUserId);
+            if (this.userIndex > -1) {
+                this.getMessages();
+                return
+            };
+
+            connection.invoke("InitMessage", key, targetUserId);
+
+        },
+        getMessages() {
+            var model = {
+                userId: this.item.senderID
+            };
+            if (model.userId == userId)
+                model.userId = this.item.receiverID;
+
+            this.index = this.list.map(x => x.userId).indexOf(model.userId);
+            if (this.index > -1) {
+                this.appModel.state = 'chat';
+                scrollEl('#roomList', true);
+                this.appModel.loding = false;
+                return
+            };
+
+            this.index = this.list.length;
+            let url = urlMessageListForRoom + model.userId;
+
+            appHttp(url).then((data) => {
+                data.map((item) => {
+                    item.my = item.senderID == userId ? true : false;
+                    item.pTime = item.lastDate.getTime();
+                    item.pDate = item.lastDate.toJalaaliString();
+                });
+                this.list.push({ userId: model.userId, chat: data.reverse() });
+                this.appModel.state = 'chat';
+                scrollEl('#roomList', true);
+            }).finally(() => this.appModel.loding = false);
+
+        },
+        resetModal() {
+            this.message = '';
+            this.index = -1;
+            this.userIndex = -1;
+            this.item = {};
+            vm.changeState('message');
+        },
+        addMessage() {
+            if (!this.message.isNullOrEmpty()) {
+                let model = {
+                    l: this.list[this.index].chat.length,
+                    my: true,
+                    text: this.message,
+                    loding: true
+                }
+                this.list[this.index].chat.push(model);
+                connection.invoke("AddMessage", key, this.list[this.index].userId, model.text, model.l);
+            }
+            this.message = '';
+            scrollEl('#roomList', true);
+        },
+        setMessage(obj, i) {
+            this.list[this.index].chat[i] = {
+                my: true,
+                pTime: obj.Date.getTime(),
+                pDate: obj.Date.toJalaaliString(),
+                receiverID: obj.ReceiverID,
+                senderID: obj.SenderID,
+                text: obj.Text,
+                lastDate: obj.Date
+            }
+            let userIndex = this.listUser.map(x => x.Id).indexOf(obj.ReceiverID);
+            if (userIndex > -1)
+                vm.$refs.childmessage.setTargetMessage("", {
+                    userName: this.listUser[userIndex].UserName,
+                    SenderID: obj.ReceiverID,
+                    Text: obj.Text,
+                    Date: obj.Date
+                });
+        },
+        setTargetMessage(objMsg) {
+            var index = this.list.map(x => x.userId).indexOf(objMsg.SenderID);
+            if (index > -1) {
+                this.list[index].chat.push({
+                    lastDate: objMsg.Date,
+                    pDate: objMsg.Date.toJalaaliString(),
+                    pTime: objMsg.Date.getTime(),
+                    receiverID: objMsg.ReceiverID,
+                    senderID: objMsg.SenderID,
+                    text: objMsg.Text,
+                });
+            }
+            if (this.index < 0 || objMsg.SenderID != this.list[this.index].userId) {
+                pushSuccessMessage({ comment: `پیام جدید\n ${objMsg.Text}` });
+            }
+            else {
+                scrollEl('#roomList', true);
+            }
         }
     }
 });
@@ -128,6 +278,41 @@ app.component('message-component', {
                 });
                 this.list = data
             }).finally(() => this.appModel.loding = false);
+        },
+        setTargetMessage(friendData, objMsg) {
+
+            let item;
+            let objFriend;
+            let removeIndex = -1;
+
+            removeIndex = this.list.map(x => x.userName).indexOf(objMsg.userName);
+
+            if (removeIndex > -1) {
+                item = this.list.splice(removeIndex, 1)[0];
+            }
+            else {
+                objFriend = JSON.parse(friendData);
+                item = {
+                    img: objFriend.Img,
+                    name: objFriend.FirstName,
+                    receiverID: userId,
+                    senderID: objFriend.Id,
+                    userName: objFriend.UserName,
+                };
+            }
+            
+            item.text = objMsg.Text;
+            item.text2 = objMsg.Text;
+            if (item.text2.length > 30)
+                item.text2 = item.text2.substring(2, 30) + '...';
+            item.lastDate = objMsg.Date;
+            item.pTime = item.lastDate.getTime();
+            item.pDate = item.lastDate.toJalaaliString();
+            this.list.unshift(item);
+
+        },
+        chat(item) {
+            vm.$refs.childchat.init(item);
         }
     }
 });
@@ -188,6 +373,7 @@ app.component('friend-component', {
     template: '#friend-template',
     data() {
         return {
+            menu:false,
             modal: {
                 type: 0,// add remove block 
                 item: {},
@@ -221,7 +407,29 @@ app.component('friend-component', {
                 this.list = data
             }).finally(() => this.appModel.loding = false);
         },
+        sendMessage() {
+            this.menu = false;
+            removeIndex = vm.$refs.childmessage.list.map(x => x.userName).indexOf(this.modal.item.userName);
+
+            var item = {
+                img: this.modal.item.img,
+                name: this.modal.item.name,
+                receiverID: userId,
+                senderID: this.modal.item.userId,
+                userName: this.modal.item.userName,
+                text: '...',
+                text2: '...',
+                lastDate: this.modal.item.date,
+                pTime: this.modal.item.date.getTime(),
+                pDate: this.modal.item.date.toJalaaliString()
+            };
+            if (removeIndex == -1) {
+                vm.$refs.childmessage.list.push(item);
+            }
+            vm.$refs.childchat.init(item);
+        },
         okModal() {
+            this.menu = false;
             this.appModel.loding = true;
             let url;
             if (this.modal.type == 3)

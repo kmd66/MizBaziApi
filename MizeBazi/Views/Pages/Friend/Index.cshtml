@@ -22,49 +22,54 @@
 
 <div class="container" id="app" v-cloak>
 
-    <div class="mainTop d-flex">
-        <div class="mainTopItem">
-            {{appModel.title}}
+    <div v-show="appModel.state != 'chat'" style="height: 100vh;">
+        <div class="mainTop d-flex">
+            <div class="mainTopItem">
+                {{appModel.title}}
+            </div>
+            <div class="mainTopItem">
+                <span>بازگشت</span>
+                <i class="iconsax" icon-name="sidebar-left"></i>
+            </div>
         </div>
-        <div class="mainTopItem">
-            <span>بازگشت</span>
-            <i class="iconsax" icon-name="sidebar-left"></i>
+
+
+        <div class="mainCenter">
+            <div v-show="appModel.loding" class="lds-hourglass"></div>
+            <div v-show="!appModel.loding">
+                <request-component ref="childrequest" :app-model="appModel"></request-component>
+                <message-component ref="childmessage" :app-model="appModel"></message-component>
+                <friend-component ref="childfriend" :app-model="appModel"></friend-component>
+                <block-component ref="childblock" :app-model="appModel"></block-component>
+            </div>
+        </div>
+
+        <div class="mainBottom" v-show="appModel.startInit" style="display: none;">
+            <div class="item" style="border-left: 1px solid var(--TextColor2);"
+                 v-on:click="changeState('message')"
+                 v-bind:style="{ backgroundColor: appModel.state =='message' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+                <i class="iconsax" icon-name="message-dash-2"></i>
+            </div>
+            <div class="item" style="border-left: 1px solid var(--TextColor2);"
+                 v-on:click="changeState('friend')"
+                 v-bind:style="{ backgroundColor: appModel.state =='friend' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+                <i class="iconsax" icon-name="users"></i>
+            </div>
+            <div class="item" style="border-left: 1px solid var(--TextColor2);"
+                 v-on:click="changeState('request')"
+                 v-bind:style="{ backgroundColor: appModel.state =='request' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+                <i class="iconsax" icon-name="user-1-tick"></i>
+            </div>
+            <div class="item"
+                 v-on:click="changeState('block')"
+                 v-bind:style="{ backgroundColor: appModel.state =='block' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+                <i class="iconsax" icon-name="not-allowed-1"></i>
+            </div>
         </div>
     </div>
 
-
-    <div class="mainCenter">
-        <div v-show="appModel.loding" class="lds-hourglass"></div>
-        <div v-show="!appModel.loding">
-            <request-component ref="childrequest" :app-model="appModel"></request-component>
-            <message-component ref="childmessage" :app-model="appModel"></message-component>
-            <chat-component ref="childchat" :app-model="appModel"></chat-component>
-            <friend-component ref="childfriend" :app-model="appModel"></friend-component>
-            <block-component ref="childblock" :app-model="appModel"></block-component>
-        </div>
-    </div>
-
-    <div class="mainBottom" v-show="appModel.startInit" style="display: none;">
-        <div class="item" style="border-left: 1px solid var(--TextColor2);"
-             v-on:click="changeState('message')"
-             v-bind:style="{ backgroundColor: appModel.state =='message' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
-            <i class="iconsax" icon-name="message-dash-2"></i>
-        </div>
-        <div class="item" style="border-left: 1px solid var(--TextColor2);"
-             v-on:click="changeState('request')"
-             v-bind:style="{ backgroundColor: appModel.state =='request' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
-            <i class="iconsax" icon-name="user-1-tick"></i>
-        </div>
-        <div class="item" style="border-left: 1px solid var(--TextColor2);"
-             v-on:click="changeState('friend')"
-             v-bind:style="{ backgroundColor: appModel.state =='friend' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
-            <i class="iconsax" icon-name="users"></i>
-        </div>
-        <div class="item"
-             v-on:click="changeState('block')"
-             v-bind:style="{ backgroundColor: appModel.state =='block' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
-            <i class="iconsax" icon-name="not-allowed-1"></i>
-        </div>
+    <div v-show="appModel.state == 'chat'" style="height: 100vh;">
+        <chat-component ref="childchat" :app-model="appModel"></chat-component>
     </div>
 </div>
 
@@ -79,11 +84,6 @@
         @Html.Raw(message)
     </div>
 </template>
-<template id="chat-template">
-    <div v-show="appModel.state == 'chat'" style="height: 100%;">
-        @Html.Raw(chat)
-    </div>
-</template>
 <template id="friend-template">
     <div v-show="appModel.state == 'friend'" style="height: 100%;">
         @Html.Raw(friend)
@@ -93,4 +93,8 @@
     <div v-show="appModel.state == 'block'" style="height: 100%;">
         @Html.Raw(block)
     </div>
+</template>
+
+<template id="chat-template">
+    @Html.Raw(chat)
 </template>

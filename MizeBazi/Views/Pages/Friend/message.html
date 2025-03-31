@@ -1,7 +1,7 @@
 ﻿
 <div v-for="item in list">
 
-    <div class="listMainMember listMessage d-flex">
+    <div class="listMainMember listMessage d-flex" v-on:click="chat(item)">
         <div class="asdgfjasd1">
             <div class="userImg">
                 <img :src="item.img + '90.jpg'">

@@ -259,9 +259,7 @@ function updateRoom(b, user) {
 
             $("#roomList").append(el);
 
-            setTimeout(() => {
                 scrollEl('#roomList');
-            }, "500");
         }
     }
 }
@@ -290,9 +288,7 @@ function MessageReceive(connectionId, mes) {
 
     $("#roomList").append(el);
 
-    setTimeout(() => {
         scrollEl('#roomList');
-    }, "500");
 }
 
 function trashRoom() {

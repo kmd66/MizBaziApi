@@ -47,6 +47,7 @@
 .mainTopItem {
     text-align: center;
     padding: 5px 7px;
+    align-items: center;
 }
     .mainTopItem span, .mainTop .text {
         margin: 0 5px;
@@ -111,4 +112,77 @@
 .asdgfjasd2 {
     display: inline-block;
     margin-right: 7px;
+}
+.asd78ja8d1 {
+    margin: 14px 0;
+    display: flex;
+    justify-content: start;
+}
+.asdMy {
+    justify-content: end;
+}
+.asd78ja8d1 .asdBax {
+    border-radius: 14px 14px 0px 14px;
+    background: #00ff162e;
+    text-align: justify;
+    position: relative;
+    font-size: 0.8rem;
+}
+.asdMy .asdBax {
+    background: #00ceff2e;
+    border-radius: 14px 14px 14px 0px;
+}
+.asd78ja8d1 .asdText {
+    padding: 14px;
+    padding-bottom: 0;
+}
+.asd78ja8d1 .asdInfo {
+    font-size: 0.7rem;
+    color: var(--TextColor3);
+}
+    .asd78ja8d1 .asdInfo span {
+        padding: 5px 14px;
+    }
+.asdBax::after {
+    background-color: #00ff162e;
+    clip-path: polygon(0 0, 0 100%, 100% 110%);
+    content: "";
+    height: 0.7rem;
+    width: 0.5rem;
+    position: absolute;
+    right: -0.49rem;
+    bottom: 0;
+}
+.asdMy .asdBax::after {
+    background-color: #00ceff2e;
+    clip-path: polygon(110% 0, 0 100%, 100% 100%);
+    left: -0.49rem;
+    right: unset;
+}
+.mainBottomChat {
+    height: 70px;
+    margin: 0;
+    padding: 14px;
+    border-radius: 0;
+}
+.asd78ja8d1 .lds-hourglass {
+    width: 15px;
+    height: 15px;
+}
+    .asd78ja8d1 .lds-hourglass:after {
+        border: 7px solid currentColor;
+        border-color: currentColor transparent currentColor transparent;
+    }
+
+.asd58j7add .listMainMember {
+    margin: 15px -14px 0 -14px;
+}
+.asdUserActionBox {
+    background: var(--SuccessColor);
+    margin: 25px -14px 0 -14px;
+    width: unset;
+}
+.modal-body .userActionBox {
+    margin: 30px -5px 0 -5px;
+    width:unset;
 }

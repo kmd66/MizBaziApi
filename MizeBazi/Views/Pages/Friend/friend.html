@@ -9,30 +9,49 @@
 
 <div style="margin-top: 14px;"><button v-on:click="search()" class="btn btn-line close-modal">جستجو</button></div>
 
-<div v-for="item in list">
+<div v-for="item in list" class="asd58j7add">
 
     <div class="listMainMember d-flex">
-        <div style="width: 33.33%">
-            <div class="userInfo">{{item.name}}</div>
-            <div class="userInfo">{{item.userName}}</div>
-        </div>
         <div style="width: 33.33%">
             <div class="userImg">
                 <img :src="item.img + '90.jpg'">
             </div>
         </div>
-        <div style="width: 33.33% ">
-            <div class="userInfo">تاریخ درخواست</div>
+        <div style="width: 33.33%">
+            <div class="userInfo">{{item.name}}</div>
+            <div class="userInfo">{{item.userName}}</div>
             <div class="userInfo">{{item.pDate}}</div>
+        </div>
+        <div style="width: 33.33%; text-align: center;">
+            <i class="iconsax" icon-name="menu-hamburger"  @click="modal.item = item;menu = true" style="padding: 10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 7H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round"></path>
+                    <path d="M3 12H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round"></path>
+                    <path d="M3 17H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round"></path>
+                </svg>
+            </i>
         </div>
     </div>
 
-    <div class="d-flex" style="margin: 0 -14px">
-        <div class="userActionBox" v-on:click="modal.item = item; modal.type = 2" style="background: var(--AlertColor)"> حذف </div>
-        <div class="userActionBox" v-on:click="modal.item = item; modal.type = 3" style="background: var(--ErrorColor)"> مسدود </div>
-    </div>
 </div>
 <p style="margin-top:25px" v-show="list.length == 0">مطلبی برای نمایش وجود ندارد</p>
+
+<div class="modal" v-bind:style="{ display: menu ? 'block' : 'none'}">
+    <div class="modal-sandbox"></div>
+    <div class="modal-box">
+        <div class="modal-body" style=" padding: 5px;">
+            <div style="text-align:center; margin-top:12px">
+                <div>{{modal.item.name}}</div>
+                <div>{{modal.item.userName}}</div>
+            </div>
+            <div class="userActionBox" v-on:click="sendMessage()" style="background: var(--SuccessColor)"> ارسال پیام </div>
+            <div class="userActionBox" v-on:click="modal.type = 2" style="background: var(--AlertColor)"> حذف  </div>
+            <div class="userActionBox" v-on:click="modal.type = 3" style="background: var(--ErrorColor)"> مسدود کردن </div>
+            <button @click="menu = false" class="btn btn-line w100" style=" margin: 30px 0 0 0;">انصراف</button>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal" v-bind:style="{ display: modal.type == 0 ? 'none' : 'block'}">
     <div class="modal-sandbox"></div>

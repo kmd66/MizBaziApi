@@ -148,18 +148,20 @@ function uint8ArrayToBase64(uint8Array) {
     return btoa(binaryString);
 }
 function scrollEl(el, b) {
-    var outerHeight = $(el).outerHeight(true);
-    var scrollTop = $(el).scrollTop();
-    var scrollHeight = $(el)[0].scrollHeight;
-    var h2_3 = outerHeight - (outerHeight / 5);
-    var outerscrollTop = outerHeight + scrollTop;
+    setTimeout(() => {
+        var outerHeight = $(el).outerHeight(true);
+        var scrollTop = $(el).scrollTop();
+        var scrollHeight = $(el)[0].scrollHeight;
+        var h2_3 = outerHeight - (outerHeight / 5);
+        var outerscrollTop = outerHeight + scrollTop;
 
-    var t = scrollHeight - outerscrollTop;
-    if (b || t < h2_3) {
-        $(el).animate({
-            scrollTop: scrollHeight
-        }, 1000);
-    }
+        var t = scrollHeight - outerscrollTop;
+        if (b || t < h2_3) {
+            $(el).animate({
+                scrollTop: scrollHeight
+            }, 1000);
+        }
+    }, "500");
 }
 
 

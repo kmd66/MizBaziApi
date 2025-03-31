@@ -40,9 +40,7 @@ function initSoket() {
         vm.$refs.childchat.texts = objTexts;
         vm.$refs.childchat.joinItem = joinItem;
         vm.appModel.state = 'chatGroup';
-        setTimeout(() => {
             scrollEl('#chatList',true);
-        }, "500");
     });
 
     connection.on("ExitReceive", (b) => {
@@ -56,9 +54,7 @@ function initSoket() {
         var item = JSON.parse(t);
         item.pDate = item.Date.toJalaaliString() + ' ' + item.Date.getTime();
         vm.$refs.childchat.texts.push(item);
-        setTimeout(() => {
             scrollEl('#chatList');
-        }, "500");
     });
 
     connection.on("MessagePinReceive", (t) => {
