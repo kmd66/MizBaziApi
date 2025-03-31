@@ -90,8 +90,16 @@
     margin: 15px -14px 0 -14px;
     padding: 5px 12px;
 }
-.userInfoName, .userInfoText {
+.userInfoName, .userInfoText, .mainTopItemInfo div {
     font-size: .8rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+.mainTopItemInfo div {
+    max-width: 200px;
+    font-size: 0.65rem;
 }
 .userInfoText {
     font-size: .8rem;

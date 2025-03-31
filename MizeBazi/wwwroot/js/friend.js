@@ -270,9 +270,6 @@ app.component('message-component', {
             this.appModel.loding = true
             appHttp(urlMessageList).then((data) => {
                 data.map((item) => {
-                    item.text2 = item.text;
-                    if (item.text2.length > 30)
-                        item.text2 = item.text2.substring(2, 30) + '...'
                     item.pTime = item.lastDate.getTime();
                     item.pDate = item.lastDate.toJalaaliString();
                 });
@@ -302,9 +299,6 @@ app.component('message-component', {
             }
             
             item.text = objMsg.Text;
-            item.text2 = objMsg.Text;
-            if (item.text2.length > 30)
-                item.text2 = item.text2.substring(2, 30) + '...';
             item.lastDate = objMsg.Date;
             item.pTime = item.lastDate.getTime();
             item.pDate = item.lastDate.toJalaaliString();
@@ -418,7 +412,6 @@ app.component('friend-component', {
                 senderID: this.modal.item.userId,
                 userName: this.modal.item.userName,
                 text: '...',
-                text2: '...',
                 lastDate: this.modal.item.date,
                 pTime: this.modal.item.date.getTime(),
                 pDate: this.modal.item.date.toJalaaliString()
