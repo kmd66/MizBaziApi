@@ -1,0 +1,36 @@
+{
+  "name": "mizeBaziStream",
+  "version": "1.0.0",
+  "description": "mize bazi stream ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node dist/server/index.js",
+    "build": "tsc && copyfiles -u 1 src/public/**/* dist/",
+    "serve": "node dist/index.js",
+    "dev": "nodemon"
+  },
+  "keywords": [],
+  "author": "morteza",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.13.17",
+    "@types/socket.io": "^3.0.1",
+    "@types/socket.io-client": "^1.4.36",
+    "copyfiles": "^2.4.1",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.1",
+    "@types/uuid": "^10.0.0",
+    "express": "^5.1.0",
+    "httpolyglot": "^0.1.2",
+    "mediasoup": "^3.15.7",
+    "mediasoup-client": "^3.9.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0"
+  }
+}

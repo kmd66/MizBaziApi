@@ -15,7 +15,7 @@ public enum GameType : byte
 
 public static class RomHubCountHelper
 {
-    public static IConfigurationSection GameLinkSection = AppStrings.Configuration.GetRequiredSection("GameLink");
+    public static IConfigurationSection GameLinkSection = AppStrings.Configuration.GetRequiredSection("Game");
 
     public static byte HubCount(this GameType val)
     {
@@ -29,8 +29,12 @@ public static class RomHubCountHelper
          };
 
     }
-    public static string GameLink(this GameType val)
-        => GameLinkSection[val.ToString()];
+    public static string GameUrl(this GameType val, Guid id)
+        => GameLinkSection[$"Url:{val.ToString()}"]+$"?{id}";
+    public static string GameBaseUrl(this GameType val)
+        => GameLinkSection[$"BaseUrl:{val.ToString()}"];
+    public static string CreateRoomUrl(this GameType val)
+        => GameLinkSection["createRoom"];
 }
 public enum FriendRequestType : byte
 {

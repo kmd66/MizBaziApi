@@ -29,6 +29,6 @@ public class MafiaHub : MainHub
         {
             initUser.TryRemove(key, out _);
         }
-        await Clients.Clients(keys).SendAsync("InitGameReceive", _type.GameLink());
+        await Clients.Clients(keys).SendAsync("InitGameReceive", _type.GameUrl(Guid.NewGuid()));
     }
 }

@@ -28,6 +28,9 @@ namespace MizeBazi.Helper
         public static string ToJson(this object obj)
             => System.Text.Json.JsonSerializer.Serialize(obj);
 
+        public static T JsonToObject<T>(this string s)
+            => System.Text.Json.JsonSerializer.Deserialize<T>(s);
+
         public static string EnumToString<T>(this T enumValue) where T : Enum
         {
             var t = enumValue.ToString();
