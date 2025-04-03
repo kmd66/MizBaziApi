@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MizeBazi.Models;
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MizeBazi.HubControllers;
 
@@ -24,12 +26,6 @@ public class RangRazHub : MainHub
 
     protected override async Task start()
     {
-        var users = initUser.Values.Take(_count).ToList();
-        var keys = initUser.Keys.Take(_count).ToList();
-        foreach (var key in keys)
-        {
-            initUser.TryRemove(key, out _);
-        }
-        await Clients.Clients(keys).SendAsync("InitGameReceive", _type.GameUrl(Guid.NewGuid()));
+        await _start(initUser);
     }
 }

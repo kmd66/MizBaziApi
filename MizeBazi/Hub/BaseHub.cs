@@ -2,10 +2,13 @@
 using MizeBazi.Helper;
 using MizeBazi.Models;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace MizeBazi.HubControllers;
 public abstract class MainHub : Hub
 {
+    public static ConcurrentDictionary<long, UserPlaying> Playing = new ConcurrentDictionary<long, UserPlaying>();
+
     public abstract Task Init(string auth, string dId);
     protected abstract Task start();
 
@@ -78,6 +81,14 @@ public abstract class MainHub : Hub
             throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
 
+        if (Playing.TryGetValue(userResult.data.Id, out UserPlaying userPlaying))
+        {
+            //Playing.Clear();
+            // اصلاح
+            //await Clients.Caller.SendAsync("ReloadtGameReceive", userPlaying.UserGameType.GameUrl(userPlaying.RoomId));
+            //return;
+        }
+
         initUser.TryAdd(connectionId, userResult.data);
 
         if (initUser.Count == _count)
@@ -86,5 +97,49 @@ public abstract class MainHub : Hub
            await Clients.All.SendAsync("InitReceive", UserView.SafeDictionary(initUser).ToJson());
     }
 
+    protected async Task _start(ConcurrentDictionary<string, UserView> initUser)
+    {
+        var keys = initUser.Keys.Take(_count).ToList();
+        List<HubUserGameRemove> users = new List<HubUserGameRemove>();
+        foreach (var k in keys)
+        {
+            initUser.TryRemove(k, out UserView u);
+            users.Add(new HubUserGameRemove(k, u));
+        }
+        await Clients.Clients(keys).SendAsync("WaitGameReceive");
+
+        var url = _type.GameBaseUrl() + _type.CreateRoomUrl();
+        var room = new
+        {
+            type = _type,
+            key = _type.CreateRoomKey(),
+            users = new List<dynamic>()
+        };
+
+        foreach (var user in users)
+        {
+            user.user.SafeData();
+            room.users.Add(new { id = user.user.Id, info = user });
+        }
+
+        var result = await new Helper.AppRequest().Post<HubUserGameResult>(room, url);
+        if (!result.success || result.data == null || result.data.users == null || result.data.users.Count != users.Count)
+        {
+            await Clients.Clients(keys).SendAsync("RestartGameReceive");
+            return;
+        }
+
+        foreach (var user in users)
+        {
+            var k = result.data.users.First(x=>x.userId == user.user.Id).userKey;
+            var u = UserPlaying.GetInstance(user.user, _type, result.data.roomId, k);
+            Playing.TryAdd(user.user.Id, u);
+            await Clients.Client(user.connectionId).SendAsync("InitGameReceive", _type.GameUrl(result.data.roomId), k);
+        }
+
+    }
 
 }
+public record HubUserGameRemove(string connectionId, UserView user);
+public record HubUserGameResultItem(long userId, Guid userKey);
+public record HubUserGameResult(Guid roomId, List<HubUserGameResultItem> users);

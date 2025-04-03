@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
+using static MizeBazi.Models.UserPlaying;
 
 namespace MizeBazi.Models;
 
@@ -50,8 +51,26 @@ public class UserValidate
             throw MizeBaziException.Error(message: " نام کاربری باید از اعداد و حروف لاتین باشد");
     }
 }
+public class UserPlaying : UserView
+{
+    public GameType UserGameType { get; set; }
 
-[Keyless]
+    public Guid RoomId { get; set; }
+
+    public Guid Key { get; set; }
+
+    public static UserPlaying GetInstance(UserView user, GameType userGameType, Guid roomId, Guid key)
+    {
+        string jsonString = System.Text.Json.JsonSerializer.Serialize(user);
+        var instance = System.Text.Json.JsonSerializer.Deserialize<UserPlaying>(jsonString);
+        instance.UserGameType = userGameType;
+        instance.RoomId = roomId;
+        instance.Key = key;
+        return instance;
+    }
+}
+
+    [Keyless]
 public class UserView : User
 {
     public string Bio { get; set; }

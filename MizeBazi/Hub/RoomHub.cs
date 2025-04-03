@@ -268,6 +268,8 @@ public class RoomHub : Hub
     private async Task start(long modelId)
     {
         list.TryGetValue(modelId, out RoomModel model);
+        if (model == null)
+            return;
         var users = model.initUser.Values.ToList();
         var keys = model.initUser.Keys.ToList();
         list.TryRemove(modelId, out _);

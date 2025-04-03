@@ -1,6 +1,9 @@
 ﻿import { Router, Request, Response } from 'express';
-import { RoomUsers, User, GameType, Result } from './interfaces';
+import { RoomUsers, Result } from './interfaces';
+import { GameTypeExtension, userInGameStatusType } from './gameInterfaces';
+import config from './config';
 import { v4 as uuidv4 } from 'uuid';
+import { type } from 'os';
 
 
 class ApiRoot {
@@ -12,37 +15,44 @@ class ApiRoot {
     }
 
     public async test(req: Request, res: Response): Promise<any> {
-        const model: RoomUsers = req.body;
-
-        console.log('----------JSON.stringify(model)------s----------')
-        console.log(JSON.stringify(model))
-        console.log('----------JSON.stringify(model)------s----------')
-        const user1: User = {
-            id: 45,
-            type: "GameType.rangOraz",
-            info: null,
-            index: 54
-        };
-        const user2: User = {
-            id: 34,
-            type: "GameType.rangOraz",
-            info: null,
-            index: 677
-        };
-        const room: RoomUsers = {
-            id: uuidv4(),
-            type: GameType.rangOraz,
-            info: null,
-            users: [user1, user2]
-        };
-        const result = Result.successful<RoomUsers>({ data: room });
-        return res.status(200).json(result);
+        return res.status(200).json({});
     }
 
     public async createRoom(req: Request, res: Response): Promise<any> {
         try {
             const model: RoomUsers = req.body;
-            const result = Result.success();
+
+            if (model.key != config.apiKey)
+                return res.status(200).json(Result.fail(401, '401'));
+
+            var roomCount = GameTypeExtension.count(model.type);
+            if (roomCount == 0)
+                return res.status(200).json(Result.fail(401, 't 0'));
+
+            var types = GameTypeExtension.roles(model.type);
+            types = this.shuffleArray(types);
+            model.users = this.shuffleArray(model.users);
+
+            model.id = uuidv4();
+            var resultUser: any = {
+                roomId: model.id,
+                users: []
+            }
+
+            model.users.forEach((v, i) => {
+                const key = uuidv4();
+                v.userInGameStatus = userInGameStatusType.faal;
+                v.index = i;
+                v.typeName = types[i];
+                v.type = GameTypeExtension.getType(model.type, types[i]);
+                v.key = key
+                resultUser.users.push({
+                    userId: v.id,
+                    userKey: key
+                });
+            });
+
+            const result = Result.successful<any>({ data: resultUser });
             return res.status(200).json(result);
         } catch (error) {
             return res.status(500).json({
@@ -50,6 +60,14 @@ class ApiRoot {
                 message: 'An error occurred while processing your request'
             });
         }
+    }
+    shuffleArray<T>(array: T[]): T[] {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
 }
 

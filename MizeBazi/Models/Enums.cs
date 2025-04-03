@@ -9,7 +9,7 @@ public enum GameType : byte
     Unknown = 0,
     نبرد_خنده = 25,
     رنگ_و_راز = 45,
-    آفسون_واژه = 68,
+    افسون_واژه = 68,
     مافیا = 89
 }
 
@@ -23,7 +23,7 @@ public static class RomHubCountHelper
          {
              GameType.نبرد_خنده => 6,
              GameType.رنگ_و_راز=> 5,
-             GameType.آفسون_واژه => 8,
+             GameType.افسون_واژه => 8,
              GameType.مافیا => 10,
              _ => 0
          };
@@ -34,7 +34,9 @@ public static class RomHubCountHelper
     public static string GameBaseUrl(this GameType val)
         => GameLinkSection[$"BaseUrl:{val.ToString()}"];
     public static string CreateRoomUrl(this GameType val)
-        => GameLinkSection["createRoom"];
+        => GameLinkSection["createRoomUrl"];
+    public static string CreateRoomKey(this GameType val)
+        => GameLinkSection["createRoomKey"];
 }
 public enum FriendRequestType : byte
 {

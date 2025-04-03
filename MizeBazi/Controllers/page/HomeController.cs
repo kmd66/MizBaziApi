@@ -28,25 +28,30 @@ public class HomeController : Controller
     [HttpGet, Route("api/testroom")]
     public async Task<Result<CheckHost>> testroom()
     {
-        var type = GameType.آفسون_واژه;
+        var type = GameType.افسون_واژه;
         var url = type.GameBaseUrl() + type.CreateRoomUrl();
-        var url2 = type.GameBaseUrl() + "/api/test";
 
         var room = new
         {
-            id = Guid.NewGuid(),
             type = type,
-            info = "info: test",
+            key = type.CreateRoomKey(),
             users = new List<dynamic>()
         };
 
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < type.HubCount(); i++)
         {
-            room.users.Add(new aUser(i, 0, "string type", "user info " + i));
+            room.users.Add(new { id = i, index = 0, type = "", info = "d" });
         }
 
-        var result = await new AppRequest().Post(room, url);
-        var result2 = await new AppRequest().Post<aRoomUsers>(room, url2);
+        var result1 = await new Helper.AppRequest().Post<Guid>(room, url);
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
+        var result2 = await new Helper.AppRequest().Post(room, type.GameBaseUrl()+ "/api/test");
 
         return Result<CheckHost>.Successful(data: new CheckHost());
 
@@ -55,5 +60,3 @@ public class HomeController : Controller
 }
 
 
-public record aUser(int id, int index, string type, string info);
-public record aRoomUsers(Guid id, GameType type, string info, List<aUser> users);

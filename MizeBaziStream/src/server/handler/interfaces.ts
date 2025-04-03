@@ -1,4 +1,7 @@
-﻿export class Result<T> implements IResult {
+﻿
+import { GameType, userInGameStatusType } from './gameInterfaces';
+
+export class Result<T> implements IResult {
     public data: any;
     public code: number = 0;
     public success: boolean = false;
@@ -23,17 +26,13 @@
     }): Result<T> {
         return new Result<T>(true, options.code || 0, '', options.data);
     }
-    public static success(code: number = 0){
-        return new Result<boolean>(true, code, '',true);
+    public static success(code: number = 0) {
+        return new Result<boolean>(true, code, '', true);
+    }
+    public static fail(code: number = 0, message: string) {
+        return new Result<boolean>(false, code, message, false);
     }
 
-}
-
-export enum GameType {
-    nabardKhande = 25,
-    rangOraz = 45,
-    afsonVajeh = 68,
-    mafia = 89
 }
 
 export interface IResult {
@@ -45,11 +44,15 @@ export interface IResult {
 export interface User {
     id: number;
     index: number;
-    type: string;
+    typeName: string;
+    type: number;
     info: any;
+    key?: string;
+    userInGameStatus: userInGameStatusType
 }
 export interface RoomUsers {
     id: string;
+    key?: string;
     type: GameType;
     info: any;
     users: User[];
