@@ -3,9 +3,81 @@ import { RoomUsers, Result } from './interfaces';
 import { GameTypeExtension, userInGameStatusType } from './gameInterfaces';
 import config from './config';
 import { v4 as uuidv4 } from 'uuid';
-import { type } from 'os';
+import fs from 'fs';
+import ejs from 'ejs';
+import path from 'path';
+import globals from './globals';
 
 
+class PageRoot {
+    //اصلاح
+    private _fileBaseUrl: string = '';
+    //private _fileBaseUsrl: string = config.apiUrl;
+    //اصلاح
+
+    constructor() { }
+
+    public async mafia(req: Request, res: Response) {
+        const filePathindex = path.join(__dirname, '../../public/mafia/index.html');
+        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
+
+        const filePathBody = path.join(__dirname, '../../public/mafia/body.html');
+        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
+
+        const renderedHtml = ejs.render(mainTemplate, {
+            fileBaseUsrl: this._fileBaseUrl,
+            body: bodyPartial,
+            title: 'مافیا',
+        });
+        res.send(renderedHtml);
+    }
+
+    public async rangOraz(req: Request, res: Response) {
+        const filePathindex = path.join(__dirname, '../../public/rangOraz/index.html');
+        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
+
+        const filePathBody = path.join(__dirname, '../../public/rangOraz/body.html');
+        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
+
+        const renderedHtml = ejs.render(mainTemplate, {
+            fileBaseUsrl: this._fileBaseUrl,
+            body: bodyPartial,
+            title: 'رنگ و راز',
+        });
+        res.send(renderedHtml);
+    }
+
+    public async afsonVajeh(req: Request, res: Response) {
+        const filePathindex = path.join(__dirname, '../../public/afsonVajeh/index.html');
+        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
+
+        const filePathBody = path.join(__dirname, '../../public/afsonVajeh/body.html');
+        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
+
+        const renderedHtml = ejs.render(mainTemplate, {
+            fileBaseUsrl: this._fileBaseUrl,
+            body: bodyPartial,
+            title: 'افسون واژه',
+        });
+        res.send(renderedHtml);
+    }
+
+    public async nabardKhande(req: Request, res: Response) {
+        const filePathindex = path.join(__dirname, '../../public/nabardKhande/index.html');
+        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
+
+        const filePathBody = path.join(__dirname, '../../public/nabardKhande/body.html');
+        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
+
+        const renderedHtml = ejs.render(mainTemplate, {
+            fileBaseUsrl: this._fileBaseUrl,
+            body: bodyPartial,
+            title: 'نبرد خنده',
+        });
+        res.send(renderedHtml);
+    }
+
+}
 class ApiRoot {
     constructor() { }
 
@@ -14,8 +86,25 @@ class ApiRoot {
         return res.status(200).json(result);
     }
 
-    public async test(req: Request, res: Response): Promise<any> {
-        return res.status(200).json({});
+    public async testCreateRoom(req: Request, res: Response): Promise<any> {
+        const jsonData = fs.readFileSync(__dirname + '../../../userdataSampel.json', 'utf-8');
+        const model: RoomUsers = JSON.parse(jsonData);
+        model.key = config.apiKey;
+        const req1 = {
+            body: model
+        } as Request;
+        const res1 = {
+            status: function (code: number) {
+                (this as any).statusCode = code;
+                return this;
+            },
+            json: function (data: any) {
+                (this as any).responseData = data;
+                return this;
+            }
+        } as unknown as Response;
+        var t = await this.createRoom(req1, res1);
+        return res.status(200).json(t);
     }
 
     public async createRoom(req: Request, res: Response): Promise<any> {
@@ -52,6 +141,9 @@ class ApiRoot {
                 });
             });
 
+            globals.listRoom.push(model);
+            console.log(`--------s-- globals.listRoom ${globals.listRoom.length}`);
+
             const result = Result.successful<any>({ data: resultUser });
             return res.status(200).json(result);
         } catch (error) {
@@ -61,6 +153,7 @@ class ApiRoot {
             });
         }
     }
+
     shuffleArray<T>(array: T[]): T[] {
         const shuffled = [...array];
         for (let i = shuffled.length - 1; i > 0; i--) {
@@ -73,10 +166,18 @@ class ApiRoot {
 
 const router = Router();
 const appApiRoots = new ApiRoot();
+const appPageRoots = new PageRoot();
+
+router.get('/mafia', (req, res) => appPageRoots.mafia(req, res));
+router.get('/rangOraz', (req, res) => appPageRoots.rangOraz(req, res));
+router.get('/afsonVajeh', (req, res) => appPageRoots.afsonVajeh(req, res));
+router.get('/nabardKhande', (req, res) => appPageRoots.nabardKhande(req, res));
 
 router.get('/api', (req, res) => appApiRoots.api(req, res));
-router.get('/api/test', (req, res) => appApiRoots.test(req, res));
-router.post('/api/test', (req, res) => appApiRoots.test(req, res));
 router.post('/api/createRoom', (req, res) => appApiRoots.createRoom(req, res));
+
+
+router.get('/api/testCreateRoom', (req, res) => appApiRoots.testCreateRoom(req, res));
+
 
 export default router;

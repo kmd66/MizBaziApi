@@ -34,6 +34,7 @@ interface WebRtcTransportOptions {
 
 interface ConfigModel {
     apiKey: string;
+    apiUrl: string;
     numWorkers: number;
     listenPort: number;
     rtcMinPort: number;
@@ -96,6 +97,7 @@ const webRtcTransport_options: WebRtcTransportOptions = {
 
 const model: ConfigModel = {
     apiKey: '123a5Mdmdsaui124d8a01220sa8w60123e56',
+    apiUrl:'https://localhost:7230/',
     numWorkers: Object.keys(os.cpus()).length,
     listenPort: 3000,
     rtcMinPort: 10000,

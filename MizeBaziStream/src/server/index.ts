@@ -1,9 +1,9 @@
 ﻿import express from 'express';
-import path from 'path';
 import * as fs from 'fs';
 import config from './handler/config';
 import work from './handler/work';
 import api from './handler/api';
+import path from 'path';
 const https = require('httpolyglot');
 
 const app = express();
@@ -14,8 +14,7 @@ app.use(express.json());
 
 app.use('/', api);
 
-app.use(express.static(path.join(__dirname, '../public')));
-
+app.use(express.static(path.join(__dirname, '../wwwUrl')));
 
 const options = {
     key: fs.readFileSync(__dirname + config.sslKey, 'utf-8'),

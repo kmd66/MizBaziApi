@@ -119,7 +119,7 @@ public abstract class MainHub : Hub
         foreach (var user in users)
         {
             user.user.SafeData();
-            room.users.Add(new { id = user.user.Id, info = user });
+            room.users.Add(new { id = user.user.Id, info = user.user });
         }
 
         var result = await new Helper.AppRequest().Post<HubUserGameResult>(room, url);

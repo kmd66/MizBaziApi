@@ -278,6 +278,7 @@ FakesAssemblies/
 node_modules/
 thumbnail/
 dist/
+wwwUrl/
 
 # Visual Studio 6 build log
 *.plg

@@ -16,13 +16,13 @@ export enum nabardKhandeRole {
 }
 export enum rangOrazRole {
     bazpors = 1, //'بازپرس',
-    //ostad = 2, //'استاد',
+
+    ostad = 2, //'استاد',
 
     jasos = 11, //'جاسوس',
 
     naghash1 = 21, // 'نقاش 1',
     naghash2 = 22, // 'نقاش 2',
-    naghash3 = 23, // 'نقاش 3'
 }
 export enum afsonVajehRole {
     groh1_1 = 1, // 'گروه1 سرگروه',
