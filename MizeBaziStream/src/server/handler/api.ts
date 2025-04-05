@@ -86,27 +86,6 @@ class ApiRoot {
         return res.status(200).json(result);
     }
 
-    public async testCreateRoom(req: Request, res: Response): Promise<any> {
-        const jsonData = fs.readFileSync(__dirname + '../../../userdataSampel.json', 'utf-8');
-        const model: RoomUsers = JSON.parse(jsonData);
-        model.key = config.apiKey;
-        const req1 = {
-            body: model
-        } as Request;
-        const res1 = {
-            status: function (code: number) {
-                (this as any).statusCode = code;
-                return this;
-            },
-            json: function (data: any) {
-                (this as any).responseData = data;
-                return this;
-            }
-        } as unknown as Response;
-        var t = await this.createRoom(req1, res1);
-        return res.status(200).json(t);
-    }
-
     public async createRoom(req: Request, res: Response): Promise<any> {
         try {
             const model: RoomUsers = req.body;
@@ -134,15 +113,14 @@ class ApiRoot {
                 v.index = i;
                 v.typeName = types[i];
                 v.type = GameTypeExtension.getType(model.type, types[i]);
-                v.key = key
+                v.key = key;
                 resultUser.users.push({
                     userId: v.id,
                     userKey: key
                 });
             });
 
-            globals.listRoom.push(model);
-            console.log(`--------s-- globals.listRoom ${globals.listRoom.length}`);
+            globals.addRoom(model);
 
             const result = Result.successful<any>({ data: resultUser });
             return res.status(200).json(result);
@@ -163,9 +141,34 @@ class ApiRoot {
         return shuffled;
     }
 }
+class TestApiRoot {
+    constructor() { }
+    public async testCreateRoom(req: Request, res: Response): Promise<any> {
+        globals.clear();
+        const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/userdata-rangoraz.json', 'utf-8');
+        const model: RoomUsers = JSON.parse(jsonData);
+        model.key = config.apiKey;
+        const req1 = {
+            body: model
+        } as Request;
+        const res1 = {
+            status: function (code: number) {
+                (this as any).statusCode = code;
+                return this;
+            },
+            json: function (data: any) {
+                (this as any).responseData = data;
+                return this;
+            }
+        } as unknown as Response;
+        var t = await appApiRoots.createRoom(req1, res1);
+        return res.status(200).json(t);
+    }
+}
 
 const router = Router();
 const appApiRoots = new ApiRoot();
+const appTestApiRoot = new TestApiRoot();
 const appPageRoots = new PageRoot();
 
 router.get('/mafia', (req, res) => appPageRoots.mafia(req, res));
@@ -177,7 +180,7 @@ router.get('/api', (req, res) => appApiRoots.api(req, res));
 router.post('/api/createRoom', (req, res) => appApiRoots.createRoom(req, res));
 
 
-router.get('/api/testCreateRoom', (req, res) => appApiRoots.testCreateRoom(req, res));
+router.get('/testApi/CreateRoom', (req, res) => appTestApiRoot.testCreateRoom(req, res));
 
 
 export default router;

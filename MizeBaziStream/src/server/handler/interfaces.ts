@@ -56,5 +56,7 @@ export interface RoomUsers {
     type: GameType;
     info: any;
     users: User[];
+
+    createdAt?: Date;       // تاریخ و زمان ایجاد رکورد
 }
 

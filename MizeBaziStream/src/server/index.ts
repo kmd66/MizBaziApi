@@ -4,10 +4,19 @@ import config from './handler/config';
 import work from './handler/work';
 import api from './handler/api';
 import path from 'path';
+import { Server } from 'socket.io';
+import { socketHandlers } from './handler/socket';
 const https = require('httpolyglot');
 
 const app = express();
 
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 
 // Middleware
 app.use(express.json());
@@ -22,15 +31,14 @@ const options = {
 };
 const httpsServer = https.createServer(options, app);
 
-//const io = socketIo(httpsServer, {
-//    cors: {
-//        origin: '*',
-//        methods: ['GET', 'POST'],
-//        allowedHeaders: ['Content-Type'],
-//    }
-//});
+const io = new Server(httpsServer, {
+    cors: {
+        origin: "*", // Adjust this for production
+        methods: ["GET", "POST"]
+    }
+});
 
-//socket.init(io);
+socketHandlers(io);
 
 ; (async () => {
     await work.init();

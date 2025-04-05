@@ -8,16 +8,16 @@
     "start": "ts-node dist/server/index.js",
     "build": "tsc && copyfiles -u 1 src/public/**/* dist/",
     "serve": "node dist/index.js",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "watch": "watchify src/wwwUrl/game/rangOraz/index.js -o src/wwwUrl/game/rangOraz/bundle.js -v"
   },
   "keywords": [],
   "author": "morteza",
   "license": "ISC",
   "devDependencies": {
     "@types/ejs": "^3.1.5",
+    "@types/lokijs": "^1.5.14",
     "@types/node": "^22.13.17",
-    "@types/socket.io": "^3.0.1",
-    "@types/socket.io-client": "^1.4.36",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
@@ -29,8 +29,8 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "httpolyglot": "^0.1.2",
+    "lokijs": "^1.5.12",
     "mediasoup": "^3.15.7",
-    "mediasoup-client": "^3.9.5",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "uuid": "^11.1.0"
