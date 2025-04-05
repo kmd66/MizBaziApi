@@ -1,11 +1,12 @@
-export default {
+﻿export default {
     build: {
-        outDir: './rangOraz/dist',
-        emptyOutDir: true,
+        outDir: './dist',
+        emptyOutDir: false,
         rollupOptions: {
+            treeshake: false,
             input: './rangOraz/index.js',
             output: {
-                entryFileNames: 'bundle.js',
+                entryFileNames: 'rangOraz.min.js',
                 format: 'es'
             }
         }
