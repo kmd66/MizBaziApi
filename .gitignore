@@ -276,11 +276,12 @@ FakesAssemblies/
 
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
-node_modules/
 thumbnail/
+MizeBaziStream/src/wwwUrl/**
+!MizeBaziStream/src/wwwUrl/game/
+!MizeBaziStream/src/wwwUrl/game/**/*
 dist/
-wwwUrl/
-
+node_modules/
 # Visual Studio 6 build log
 *.plg
 
