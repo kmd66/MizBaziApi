@@ -31,25 +31,61 @@ function getDefensePosition(i) {
     const rectEl = el.getBoundingClientRect();
 
     el.style.position = 'fixed';
-    el.style.top = `${rectEl.top}px`;
-    el.style.left = `${rectEl.left}px`;
 
-    setTimeout(() => {
-        el.style.transition = 'top 500ms ease,left 500ms ease';
-        el.style.top = `${rect.top}px`;
-        el.style.left = `${rect.left + 10}px`;
-        setTimeout(() => {
-            el.style.transition = '';
-        }, 510);
-    }, 10);
+    const animation = el.animate([
+        { top: `${rectEl.top}px`, left: `${rectEl.left}px` },
+        { top: `${rect.top}px`, left: `${rect.left + 10}px` }
+    ], {
+        duration: 400,
+        easing: 'ease-in-out',
+        fill: 'forwards'
+    });
+
+    animation.onfinish = () => {
+        startStrim(i)
+    };
 
     tI++;
 }
+
 function resetDefensePosition() {
     const mainRightElements = document.querySelectorAll('.mainRight [class^="itemMain"]');
     Array.from(mainRightElements).forEach(el => {
-        el.style.positi = 'unset';
-        el.style.top = 'unset';
-        el.style.left = 'unset';
+        el.getAnimations().forEach(anim => anim.cancel());
+        el.style.position = 'unset';
     });
+
+    const soundDivSpan = document.querySelector('.soundDiv span');
+    const soundDivI = document.querySelector('.soundDiv i');
+    soundDivSpan.style.display = 'none';
+    soundDivI.style.display = 'none';
+    startStrimInt = -1;
+    if (startStrimTime)
+        clearTimeout(startStrimTime);
+    startStrimTime = null;
+}
+
+var startStrimInt = -1;
+let startStrimTime = null;
+function startStrim(i) {
+    const soundDivSpan = document.querySelector('.soundDiv span');
+    if (startStrimInt == 0) {
+        const soundDivI = document.querySelector('.soundDiv i');
+        soundDivSpan.style.display = 'none';
+        soundDivI.style.display = 'inline-block';
+        startStrimInt = -1;
+        startStrimTime = null;
+        return;
+    }
+
+    if (startStrimInt == -1) {
+        startStrimInt = 3;
+        soundDivSpan.style.display = 'unset';
+    }
+
+    soundDivSpan.innerHTML = startStrimInt;
+    startStrimTime = setTimeout(() => {
+        startStrimInt--;
+        startStrim(i);
+    }, 1000);
 }
