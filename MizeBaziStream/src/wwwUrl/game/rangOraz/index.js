@@ -60,13 +60,26 @@ function resetDefensePosition() {
     soundDivSpan.style.display = 'none';
     soundDivI.style.display = 'none';
     startStrimInt = -1;
-    if (startStrimTime)
-        clearTimeout(startStrimTime);
-    startStrimTime = null;
+    resetTimer();
+}
+function resetTimer() {
+    if (startStrimTimer)
+        clearTimeout(startStrimTimer);
+    startStrimTimer = null;
+
+    if (topTimeProgressTimer)
+        clearTimeout(topTimeProgressTimer);
+    topTimeProgressTimer = null;
+    const progressbar = document.querySelector('.progressbar div');
+    const mainTopTime = document.getElementById('mainTopTime');
+    topTimeProgressAnimation?.cancel();
+    topTimeProgressAnimation = null;
+    mainTopTime.innerHTML = `- -`;
+    progressbar.style.width = "0px";
 }
 
 var startStrimInt = -1;
-let startStrimTime = null;
+let startStrimTimer = null;
 function startStrim(i) {
     const soundDivSpan = document.querySelector('.soundDiv span');
     if (startStrimInt == 0) {
@@ -74,7 +87,8 @@ function startStrim(i) {
         soundDivSpan.style.display = 'none';
         soundDivI.style.display = 'inline-block';
         startStrimInt = -1;
-        startStrimTime = null;
+        startStrimTimer = null;
+        topTimeProgress(10, 10);
         return;
     }
 
@@ -84,8 +98,39 @@ function startStrim(i) {
     }
 
     soundDivSpan.innerHTML = startStrimInt;
-    startStrimTime = setTimeout(() => {
+    startStrimTimer = setTimeout(() => {
         startStrimInt--;
         startStrim(i);
+    }, 1000);
+}
+
+let topTimeProgressTimer = null;
+let topTimeProgressAnimation = null;
+function topTimeProgress(total, i) {
+    if (total == i) {
+    const progressbar = document.querySelector('.progressbar div');
+        //const percentage = (100 * i) / total;
+        progressbar.style.width = `100%`;
+        topTimeProgressAnimation = progressbar.animate([
+            { width: `100%`},
+            { width: `0%` }
+        ], {
+            duration: total * 1000,
+            easing: 'linear',
+            fill: 'forwards'
+        });
+    }
+    const mainTopTime = document.getElementById('mainTopTime');
+
+
+    if (i == 0) {
+        resetDefensePosition();
+        return;
+    }
+    const newTime = i - 1;
+    mainTopTime.innerHTML = `${i} ثانیه`;
+    topTimeProgressTimer = setTimeout(() => {
+        startStrimInt--;
+        topTimeProgress(total, newTime);
     }, 1000);
 }

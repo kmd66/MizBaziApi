@@ -21,9 +21,10 @@
 
     .containerGame .progressbar {
         height: 2px;
-        width:100%;
-        overflow:hidden;
-        background:#0094ff;
+        width: 100%;
+        overflow: hidden;
+        background: #0094ff;
+        direction: ltr;
     }
 
     .containerGame .progressbar  div{
