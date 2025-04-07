@@ -31,11 +31,11 @@
 <div v-show="chatState == 'main' && !loding" style="height: 100%;">
 
     <div class="d-flex mainTop">
-        <i class="iconsax" icon-name="logout-1" style="padding: 12px" v-on:click="exitFromGroup()"></i>
+        <i class="icon-logout-1" style="padding: 12px" v-on:click="exitFromGroup()"></i>
 
         <div> {{joinItem?.name}} </div>
 
-        <i class="iconsax" icon-name="menu-meatballs" style="padding: 12px" v-on:click="chatState = 'info'; pinTextEdite = pinText"></i>
+        <i class="icon-menu-meatballs" style="padding: 12px" v-on:click="chatState = 'info'; pinTextEdite = pinText"></i>
     </div>
 
     <div id="chatList" class="mainCenter mainCenterChat">
@@ -67,7 +67,7 @@
 
     <div class="mainBottom inputText-group mainBottomChat">
         <div class="label" v-on:click="sendMessage()">
-            <i class="iconsax" icon-name="send-1"></i>
+            <i class="icon-send-14"></i>
         </div>
         <input v-model="message" class="inputText" placeholder="ارسال پیام" autocomplete="off">
     </div>

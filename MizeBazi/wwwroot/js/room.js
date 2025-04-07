@@ -214,14 +214,13 @@ function updateRoom(b, user) {
         }
     }
     async function setUsers() {
-        var icon = await iconsaxByName("user-2");
         let elRoomTopUserList = ''
         for (let i = 0; i < roomInfo.count; i++) {
             if (usersInfo.length > i) {
                 elRoomTopUserList += `<div class="roomTopUserImg"><img src="${usersInfo[i].img}90.jpg"></div>`;
 
             } else {
-                elRoomTopUserList += `<div class="roomTopUserImg"><i class="iconsax" icon-name="user-2">${icon}</i></div>`;
+                elRoomTopUserList += `<div class="roomTopUserImg"><i class="icon-user-2"></i></div>`;
             }
 
         }

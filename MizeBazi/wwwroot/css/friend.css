@@ -30,13 +30,10 @@
     align-items: center;
     display: inline-grid;
 }
-    .mainBottom .iconsax {
+    .mainBottom [class^="icon-"] {
         margin: auto;
+        font-size: 1.7rem;
     }
-        .mainBottom .iconsax svg {
-            width: 1.7rem;
-            height: 1.7rem;
-        }
 .mainTop {
     height: 60px;
     padding: 0 14px;

@@ -25,7 +25,6 @@ function initSoket() {
     connection.on("GetGroupsReceive", (b) => {
         if (b && !vm) {
             vm = app.mount('#app');
-            init_iconsax();
             inputs();
         }
     });

@@ -10,7 +10,7 @@
     --ErrorColor: rgb(207 102 121);
     --SuccessColor: rgb(76 175 80);
     --AlertColor: #939000;
-    --IconsaxSize: 1.5rem;
+    --IconSize: 1.5rem;
 }
 
 ::-webkit-scrollbar {
@@ -60,30 +60,6 @@ h1, h2, h3, h4, h5, h6 {
 #root, #__next {
     isolation: isolate;
 }
-.iconsax {
-    display:inline-block;
-    speak:never;
-    font-style:normal;
-    font-weight:normal;
-    font-variant:normal;
-    text-transform:none;
-    line-height:var(--IconsaxSize);
-    vertical-align:middle;
-}
-
-    .iconsax svg {
-        display: block;
-        width: var(--IconsaxSize);
-        height: var(--IconsaxSize);
-    }
-
-.iconsax svg [stroke]{
-    stroke:var(--TextColor2);
-}
-
-    .iconsax svg [fill] {
-        fill: var(--TextColor2);
-    }
 
 @font-face {
     font-family: 'vazir';
@@ -279,14 +255,14 @@ a {
 .btn-green {
     background: rgb(14 109 18);
 }
-.btn .iconsax {
-    line-height: 1.2rem;
+.btn [class^="icon-"], .btn [class*=" icon-"] {
+    font-size: 1.2rem;
     float: right;
 }
-    .btn .iconsax svg {
-        width: 1.2rem;
-        height: 1.2rem;
-    }
+.btn [class^="icon-"], .btn [class*=" icon-"] {
+    font-size: 1.2rem;
+    float: right;
+}
 
 .btn.close-modal {
     position: unset;

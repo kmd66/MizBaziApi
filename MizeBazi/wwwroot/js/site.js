@@ -9,29 +9,8 @@ publicToken = '';
 
 document.addEventListener("DOMContentLoaded", () => {
     selectBtn();
-    init_iconsax();
     inputs();
 });
-function init_iconsax() {
-    document.querySelectorAll(".iconsax").forEach(iconsax => {
-        var TuT = iconsax.getAttribute("icon-name").toLowerCase().trim();
-        fetch("../icons/" + TuT + ".svg")
-            .then(n_n => {
-                return n_n.text();
-            })
-            .then(n_n => {
-                iconsax.innerHTML = n_n;
-                if (iconsax.querySelectorAll("[http-equiv='Content-Security-Policy']").length) {
-                    iconsax.innerHTML = "";
-                }
-            });
-    });
-}
-async function iconsaxByName(iconName) {
-    const response = await fetch("../icons/" + iconName + ".svg");
-    var data = await response.text();
-    return data;
-}
 function inputs() {
     $("input").attr("autocomplete", `off`)
     $(".form__field").each(function () {
@@ -49,7 +28,7 @@ function selectBtn() {
         var attr = $(this).attr(`data`);
         var attr = $(this).attr(`data`);
         var attr = $(this).attr(`data`);
-        $(this).html(`<input id="${$(this).attr('inputId')}" type="hidden"/><div style="text-align: center;"><span>${$(this).attr('placeholder') }</span> <i class="iconsax" icon-name="${$(this).attr('icon')}"></i></div>`);
+        $(this).html(`<input id="${$(this).attr('inputId')}" type="hidden"/><div style="text-align: center;"><span>${$(this).attr('placeholder') }</span> <i class="${$(this).attr('icon')}"></i></div>`);
 
         $(this).attr(`fromItems`, id);
         var attr = $(this).attr(`data`);

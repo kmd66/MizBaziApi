@@ -31,18 +31,10 @@
     font-size: 10px;
 }
 
-.itemImg .iconsax svg {
-    width: 2.5rem;
-    height: 2.5rem;
+.itemImg [class^="icon-"] {
+    font-size: 2.2rem;
 }
 
-.itemImg .iconsax {
-    line-height: 2.5rem;
-}
-
-    .itemImg .iconsax svg [fill] {
-        fill: unset !important;
-    }
 .userName {
     color: var(--TextColor2);
 }

@@ -21,7 +21,7 @@ namespace MizeBazi.Controllers
                 case 45: return View($"~/Views/Pages/Help/{gameId}.cshtml");
                 case 68: return View($"~/Views/Pages/Help/{gameId}.cshtml");
                 case 89: return View($"~/Views/Pages/Help/{gameId}.cshtml");
-                default: return View("~/Views/Pages/Index.cshtml");
+                default: return View("~/Views/Pages/Home.cshtml");
             }
         }
 
@@ -33,7 +33,7 @@ namespace MizeBazi.Controllers
                 case 45: return View($"~/Views/Pages/Main/{gameId}.cshtml");
                 case 68: return View($"~/Views/Pages/Main/{gameId}.cshtml");
                 case 89: return View($"~/Views/Pages/Main/{gameId}.cshtml");
-                default: return View("~/Views/Pages/Index.cshtml");
+                default: return View("~/Views/Pages/Home.cshtml");
             }
         }
 

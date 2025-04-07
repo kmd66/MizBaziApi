@@ -26,11 +26,10 @@ function initSoket() {
 
 async function setList(obj) {
     if (obj != null) {
-        var icon = await iconsaxByName("user-2");
         $('#userCount').text(`${obj.length} نفر`);
         var itemImg = $('.itemMain .itemImg');
         itemImg.each(function () {
-            $(this).html(`<i class="iconsax" icon-name="user-2">${icon}</i>`);
+            $(this).html(`<i class="icon-user-2"></i>`);
         });
 
         setIconColor();
@@ -48,10 +47,10 @@ async function setList(obj) {
 }
 
 function setIconColor() {
-    var svgs = $('.itemImg svg');
+    var svgs = $('.itemImg i');
     svgs.each(function () {
         var c = getRandomPastelColor();
-        $(this).attr("fill", `${c}`)
+        $(this).css("color", `${c}`);
     });
 }
 

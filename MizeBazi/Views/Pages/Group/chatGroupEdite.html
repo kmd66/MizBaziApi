@@ -63,22 +63,22 @@
     <div class="infoBottom d-flex">
 
         <div class="infoBottomItem" v-on:click="chatState = 'main'; edite = false">
-            <i class="iconsax" icon-name="chevron-right"></i>
+            <i class="icon-chevron-right"></i>
             <div class="text">بازگشت</div>
         </div>
 
         <div class="infoBottomItem" v-on:click="exitFromGroup()">
-            <i class="iconsax" icon-name="logout-1"></i>
+            <i class="icon-logout-1"></i>
             <div class="text">خروج ازگروه</div>
         </div>
 
         <div class="infoBottomItem" v-show="joinItem.isCreate" v-on:click="modalForRemove = true">
-            <i class="iconsax" icon-name="trash"></i>
+            <i class="icon-trash"></i>
             <div class="text">حذف گروه</div>
         </div>
 
         <div class="infoBottomItem" v-show="!joinItem.isCreate" v-on:click="modalForRemove = true">
-            <i class="iconsax" icon-name="user-1-delete"></i>
+            <i class="icon-user-1-delete"></i>
             <div class="text">ترک گروه</div>
         </div>
 
