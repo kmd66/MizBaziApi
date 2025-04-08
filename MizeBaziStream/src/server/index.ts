@@ -1,53 +1,56 @@
-﻿import express from 'express';
-import * as fs from 'fs';
-import config from './handler/config';
-import work from './handler/work';
-import api from './handler/api';
-import path from 'path';
-import { Server } from 'socket.io';
-import { socketHandlers } from './handler/socket';
-const https = require('httpolyglot');
+﻿import cluster from 'cluster';
+import { availableParallelism } from 'os';
+import express from 'express';
 
-const app = express();
+const numCPUs = availableParallelism();
+const portMap: Record<number, number> = {};
 
+function init() {
+    if (cluster.isPrimary) {
+        var basePort: number = 3000;
+        console.log(`Primary ${process.pid} is running`);
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-});
+        for (let i = 0; i < numCPUs; i++) {
+            basePort++;
+            const worker = cluster.fork({ PORT: basePort.toString() });
+            if (worker.process.pid) {
+                portMap[worker.process.pid] = basePort;
+            }
+        }
 
-// Middleware
-app.use(express.json());
+        cluster.on('exit', (worker) => {
+            if (worker.process.pid) {
+                const deadPort = portMap[worker.process.pid];
+                console.log(`Worker ${worker.process.pid} on port ${deadPort} died`);
 
-app.use('/', api);
+                // ایجاد worker جدید روی همون پورت
+                const newWorker = cluster.fork({ PORT: deadPort.toString() });
 
-app.use(express.static(path.join(__dirname, '../wwwUrl')));
+                if (newWorker.process.pid) {
+                    portMap[newWorker.process.pid] = basePort;
+                }
+                delete portMap[worker.process.pid];
+            }
 
-const options = {
-    key: fs.readFileSync(__dirname + config.sslKey, 'utf-8'),
-    cert: fs.readFileSync(__dirname + config.sslCrt, 'utf-8')
-};
-const httpsServer = https.createServer(options, app);
+        });
 
-const io = new Server(httpsServer, {
-    cors: {
-        origin: "*", // Adjust this for production
-        methods: ["GET", "POST"]
+        const statusApp = express();
+        const statusPort = 3000;
+
+        statusApp.get('/status', (req, res) => {
+            const array = Object.values(portMap);
+            res.json(array);
+        });
+
+        statusApp.listen(statusPort, () => {
+            console.log(`📡 Status API running at http://localhost:${statusPort}/status`);
+        });
     }
-});
+    else {
+        console.log(`Worker ${process.pid} started`);
+        require('./worker');
+    }
+}
 
-socketHandlers(io);
-
-; (async () => {
-    await work.init();
-})()
-
-const PORT = process.env.PORT || 3000;
-const ENV = process.env.NODE_ENV || 'production';
-
-httpsServer.listen(PORT, () => {
-    console.log(`سرور ${ENV} در حال اجرا است روی پورت ${PORT}`);
-    console.log(`آدرس: http://localhost:${PORT}`);
-});
+require('./worker');
+//init();

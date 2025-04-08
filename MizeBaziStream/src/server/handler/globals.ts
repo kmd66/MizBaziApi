@@ -1,62 +1,90 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import Loki from 'lokijs';
 import { RoomUsers } from './interfaces';
+import Database from 'better-sqlite3';
+import { Database as DatabaseType } from 'better-sqlite3'
 
-
-class Globals {
-    private static _instance: Globals;
-    public db: Loki;
-    public rooms: Loki.Collection<RoomUsers>;
+export class GlobalsDb {
+    private static _instance: GlobalsDb
+    public db = new Database(':memory:');
 
     private constructor() {
-        //اصلاح
-        // حذف ذخیره خودکار 
-        this.db = new Loki('global.db', {
-            autoload: true,
-            autoloadCallback: this.initializeDatabase.bind(this),
-            autosave: true,
-            autosaveInterval: 4000
-        });
-
-        this.rooms = this.db.addCollection<RoomUsers>('rooms', {});
+        this.createRoom();
     }
 
-    private initializeDatabase(): void {
-        this.rooms = this.db.getCollection('rooms');
-        if (!this.rooms) {
-            this.rooms = this.db.addCollection<RoomUsers>('rooms', {});
+    private createRoom(): void {
+        this.db.exec(`
+          CREATE TABLE IF NOT EXISTS rooms (
+            id TEXT PRIMARY KEY,
+            json TEXT
+          )
+        `);
+    }
+
+    public static getInstance(): GlobalsDb {
+        if (!GlobalsDb._instance) {
+            GlobalsDb._instance = (global as any).__GLOBALS_INSTANCE || new GlobalsDb();
+            (global as any).__GLOBALS_INSTANCE = GlobalsDb._instance
         }
+        return GlobalsDb._instance
     }
 
-    public static getInstance(): Globals {
-        if (!Globals._instance) {
-            Globals._instance = (global as any).__GLOBALS_INSTANCE || new Globals();
-            (global as any).__GLOBALS_INSTANCE = Globals._instance;
+    public getRoomDb(): RoomDb{
+        return RoomDb.getInstance();
+    }
+
+}
+
+export default GlobalsDb.getInstance();
+
+class RoomDb {
+    private static _instance: RoomDb
+    private db: DatabaseType;
+
+    private constructor() {
+        this.db = GlobalsDb.getInstance().db;
+    }
+
+    public static getInstance(): RoomDb {
+        if (!RoomDb._instance) {
+            RoomDb._instance = (global as any).__ROOMDB_INSTANCE || new RoomDb();
+            (global as any).__ROOMDB_INSTANCE = RoomDb._instance
         }
-        return Globals._instance;
+        return RoomDb._instance
     }
 
-    public addRoom(room: Omit<RoomUsers, 'id' | 'createdAt'>): RoomUsers | undefined {
-        const newRoom = {
+    public addRoom(room: RoomUsers): RoomUsers {
+        const newRoom: RoomUsers = {
             ...room,
             id: uuidv4(),
-            createdAt: new Date()
-        };
-        newRoom.createdAt = new Date();
-        //newRoom.updatedAt = now;
-        //newRoom.expiresAt = new Date(now.getTime() + 60 * 60 * 1000);
-        return this.rooms.insert(newRoom);
+            createdAt: new Date(),
+        }
+
+        const json = JSON.stringify(newRoom)
+
+        const stmt = this.db.prepare('INSERT INTO rooms (id, json) VALUES (?, ?)')
+        stmt.run(newRoom.id, json)
+
+        return newRoom
     }
 
     public getRoomById(id: string): RoomUsers | null {
-        return this.rooms.findOne({ id });
+        //const stmt = db.prepare<User[]>('SELECT * FROM users')
+        const stmt = this.db.prepare('SELECT json FROM rooms WHERE id = ?')
+        const row = stmt.get(id) as { json: string } | undefined
+        return row ? JSON.parse(row.json) : null
     }
 
-    public clear() {
-        this.rooms.clear();
+    public getRoomCount(): number {
+        const stmt = this.db.prepare('SELECT COUNT(*) as count FROM rooms');
+        const row = stmt.get() as { count: number };
+        return row.count;
     }
-    
+
+    public clear(): void {
+        const stmt = this.db.prepare('DELETE FROM rooms')
+        stmt.run()
+    }
 }
 
 
-export default Globals.getInstance();
+

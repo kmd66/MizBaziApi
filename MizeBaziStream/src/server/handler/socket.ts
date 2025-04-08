@@ -6,7 +6,7 @@ export interface ChatMessage {
 
 function disconnect(socket: Socket) {
     socket.on('disconnect', () => {
-        console.log(`کاربر قطع شد: ${socket.id}`);
+        console.log(`disconnect : ${socket.id}`);
     });
 }
 
@@ -21,16 +21,21 @@ function exitRoom(socket: Socket) {
     });
 }
 
-export function socketHandlers(io: Server) {
+export function socketHandlers(io: Server, pId: number) {
 
     const so = io.of('/mediasoup');
     so.on('connection', (socket: Socket) => {
-        console.log(`---connection------${socket.id} -- ${socket.handshake.auth.token}`);
+        console.log(`---connection---${pId}---${socket.id} -- ${socket.handshake.auth.token}`);
 
         socket.emit('connection-success', {
             socketId: socket.id
         })
-        
+
+        socket.on("message", (msg) => {
+            so.emit("messageResivd", {
+                msg: `[Worker ${process.pid}] ${msg}`
+            } );
+        });
         exitRoom(socket);
 
         disconnect(socket);
