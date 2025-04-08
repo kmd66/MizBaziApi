@@ -52,5 +52,6 @@ function init() {
     }
 }
 
+// اصلاح
 require('./worker');
 //init();

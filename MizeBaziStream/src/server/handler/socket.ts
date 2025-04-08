@@ -14,7 +14,7 @@ function exitRoom(socket: Socket) {
 
     socket.on('exitRoom', (msg: ChatMessage) => {
         console.log(`پیام دریافت شد: ${msg.username}: ${msg.message}`);
-        socket.emit('exitRoom', {
+        socket.emit('exitRoomReceive', {
             ...msg,
             timestamp: new Date()
         });
@@ -25,9 +25,9 @@ export function socketHandlers(io: Server, pId: number) {
 
     const so = io.of('/mediasoup');
     so.on('connection', (socket: Socket) => {
-        console.log(`---connection---${pId}---${socket.id} -- ${socket.handshake.auth.token}`);
+        //console.log(`---connection---${pId}---${socket.id} -- ${socket.handshake.auth.token}`);
 
-        socket.emit('connection-success', {
+        socket.emit('connectionReceive', {
             socketId: socket.id
         })
 
@@ -36,6 +36,13 @@ export function socketHandlers(io: Server, pId: number) {
                 msg: `[Worker ${process.pid}] ${msg}`
             } );
         });
+
+        socket.on('sendImg', function ({ data }) {
+            socket.broadcast.emit('ImgReceive', {
+                img: data
+            })
+        });
+
         exitRoom(socket);
 
         disconnect(socket);

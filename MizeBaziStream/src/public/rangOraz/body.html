@@ -1,76 +1,24 @@
-<div class="mainTop d-flex">
-    <div id="mainTopPeriod">دور 1</div>
-    <div id="mainTopTitle"></div>
-    <div id="mainTopTime">0 ثانیه</div>
-</div>
+<div class="fading-image"></div>
 
-<div class="progressbar">
-    <div style="width:0%"></div>
-</div>
+<div class="containerGame" id="app" v-cloak>
+    <div>
+        <div v-show="appModel.loding" class="lds-hourglass"></div>
+        <div v-show="!appModel.loding">
 
-<div class="main">
-
-    <div class="mainRight">
-
-        <div class="itemMain">
-            <div class="sitNumber">1</div>
-            <div class="itemMain1">
-                <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
-                <div class="itemName">مرتضی محمدی</div>
-                <div class="userName">mori66</div>
+            <div v-show="appModel.state == 'main'" style="height: 100%;">
+                <main-component ref="childmain" :app-model="appModel"></main-component>
             </div>
-        </div>
-        <div class="itemMain">
-            <div class="sitNumber">2</div>
-            <div class="itemMain2">
-                <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
-                <div class="itemName">مرتضی محمدی</div>
-                <div class="userName">mori66</div>
+            <div class="paintMain" v-show="appModel.state == 'paint'">
+                <paint-component ref="childpaint" :app-model="appModel"></paint-component>
             </div>
-        </div>
-        <div class="itemMain">
-            <div class="sitNumber">3</div>
-            <div class="itemMain3">
-                <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
-                <div class="itemName">مرتضی محمدی</div>
-                <div class="userName">mori66</div>
+            <div class="imgsForSpyMain" v-show="appModel.state == 'imgsForSpy'">
+                <imgs-for-spy-component ref="childimgsForSpy" :app-model="appModel"></imgs-for-spy-component>
             </div>
-        </div>
-        <div class="itemMain">
-            <div class="sitNumber">4</div>
-            <div class="itemMain4">
-                <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
-                <div class="itemName">مرتضی محمدی</div>
-                <div class="userName">mori66</div>
+            <div class="helpMain" v-show="appModel.state == 'help'">
+                <help-component ref="childihelp" :app-model="appModel"></help-component>
             </div>
-        </div>
-        <div class="itemMain">
-            <div class="sitNumber">5</div>
-            <div class="itemMain5">
-                <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
-                <div class="itemName">مرتضی محمدی</div>
-                <div class="userName">mori66</div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="mainLeft">
-        <div class="soundDiv">
-        <i class="icon-radar-14" style="display:none"></i>
-            <span style="display:none">5</span>
-        </div>
-
-        <div class="itemMain itemMain6">
-            <div id="defensePosition"></div>
-        </div>
-
-        <div class="paint">
         </div>
     </div>
-
 </div>
 
-<div class="mainBottom">
-    <button onclick="getDefensePosition(2)"> d</button>
-</div>
+<div id="errorBox"></div>

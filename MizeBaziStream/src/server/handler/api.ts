@@ -17,6 +17,37 @@ class PageRoot {
 
     constructor() { }
 
+    public async rangOraz(req: Request, res: Response) {
+        const filePathindex = path.join(__dirname, '../../public/rangOraz/index.html');
+        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
+
+        const filePathBody = path.join(__dirname, '../../public/rangOraz/body.html');
+        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
+
+        const filePathMain = path.join(__dirname, '../../public/rangOraz/main.html');
+        const mainPartial = fs.readFileSync(filePathMain, 'utf8');
+
+        const filePathPaint = path.join(__dirname, '../../public/rangOraz/paint.html');
+        const paintPartial = fs.readFileSync(filePathPaint, 'utf8');
+
+        const filePathImgsForSpy = path.join(__dirname, '../../public/rangOraz/imgsForSpy.html');
+        const imgsForSpyPartial = fs.readFileSync(filePathImgsForSpy, 'utf8');
+
+        const fileHelp = path.join(__dirname, '../../public/rangOraz/help.html');
+        const helpPartial = fs.readFileSync(fileHelp, 'utf8');
+
+        const renderedHtml = ejs.render(mainTemplate, {
+            fileBaseUsrl: this._fileBaseUrl,
+            body: bodyPartial,
+            main: mainPartial,
+            paint: paintPartial,
+            imgsForSpy: imgsForSpyPartial,
+            help: helpPartial,
+            title: 'رنگ و راز',
+        });
+        res.send(renderedHtml);
+    }
+
     public async mafia(req: Request, res: Response) {
         const filePathindex = path.join(__dirname, '../../public/mafia/index.html');
         const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
@@ -28,21 +59,6 @@ class PageRoot {
             fileBaseUsrl: this._fileBaseUrl,
             body: bodyPartial,
             title: 'مافیا',
-        });
-        res.send(renderedHtml);
-    }
-
-    public async rangOraz(req: Request, res: Response) {
-        const filePathindex = path.join(__dirname, '../../public/rangOraz/index.html');
-        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
-
-        const filePathBody = path.join(__dirname, '../../public/rangOraz/body.html');
-        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
-
-        const renderedHtml = ejs.render(mainTemplate, {
-            fileBaseUsrl: this._fileBaseUrl,
-            body: bodyPartial,
-            title: 'رنگ و راز',
         });
         res.send(renderedHtml);
     }
@@ -119,8 +135,8 @@ class ApiRoot {
                     userKey: key
                 });
             });
-            var roomDb = GlobalsDb.getRoomDb();
 
+            var roomDb = GlobalsDb.getRoomDb();
             roomDb.addRoom(model);
 
             const result = Result.successful<any>({ data: resultUser });

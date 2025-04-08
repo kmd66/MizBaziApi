@@ -3,6 +3,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><%= title %> - MizeBaziApi</title>
+    <script src="<%= fileBaseUsrl %>/lib/pako.min.js"></script>
     <script src="<%= fileBaseUsrl %>/lib/jalaali.min.js"></script>
     <script src="<%= fileBaseUsrl %>/game/game.js"></script>
     <link rel="stylesheet" href="<%= fileBaseUsrl %>/css/font.css" />
@@ -12,9 +13,11 @@
     <link rel="stylesheet" href="<%= fileBaseUsrl %>/game/rangOraz/index.css" />
 </head>
 <body>
-    <div class="fading-image"></div>
-    <div class="containerGame"><%- body %></div>
-    <div id="errorBox"></div>
+    <%- body %>
+    <%- main %>
+    <%- paint %>
+    <%- imgsForSpy %>
+    <%- help %>
     <script src="<%= fileBaseUsrl %>/lib/vue.min.js"></script>
     <script src="<%= fileBaseUsrl %>/lib/jquery.min.js"></script>
     <script src="<%= fileBaseUsrl %>/js/site.js"></script>

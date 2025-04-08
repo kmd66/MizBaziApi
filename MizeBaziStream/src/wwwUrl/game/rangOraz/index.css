@@ -13,6 +13,9 @@
     flex-direction: column;
     padding: 12px 0;
 }
+.mainRight i{
+    font-size: 1.2rem;
+}
 .mainLeft {
     display: flex;
     width: calc(100% - 80px);
@@ -59,15 +62,75 @@
     margin: 0 auto;
     height: 120px;
 }
-.paint{
-    width:100%;
-}
-.paint img{
-    width: 100%;
-}
 .soundDiv {
     height: 25px;
 }
 .soundDiv i{
     color: rgb(255 0 0);
+}
+.paint, paintImg {
+    width: 100%;
+}
+.paintImg img {
+    width: 100%;
+}
+.paint {
+    margin: 14px 0;
+    margin: auto;
+}
+.paintMain {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 14px
+}
+.imgResivde{
+    width: 200px;
+    transform: rotate(90deg);
+    margin: auto;
+}
+.helpMain .main {
+    height: calc(100% - 80px);
+    overflow-y: auto;
+    padding: 14px;
+}
+.helpMain .mainBottom {
+    height: 80px;
+    padding: 0;
+}
+.helpMain .item i {
+    font-size: 2rem;
+}
+.helpMain .item span {
+    font-size: 0.7rem;
+}
+.helpMain .item {
+    height: 100%;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 16.66%;
+    text-align: center;
+}
+.helpIcon, .helpTitle {
+    text-align: center;
+}
+.helpIcon i{
+    font-size: 8rem;
+    line-height: 8rem;
+}
+.helpTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.helpMain hr {
+    margin: 14px 0;
+    border-color: var(--TextColor3);
+}
+.helpMain p {
+    line-height: 2.2rem;
 }

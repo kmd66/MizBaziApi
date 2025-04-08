@@ -1,0 +1,90 @@
+
+<template id="main-template">
+
+    <div class="mainTemplate">
+        <div class="mainTop d-flex">
+            <div class="mainTopPeriod">دور {{door}}</div>
+            <div class="mainTopTitle" @click="appModel.state = 'help'">
+                <i :class="iconNaghsh"></i>
+            </div>
+            <div class="mainTopTime">{{mainTopTime}}</div>
+        </div>
+
+        <div class="progressbar">
+            <div :style="{ width: progressbarWidth }"></div>
+        </div>
+
+        <div class="main">
+
+            <div class="mainRight">
+
+                <div class="itemMain">
+                    <div class="d-flex">
+                        <div class="sitNumber">1</div>
+                        <i class="icon-star4" style="color: var(--NaghshSefidColor);"></i>
+                    </div>
+                    <div class="itemMain1">
+                        <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
+                        <div class="itemName">مرتضی محمدی</div>
+                        <div class="userName">mori66</div>
+                    </div>
+                </div>
+                <div class="itemMain">
+                    <div class="sitNumber">2</div>
+                    <div class="itemMain2">
+                        <div class="itemImg"><i class="icon-mortarboardHat" style="font-size: 2.8rem;"></i></div>
+                        <div class="itemName">مرتضی محمدی</div>
+                        <div class="userName">mori66</div>
+                    </div>
+                </div>
+                <div class="itemMain">
+                    <div class="sitNumber">3</div>
+                    <div class="itemMain3">
+                        <div class="itemImg"><i class="icon-spy" style="font-size: 2.8rem;"></i></div>
+                        <div class="itemName">مرتضی محمدی</div>
+                        <div class="userName">mori66</div>
+                    </div>
+                </div>
+                <div class="itemMain">
+                    <div class="d-flex">
+                        <div class="sitNumber">4</div>
+                        <i class="icon-crown4" style="color: var(--NaghshSefidColor);"></i>
+                    </div>
+                    <div class="itemMain4">
+                        <div class="itemImg"><i class="icon-policeHat" style="font-size: 2.8rem;"></i></div>
+                        <div class="itemName">مرتضی محمدی</div>
+                        <div class="userName">mori66</div>
+                    </div>
+                </div>
+                <div class="itemMain">
+                    <div class="sitNumber">5</div>
+                    <div class="itemMain5">
+                        <div class="itemImg"><i class="icon-artistHat" style="font-size: 2.8rem;"></i></div>
+                        <div class="itemName">مرتضی محمدی</div>
+                        <div class="userName">mori66</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mainLeft">
+                <div class="soundDiv">
+                    <i class="icon-radar-14" :style="{ display: soundDivI == true ? 'inline-block':'none'}"></i>
+                    <span :style="{ display: soundDivSpan == true ? 'unset':'none'}">{{soundDivTime}}</span>
+                </div>
+
+                <div class="itemMain itemMain6">
+                    <div class="defensePosition"></div>
+                </div>
+
+                <div class="paintImg">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mainBottom">
+            <button onclick="main.getDefensePosition(2)"> d</button>
+        </div>
+    </div>
+</template>

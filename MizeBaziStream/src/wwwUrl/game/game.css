@@ -1,7 +1,16 @@
+:root {
+    --NaghshSefidColor: #83ff00;
+    --NaghshSiahColor: #f35a9f;
+}
+body{
+    overflow:hidden
+}
 .containerGame {
     position: relative;
     padding: 0;
     overflow: hidden;
+    width: 100%;
+    height: 100vh;
 }
 
     .containerGame .mainTop {
@@ -39,3 +48,12 @@
         background: var(--BaseColor);
         align-items: center;
     }
+.icon-zendanban, .icon-shekarchi, .icon-rointan, .icon-policeHat, .icon-mortarboardHat,
+.icon-mobarez, .icon-karagah, .icon-kalantar, .icon-ahangar, .icon-artistHat {
+    color: var(--NaghshSefidColor)
+}
+
+.icon-mafia1, .icon-mafia2, .icon-mafia3, .icon-spy {
+    color: var(--NaghshSiahColor)
+}
+
