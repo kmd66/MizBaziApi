@@ -10,7 +10,7 @@
             <div class="mainTopTime">{{mainTopTime}}</div>
         </div>
 
-        <div class="progressbar">
+        <div class="progressbar aw213sdaf">
             <div :style="{ width: progressbarWidth }"></div>
         </div>
 
@@ -48,7 +48,7 @@
                 <div class="itemMain">
                     <div class="d-flex">
                         <div class="sitNumber">4</div>
-                        <i class="icon-crown4" style="color: var(--NaghshSefidColor);"></i>
+                        <i class="icon-medal4" style="color: var(--NaghshSefidColor);"></i>
                     </div>
                     <div class="itemMain4">
                         <div class="itemImg"><i class="icon-policeHat" style="font-size: 2.8rem;"></i></div>
@@ -85,6 +85,8 @@
 
         <div class="mainBottom">
             <button onclick="main.getDefensePosition(2)"> d</button>
+            <button @click="stickers = !stickers"> {{stickers}}</button>
         </div>
     </div>
+    <sticker-component :stickers="stickers" @update-stickers="handleStickersUpdate"></sticker-component>
 </template>

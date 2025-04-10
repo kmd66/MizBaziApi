@@ -18,6 +18,9 @@ class PageRoot {
     constructor() { }
 
     public async rangOraz(req: Request, res: Response) {
+        const fileSticker = path.join(__dirname, '../../public/sticker.html');
+        const stickerTemplate = fs.readFileSync(fileSticker, 'utf8');
+
         const filePathindex = path.join(__dirname, '../../public/rangOraz/index.html');
         const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
 
@@ -38,6 +41,8 @@ class PageRoot {
 
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
+            sticker: stickerTemplate,
+
             body: bodyPartial,
             main: mainPartial,
             paint: paintPartial,
@@ -92,7 +97,7 @@ class PageRoot {
         });
         res.send(renderedHtml);
     }
-
+    
 }
 class ApiRoot {
     constructor() { }
@@ -182,6 +187,15 @@ class TestApiRoot {
         var t = await appApiRoots.createRoom(req1, res1);
         return res.status(200).json(t);
     }
+
+    public async stressTest(req: Request, res: Response) {
+        let sum = 0;
+        for (let i = 0; i < 1e6; i++) {
+            Math.floor(Math.random() * 1e6); 
+            sum += Math.sqrt(i);
+        }
+        res.send(`Done. Sum: ${sum}`);
+    }
 }
 
 const router = Router();
@@ -199,6 +213,7 @@ router.post('/api/createRoom', (req, res) => appApiRoots.createRoom(req, res));
 
 
 router.get('/testApi/CreateRoom', (req, res) => appTestApiRoot.testCreateRoom(req, res));
+router.get('/stressTest', (req, res) => appTestApiRoot.stressTest(req, res));
 
 
 export default router;

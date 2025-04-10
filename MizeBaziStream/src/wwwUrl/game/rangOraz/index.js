@@ -4,6 +4,7 @@ import './main'
 import './paint'
 import './imgsForSpy'
 import './help'
+import '../sticker'
 
 
 const app = Vue.createApp({
@@ -28,7 +29,7 @@ const app = Vue.createApp({
                 case 'imgsForSpy':
                     vm.$refs.childimgsForSpy.init(); break;
                 case 'help':
-                    vm.$refs.childihelp.init(); break;
+                    vm.$refs.childhelp.init(); break;
             }
             this.appModel.state = state;
         }
@@ -38,5 +39,6 @@ main.Component(app);
 paint.Component(app);
 imgsForSpy.Component(app);
 help.Component(app);
+sticker.Component(app);
 vm = app.mount('#app');
 socketHandler.initSoket();

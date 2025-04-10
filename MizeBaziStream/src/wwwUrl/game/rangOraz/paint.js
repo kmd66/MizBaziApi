@@ -3,13 +3,28 @@
     const elContainerGame = document.querySelector('.containerGame');
     const elPaint = document.querySelector('.paint');
     let widthPaint = elContainerGame.offsetWidth - 28;
-    if (widthPaint > 350)
-        widthPaint = 350;
+    if (widthPaint > 400)
+        widthPaint = 400;
     let heightPaint = (widthPaint * 3) / 2;
     elPaint.style.width = `${widthPaint}px`;
     elPaint.style.height = `${heightPaint}px`;
     elPaint.width = widthPaint;
     elPaint.height = heightPaint;
+
+    const el = document.querySelector(`.awa32sdaf div`);
+    el.style.height = `100%`;
+    const  animation = el.animate([
+        { height: `100%` },
+        { height: `0%` }
+    ], {
+        duration: globalModel.progressTime * 1000,
+        easing: 'linear',
+        fill: 'forwards'
+    });
+
+    animation.onfinish = () => {
+        el.style.height = `0px`;
+    };
 }
 paint.init = function () {
     paint.sendImgTimer = setInterval(() => {
@@ -23,11 +38,8 @@ paint.init = function () {
     const ctx = canvas.getContext('2d');
 
     let drawing = false;
-    let erasing = false;
     var penColor = '#000';
-    var lineWidth = 5;
 
-    document.getElementById('range').addEventListener("input", (event) => { lineWidth = event.target.value; });
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -60,9 +72,9 @@ paint.init = function () {
             pos = { x: e.clientX - canvas.offsetLeft, y: e.clientY - canvas.offsetTop };
         }
 
-        ctx.lineWidth = erasing ? 20 : lineWidth;
+        ctx.lineWidth = vm.$refs.childpaint.erasing ? vm.$refs.childpaint.erasingWidth : vm.$refs.childpaint.penWidth;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = erasing ? 'white' : penColor;
+        ctx.strokeStyle = vm.$refs.childpaint.erasing ? 'white' : penColor;
 
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
@@ -83,12 +95,6 @@ paint.init = function () {
     canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
     canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
-    // فعال کردن حالت پاک کن
-    const eraserBtn = document.getElementById('eraserBtn');
-    eraserBtn.addEventListener('click', () => {
-        erasing = !erasing;
-        eraserBtn.textContent = erasing ? 'حالت نقاشی' : 'پاک کن';
-    });
 }
 
 paint.Component = function (app) {
@@ -96,6 +102,9 @@ paint.Component = function (app) {
         template: '#paint-template',
         data() {
             return {
+                erasing: false,
+                penWidth: 5,
+                erasingWidth: 30
             }
         },
         props: {
@@ -107,7 +116,6 @@ paint.Component = function (app) {
         },
         methods: {
             init() {
-                debugger
                 if (!main.painSize) {
                     paint.setPainSize();
                     paint.init()

@@ -10,7 +10,7 @@ function init() {
         var basePort: number = 3000;
         console.log(`Primary ${process.pid} is running`);
 
-        for (let i = 0; i < numCPUs; i++) {
+        for (let i = 0; i < numCPUs - 1; i++) {
             basePort++;
             const worker = cluster.fork({ PORT: basePort.toString() });
             if (worker.process.pid) {
@@ -23,7 +23,6 @@ function init() {
                 const deadPort = portMap[worker.process.pid];
                 console.log(`Worker ${worker.process.pid} on port ${deadPort} died`);
 
-                // ایجاد worker جدید روی همون پورت
                 const newWorker = cluster.fork({ PORT: deadPort.toString() });
 
                 if (newWorker.process.pid) {
@@ -53,5 +52,7 @@ function init() {
 }
 
 // اصلاح
+//حتماً! اینجا یه benchmark ساده می‌ذارم که نشون بده آیا مستر درگیر کار سنگینی شده یا نه.
+//جدا کردن 1 cpu برای پردازش صوت
 require('./worker');
 //init();

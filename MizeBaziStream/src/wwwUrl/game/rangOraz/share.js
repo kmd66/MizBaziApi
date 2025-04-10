@@ -10,6 +10,7 @@ function initShare() {
     globalModel.userId;
     globalModel.userIntId;
     globalModel.roomId;
+    globalModel.progressTime = 10;
 
     main = {};
     main.startStrimInt = -1;
@@ -24,6 +25,8 @@ function initShare() {
     help = {};
 
     socketHandler = {};
+
+    sticker = {};
 }
 
 initShare();

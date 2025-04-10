@@ -38,13 +38,13 @@ const io = new Server(httpsServer, {
 });
 socketHandlers(io, process.pid);
 
-; (async () => {
-    await work.init();
-})()
+//; (async () => {
+//    await work.init();
+//})()
 
 const PORT = process.env.PORT || 3000;
 const ENV = process.env.NODE_ENV || 'production';
 
 httpsServer.listen(PORT, () => {
-    console.log(`server ${ENV} work in http://localhost:${PORT}`);
+    console.log(`serverid: ${process.pid}  ${ENV} work in http://localhost:${PORT}`);
 });

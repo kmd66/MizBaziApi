@@ -1,0 +1,9 @@
+
+<template id="sticker-template">
+    <div class="stickerMain" v-show="stickers">
+
+        <span v-for="(e, i) in icons" @click="click(i)">
+            {{e}}
+        </span>
+    </div>
+</template>

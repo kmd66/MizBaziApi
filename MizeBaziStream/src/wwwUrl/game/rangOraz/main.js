@@ -68,7 +68,7 @@ main.startStrim = function (i) {
         vm.$refs.childmain.soundDivSpan = false;
         main.startStrimInt = -1;
         main.startStrimTimer = null;
-        main.topTimeProgress(10, 10);
+        main.topTimeProgress(-100);
         return;
     }
 
@@ -84,16 +84,17 @@ main.startStrim = function (i) {
     }, 1000);
 }
 
-main.topTimeProgress = function (total, i) {
-    if (total == i) {
-        const progressbar = document.querySelector('.progressbar div');
+main.topTimeProgress = function (i) {
+    if (i == -100) {
+        i = globalModel.progressTime;
+        const progressbar = document.querySelector('.aw213sdaf div');
         //const percentage = (100 * i) / total;
         progressbar.style.width = `100%`;
         main.topTimeProgressAnimation = progressbar.animate([
             { width: `100%` },
             { width: `0%` }
         ], {
-            duration: total * 1000,
+            duration: globalModel.progressTime * 1000,
             easing: 'linear',
             fill: 'forwards'
         });
@@ -107,8 +108,47 @@ main.topTimeProgress = function (total, i) {
     vm.$refs.childmain.mainTopTime = `${i} ثانیه`;
     main.topTimeProgressTimer = setTimeout(() => {
         main.startStrimInt--;
-        main.topTimeProgress(total, newTime);
+        main.topTimeProgress(newTime);
     }, 1000);
+}
+
+main.addSticker = async function (text, i) {
+    if (vm.$refs.childmain.addSticker == false)
+        return;
+    vm.$refs.childmain.addSticker = false;
+    try {
+        await main.addStickerVideo(text, i)
+        vm.$refs.childmain.addSticker = true;
+
+    } catch (error) {
+        vm.$refs.childmain.addSticker = true;
+    }
+}
+main.addStickerVideo = function (text, i) {
+    return new Promise(async (resolve) => {
+        try {
+            const selector = `.itemMain${i} .itemImg`;
+            const itemMain = document.querySelector(selector);
+
+            const video = document.createElement('video');
+            video.src = `/sticker/${text}.webm`;
+            video.className = 'stickerVideo';
+
+            itemMain.appendChild(video);
+
+            await video.play();
+
+            video.addEventListener('ended', () => {
+                setTimeout(() => {
+                    video.remove();
+                    resolve(true);
+                }, 500);
+            }, { once: true });
+
+        } catch (error) {
+            resolve(true);
+        }
+    });
 }
 
 main.Component = function (app) {
@@ -116,6 +156,8 @@ main.Component = function (app) {
         template: '#main-template',
         data() {
             return {
+                stickers: false,
+                addSticker: true,
                 mainTopTime: '- ----',
                 iconNaghsh:'icon-spy',
                 door: '-',
@@ -140,6 +182,10 @@ main.Component = function (app) {
                     });
                 }
             },
+            handleStickersUpdate(text) {
+                main.addSticker(text, 1);
+                this.stickers = false;
+            }
         }
     });
 }

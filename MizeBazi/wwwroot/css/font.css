@@ -18,6 +18,54 @@
     color: var(--TextColor2);
 }
 
+.icon-hand:before {
+  content: "\e93e";
+}
+.icon-clock4:before {
+  content: "\2a";
+}
+.icon-cpu-setting4:before {
+  content: "\54";
+}
+.icon-edit-24:before {
+  content: "\8d";
+}
+.icon-eraser-14:before {
+  content: "\17f";
+}
+.icon-medal4:before {
+  content: "\15a";
+}
+.icon-paperclip4:before {
+  content: "\1bb";
+}
+.icon-setting-24:before {
+  content: "\23b";
+}
+.icon-setting-34:before {
+  content: "\23c";
+}
+.icon-setting-54:before {
+  content: "\23e";
+}
+.icon-medal5:before {
+  content: "\4dc";
+}
+.icon-receipt5:before {
+  content: "\56f";
+}
+.icon-attach-square:before {
+  content: "\e943";
+}
+.icon-flag:before {
+  content: "\ea55";
+}
+.icon-flash-1:before {
+  content: "\ea58";
+}
+.icon-lamp-charge:before {
+  content: "\eaca";
+}
 .icon-smart-car4:before {
   content: "\25f";
 }

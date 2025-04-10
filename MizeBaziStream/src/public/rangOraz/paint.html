@@ -1,8 +1,22 @@
 ﻿
 <template id="paint-template">
-    <button id="eraserBtn">پاک کن</button>
+    <div class="main">
+        <div>موضوع نقاشی</div>
 
-    <input type="range" id="range" value="5" max="30" min="1" />
-    <img id="img" src="" style="width:200px; height:200px" />
-    <canvas id="canvas" class="paint"></canvas>
+        <canvas id="canvas" class="paint"></canvas>
+        <div class="d-flex">
+            <input v-show="erasing" v-model="erasingWidth"
+                   type="range" max="60" min="10" style="width: calc(100% - 100px);" />
+            <input v-show="!erasing" v-model="penWidth"
+                   type="range" max="30" min="1" style="width: calc(100% - 100px);" />
+            <div class="pakkon" @click="erasing = !erasing">
+                <div :class="erasing==true? 'icon-eraser-14':'icon-edit-24'"></div>
+                <div>{{ erasing==true? 'پاک‌کن':'قلم'}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="progressVrbar awa32sdaf">
+        <div style="height:0px"></div>
+    </div>
+
 </template>
