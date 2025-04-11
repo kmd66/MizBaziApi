@@ -3,7 +3,7 @@
     display: none;
 }
 .fading-image {
-    background-image: url('../img/group.png');
+    background-image: url('/img/group.png');
 }
 .container {
     padding: 0px;

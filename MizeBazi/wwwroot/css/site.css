@@ -63,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @font-face {
     font-family: 'vazir';
-    src: url('../fonts/vazir.ttf') format('truetype');
+    src: url('/fonts/vazir.ttf') format('truetype');
 }
 
 body {

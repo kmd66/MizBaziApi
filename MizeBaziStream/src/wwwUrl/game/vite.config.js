@@ -1,12 +1,12 @@
 ﻿export default {
     build: {
-        outDir: './dist',
+        outDir: './rangOraz',
         emptyOutDir: false,
         rollupOptions: {
             treeshake: false,
             input: './rangOraz/index.js',
             output: {
-                entryFileNames: 'rangOraz.min.js',
+                entryFileNames: 'index.min.js',
                 format: 'es'
             }
         }

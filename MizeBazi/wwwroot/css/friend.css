@@ -1,5 +1,5 @@
 ﻿.fading-image {
-    background-image: url('../img/friend.png');
+    background-image: url('/img/friend.png');
 }
     .fading-image::after {
         background: radial-gradient(circle, #141e30ed 0%, var(--BackgroundColor) 100%);
