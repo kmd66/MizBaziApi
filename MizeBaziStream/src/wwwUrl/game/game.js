@@ -30,9 +30,8 @@ function addStickerVideo(text, i) {
 }
 
 function checkEmoji(text, i) {
-
     const video = document.createElement('video');
-    video.src = `/sticker/${text}.webm`;
+    video.src = `data:video/mp4;base64,${stickerDATA[text]}`;
     video.className = 'stickerVideo';
     if (i < 6) {
         if (text == 'l1' || text == 'l2')
