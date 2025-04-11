@@ -17,6 +17,9 @@ const app = Vue.createApp({
         }
     },
     created() {
+        this.$nextTick(() => {
+            setMainTemplate();
+        });
     },
     methods: {
         changeState(state) {

@@ -48,6 +48,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 .sitNumber {
     font-size: 0.7rem;
@@ -165,3 +166,6 @@
     position: fixed;
     top: 7px;
 }
+.mainBottom i {
+    padding: 5px;
+}   

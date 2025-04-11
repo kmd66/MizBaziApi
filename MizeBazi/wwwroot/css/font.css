@@ -18,6 +18,9 @@
     color: var(--TextColor2);
 }
 
+.icon-chalesh:before {
+  content: "\e93f";
+}
 .icon-hand:before {
   content: "\e93e";
 }

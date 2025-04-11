@@ -117,38 +117,12 @@ main.addSticker = async function (text, i) {
         return;
     vm.$refs.childmain.addSticker = false;
     try {
-        await main.addStickerVideo(text, i)
+        await addStickerVideo(text, i)
         vm.$refs.childmain.addSticker = true;
 
     } catch (error) {
         vm.$refs.childmain.addSticker = true;
     }
-}
-main.addStickerVideo = function (text, i) {
-    return new Promise(async (resolve) => {
-        try {
-            const selector = `.itemMain${i} .itemImg`;
-            const itemMain = document.querySelector(selector);
-
-            const video = document.createElement('video');
-            video.src = `/sticker/${text}.webm`;
-            video.className = 'stickerVideo';
-
-            itemMain.appendChild(video);
-
-            await video.play();
-
-            video.addEventListener('ended', () => {
-                setTimeout(() => {
-                    video.remove();
-                    resolve(true);
-                }, 500);
-            }, { once: true });
-
-        } catch (error) {
-            resolve(true);
-        }
-    });
 }
 
 main.Component = function (app) {
@@ -185,6 +159,19 @@ main.Component = function (app) {
             handleStickersUpdate(text) {
                 main.addSticker(text, 1);
                 this.stickers = false;
+            },
+            addChalesh() {
+                if (tI > 5) {
+                    tI = 1;
+                    removeChalesh();
+                    return;
+                }
+                addChalesh(tI);
+                tI++;
+            },
+            itemMainClick(i) {
+                const coinToss = Math.random() > 0.5 ? 0 : 1;
+                addTarget(i, coinToss);
             }
         }
     });

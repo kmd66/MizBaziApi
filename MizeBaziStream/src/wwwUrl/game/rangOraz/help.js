@@ -15,9 +15,11 @@
                 default: () => ({})
             },
         },
+        created() {
+            this.selectItem = this.helpComment[0];
+        },
         methods: {
             init() {
-                this.selectItem = this.helpComment[0];
             },
             changeSelectType(item) {
                 this.selectItem = item;
