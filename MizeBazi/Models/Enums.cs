@@ -30,7 +30,7 @@ public static class RomHubCountHelper
 
     }
     public static string GameUrl(this GameType val, Guid id)
-        => GameLinkSection[$"Url:{val.ToString()}"]+$"?{id}";
+        => GameLinkSection[$"BaseUrl:{val.ToString()}"]+$"?{id}";
     public static string GameBaseUrl(this GameType val)
         => GameLinkSection[$"BaseUrl:{val.ToString()}"];
     public static string CreateRoomUrl(this GameType val)
