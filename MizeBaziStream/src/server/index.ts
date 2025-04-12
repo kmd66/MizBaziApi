@@ -36,7 +36,7 @@ function init() {
         const statusApp = express();
         const statusPort = 3000;
 
-        statusApp.get('/status', (req, res) => {
+        statusApp.post('/status', (req, res) => {
             const array = Object.values(portMap);
             res.json(array);
         });
@@ -54,5 +54,5 @@ function init() {
 // اصلاح
 //حتماً! اینجا یه benchmark ساده می‌ذارم که نشون بده آیا مستر درگیر کار سنگینی شده یا نه.
 //جدا کردن 1 cpu برای پردازش صوت
-require('./worker');
-//init();
+//require('./worker');
+init();

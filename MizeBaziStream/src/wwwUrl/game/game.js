@@ -1,4 +1,11 @@
 ﻿
+//replace
+publicDeviceId = '';
+publicToken = '';
+publicApiBaseUrl = '';
+publicHubBaseUrl = '';
+//replace
+
 let mainTemplate;
 let isAddChalesh = true;
 let isAddTarget = true;

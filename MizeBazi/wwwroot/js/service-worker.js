@@ -30,11 +30,11 @@ const ASSETS_TO_CACHE = [
     '/css/webMain.css',
 
 
-    '/img/webHome/room.png',
-    '/img/webHome/1.png',
-    '/img/webHome/2.png',
-    '/img/webHome/3.png',
-    '/img/webHome/4.png',
+    '/img/room.png',
+    '/img/1.png',
+    '/img/2.png',
+    '/img/3.png',
+    '/img/4.png',
     '/img/WheelFortune.jpg',
 
 

@@ -14,7 +14,7 @@ public class AppRequest
 
         return result.data.JsonToObject<Result>();
     }
-    public async Task<Result<T>> Post<T>(object body, string url)
+    public async Task<Result<T>> Post<T>(object body, string url, bool resultModel= true)
     {
         var result = await post(body, url);
         if (!result.success)
@@ -22,7 +22,10 @@ public class AppRequest
 
         try
         {
-            return result.data.JsonToObject<Result<T>>();
+            if(resultModel)
+                return result.data.JsonToObject<Result<T>>();
+            var model = result.data.JsonToObject<T>();
+            return Result<T>.Successful(data:model);
         }
         catch (Exception e)
         {

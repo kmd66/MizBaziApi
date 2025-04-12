@@ -1,14 +1,14 @@
 ﻿import io from 'socket.io-client'
 
 socketHandler.initSoket = function () {
-    globalModel.connection = io("/mediasoup", {
+    globalModel.connection = io(`${publicHubBaseUrl}/mediasoup`, {
         auth: {
             token: "1wwwwwww23"
         }
     });
 
     globalModel.connection.on('connectionReceive', ({ socketId }) => {
-        console.log(`---ss----socketId :${socketId}`);
+        console.log(`---a---socketId :${socketId}`);
         socketCallBack();
     });
 
