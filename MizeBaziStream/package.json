@@ -8,8 +8,7 @@
     "start": "ts-node dist/server/index.js",
     "build": "tsc && copyfiles -u 1 src/public/**/* dist/",
     "serve": "node dist/index.js",
-    "dev": "nodemon",
-    "watch": "watchify src/wwwUrl/game/rangOraz/index.js -o src/wwwUrl/game/rangOraz/bundle.js -v"
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "morteza",
