@@ -5,7 +5,7 @@
         <div v-show="appModel.loding" class="lds-hourglass"></div>
         <div v-show="!appModel.loding">
 
-            <div v-show="appModel.state == 'main'" style="height: 100%;">
+            <div v-show="appModel.state == 'main'">
                 <main-component ref="childmain" :app-model="appModel"></main-component>
             </div>
             <div class="paintMain" v-show="appModel.state == 'paint'">
