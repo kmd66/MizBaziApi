@@ -4,16 +4,16 @@ var key;
 
 var joinItem;
 
-var urlJoin = '/api/v1/Group/Join';
-var urlSearch = '/api/v1/Group/Search';
-var urlGetMyGroup = '/api/v1/Group/GetMyGroup';
-var urlList = '/api/v1/Group/List';
-var urlAdd = '/api/v1/Group/Add';
-var urlEdit = '/api/v1/Group/Edit';
+const urlJoin = `${publicApiBaseUrl}/api/v1/Group/Join`;
+const urlSearch = `${publicApiBaseUrl}/api/v1/Group/Search`;
+const urlGetMyGroup = `${publicApiBaseUrl}/api/v1/Group/GetMyGroup`;
+const urlList = `${publicApiBaseUrl}/api/v1/Group/List`;
+const urlAdd = `${publicApiBaseUrl}/api/v1/Group/Add`;
+const urlEdit = `${publicApiBaseUrl}/api/v1/Group/Edit`;
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("/grouphub")
+        .withUrl(`${publicHubBaseUrl}/grouphub`)
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 

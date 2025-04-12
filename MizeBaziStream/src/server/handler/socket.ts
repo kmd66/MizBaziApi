@@ -6,14 +6,12 @@ export interface ChatMessage {
 
 function disconnect(socket: Socket) {
     socket.on('disconnect', () => {
-        console.log(`disconnect : ${socket.id}`);
     });
 }
 
 function exitRoom(socket: Socket) {
 
     socket.on('exitRoom', (msg: ChatMessage) => {
-        console.log(`پیام دریافت شد: ${msg.username}: ${msg.message}`);
         socket.emit('exitRoomReceive', {
             ...msg,
             timestamp: new Date()

@@ -4,22 +4,22 @@ var key;
 var userId;
 var roomId;
 
-var urlListRequest = '/api/v1/Friend/ListRequest';
-var urlList = '/api/v1/Friend/List';
-var urlListBlock = '/api/v1/Friend/ListBlock';
-var urlRequestEdit = '/api/v1/Friend/RequestEdit';
-var urlRemoveBlock = '/api/v1/Friend/RemoveBlock?userId=';
-var urlRemoveFriend = '/api/v1/Friend/RemoveFriend?userId=';
-var urlBlock = '/api/v1/Friend/Block?userId=';
+const urlListRequest = `${publicApiBaseUrl}/api/v1/Friend/ListRequest`;
+const urlList = `${publicApiBaseUrl}/api/v1/Friend/List`;
+const urlListBlock = `${publicApiBaseUrl}/api/v1/Friend/ListBlock`;
+const urlRequestEdit = `${publicApiBaseUrl}/api/v1/Friend/RequestEdit`;
+const urlRemoveBlock = `${publicApiBaseUrl}/api/v1/Friend/RemoveBlock?userId=`;
+const urlRemoveFriend = `${publicApiBaseUrl}/api/v1/Friend/RemoveFriend?userId=`;
+const urlBlock = `${publicApiBaseUrl}/api/v1/Friend/Block?userId=`;
 
-var urlMessageList = '/api/v1/Message/List';
-var urlMessageListForRoom = '/api/v1/Message/ListForRoom?userId=';
-var urlMessageAdd= '/api/v1/Message/Add';
-var urlMessageRemove = '/api/v1/Message/Remove';
+const urlMessageList = `${publicApiBaseUrl}/api/v1/Message/List`;
+const urlMessageListForRoom = `${publicApiBaseUrl}/api/v1/Message/ListForRoom?userId=`;
+const urlMessageAdd = `${publicApiBaseUrl}/api/v1/Message/Add`;
+const urlMessageRemove = `${publicApiBaseUrl}/api/v1/Message/Remove`;
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("/friendhub")
+        .withUrl(`${publicHubBaseUrl}/friendhub`)
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 

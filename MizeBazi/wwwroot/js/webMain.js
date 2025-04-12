@@ -2,7 +2,7 @@
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(connectionLink)
+        .withUrl(publicHubBaseUrl + connectionLink)
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 

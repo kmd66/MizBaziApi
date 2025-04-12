@@ -1,11 +1,18 @@
-﻿publicDeviceId = '';
-publicToken = '';
-(() => {
-    if (!publicToken) { 
+﻿
+function setLocalToken() {
+    if (!publicToken) {
         publicDeviceId = localStorage.getItem("publicDeviceId");
         publicToken = localStorage.getItem("publicToken");
     }
-})();
+}
+
+//replace
+publicDeviceId = '';
+publicToken = '';
+publicApiBaseUrl = '';
+publicHubBaseUrl = '';
+setLocalToken(); // remove
+//replace
 
 document.addEventListener("DOMContentLoaded", () => {
     selectBtn();
