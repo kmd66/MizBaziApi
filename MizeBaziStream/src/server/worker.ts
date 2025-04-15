@@ -5,7 +5,7 @@ import work from './handler/work';
 import api from './handler/api';
 import path from 'path';
 import { Server } from 'socket.io';
-import { socketHandlers } from './handler/socket';
+import { SocketInit }  from './hub/socket';
 const https = require('httpolyglot');
 
 const app = express();
@@ -36,7 +36,8 @@ const io = new Server(httpsServer, {
         methods: ["GET", "POST"]
     }
 });
-socketHandlers(io, process.pid);
+
+SocketInit(io, process.pid);
 
 //; (async () => {
 //    await work.init();

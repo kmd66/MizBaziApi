@@ -1,12 +1,12 @@
 ﻿import { Router, Request, Response } from 'express';
-import { RoomUsers, Result } from './interfaces';
-import { GameTypeExtension, userInGameStatusType } from './gameInterfaces';
+import { RoomUsers, Result } from '../model/interfaces';
+import { GameTypeExtension, userInGameStatusType } from '../model/gameInterfaces';
 import config from './config';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import ejs from 'ejs';
 import path from 'path';
-import GlobalsDb from './globals';
+import GlobalsDb from '../model/globalDb';
 
 
 class PageRoot {
@@ -126,27 +126,29 @@ class ApiRoot {
             types = this.shuffleArray(types);
             model.users = this.shuffleArray(model.users);
 
-            model.id = uuidv4();
             var resultUser: any = {
-                roomId: model.id,
+                roomId: '',
                 users: []
             }
 
             model.users.forEach((v, i) => {
                 const key = uuidv4();
-                v.userInGameStatus = userInGameStatusType.faal;
+                v.userInGameStatus = userInGameStatusType.ofline;
                 v.index = i;
                 v.typeName = types[i];
                 v.type = GameTypeExtension.getType(model.type, types[i]);
                 v.key = key;
+                v.lastConnectAt = new Date();
                 resultUser.users.push({
                     userId: v.id,
                     userKey: key
                 });
             });
 
-            var roomDb = GlobalsDb.getRoomDb();
-            roomDb.addRoom(model);
+            var roomDb = GlobalsDb.getDb(model.type);
+            var newRoom = roomDb?.add(model);
+            model.id = newRoom.id;
+            resultUser.roomId = newRoom.id;
 
             const result = Result.successful<any>({ data: resultUser });
             return res.status(200).json(result);
@@ -170,10 +172,9 @@ class ApiRoot {
 class TestApiRoot {
     constructor() { }
     public async testCreateRoom(req: Request, res: Response): Promise<any> {
-        var roomDb = GlobalsDb.getRoomDb();
-        roomDb.clear();
         const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/userdata-rangoraz.json', 'utf-8');
         const model: RoomUsers = JSON.parse(jsonData);
+        GlobalsDb.clear();
         model.key = config.apiKey;
         const req1 = {
             body: model

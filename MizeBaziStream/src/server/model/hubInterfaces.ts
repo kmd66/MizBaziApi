@@ -48,7 +48,12 @@ export interface User {
     type: number;
     info: any;
     key?: string;
-    userInGameStatus: userInGameStatusType
+
+    connectionId?: string;
+
+    userInGameStatus: userInGameStatusType;
+    lastConnectAt?: Date;
+    oflineSecond: number;
 }
 export interface RoomUsers {
     id: string;
@@ -57,6 +62,7 @@ export interface RoomUsers {
     info: any;
     users: User[];
 
+}
+export interface RoomRangOraz extends RoomUsers {
     createdAt?: Date;       // تاریخ و زمان ایجاد رکورد
 }
-

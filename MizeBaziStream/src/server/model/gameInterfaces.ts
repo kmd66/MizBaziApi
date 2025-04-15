@@ -52,7 +52,7 @@ export enum mafiaRole {
 }
 
 export enum userInGameStatusType {
-    faal = 1,
+    faal = 1, //فعال
     koshte = 2,
 
     ofline = 10,

@@ -1,15 +1,25 @@
 ﻿import io from 'socket.io-client'
 
 socketHandler.initSoket = function () {
-    globalModel.connection = io(`${publicHubBaseUrl}/mediasoup`, {
+    let params = new URLSearchParams(document.location.search);
+    socketHandler.roomId = params.get("roomId");
+    socketHandler.userKey = params.get("userKey");
+    socketHandler.userId = params.get("userId");
+
+    globalModel.connection = io(`${publicHubBaseUrl}/hubRangOraz`, {
         auth: {
-            token: "1wwwwwww23"
+            roomId: socketHandler.roomId,
+            userKey: socketHandler.userKey
         }
     });
 
     globalModel.connection.on('connectionReceive', ({ socketId }) => {
-        console.log(`---a---socketId :${socketId}`);
+        socketHandler.socketId = socketId;
         socketCallBack();
+    });
+
+    globalModel.connection.on('disconnect', () => {
+        console.log(`---a---disconnect :`);
     });
 
     globalModel.connection.on('imgReceive', ({ img }) => {

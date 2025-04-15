@@ -24,7 +24,12 @@ function initShare() {
     imgsForSpy = {};
     help = {};
 
-    socketHandler = {};
+    socketHandler = {
+        socketId: '',
+        roomId: '',
+        userKey: '',
+        userId: 0,
+    };
 
     sticker = {};
 
