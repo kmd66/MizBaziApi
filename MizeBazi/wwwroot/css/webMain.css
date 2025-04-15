@@ -1,4 +1,28 @@
-﻿.container {
+﻿
+.image1 {
+    background-image: url('/img/1.png');
+}
+
+.image2 {
+    background-image: url('/img/2.png');
+}
+
+.image3 {
+    background-image: url('/img/3.png');
+}
+
+    .image3::after {
+        background: radial-gradient(circle, #141e30b8 0%, var(--BackgroundColor) 100%)
+    }
+.image4 {
+    background-image: url('/img/4.png');
+}
+
+    .image4::after {
+        background: radial-gradient(circle, #141e30b8 0%, var(--BackgroundColor) 100%);
+    }
+
+.container {
     display: flex !important;
     -webkit-box-pack: justify !important;
     -ms-flex-pack: justify !important;

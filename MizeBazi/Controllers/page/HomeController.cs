@@ -3,6 +3,7 @@ using MizeBazi.Helper;
 using MizeBazi.Models;
 using System;
 using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 namespace MizeBazi.Controllers;
 
@@ -25,7 +26,7 @@ public class HomeController : Controller
         var result = await new Helper.AppRequest().Post<List<int>>(null, $"{type}/status", false);
 
         string signalUrl = "https://10.0.3.2:7230";
-        string streamUrl = $"https://10.0.3.2:{result.data[0]}";
+        string streamUrl = $"http://10.0.3.2:{result.data[0]}";
 
         List<DownloadItem> list = new List<DownloadItem>{
             //img
@@ -37,6 +38,7 @@ public class HomeController : Controller
             new DownloadItem(dirName: "img", downloadUrl: $"{signalUrl}/img/group.png"),
             new DownloadItem(dirName: "img", downloadUrl: $"{signalUrl}/img/room.png"),
             new DownloadItem(dirName: "img", downloadUrl: $"{signalUrl}/img/WheelFortune.jpg"),
+            new DownloadItem(dirName: "img", downloadUrl: $"{signalUrl}/img/WheelFortune.png"),
             
             //font
             new DownloadItem(dirName: "fonts", downloadUrl: $"{signalUrl}/fonts/vazir.ttf"),
@@ -55,33 +57,43 @@ public class HomeController : Controller
 
         //signal
         list.AddRange(new List<DownloadItem>{
-            new DownloadItem(downloadUrl: $"{signalUrl}/Home"),
+            new DownloadItem(htmlName : "Home", baseUrl:signalUrl, downloadUrl: "/Home"),
 
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/main?gameId=25"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/main?gameId=45"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/main?gameId=68"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/main?gameId=89"),
+            new DownloadItem(htmlName : "Main25", baseUrl:signalUrl, downloadUrl: "/pages/main?gameId=25"),
+            new DownloadItem(htmlName : "Main45", baseUrl:signalUrl, downloadUrl: "/pages/main?gameId=45"),
+            new DownloadItem(htmlName : "Main68", baseUrl:signalUrl, downloadUrl: "/pages/main?gameId=68"),
+            new DownloadItem(htmlName : "Main89", baseUrl:signalUrl, downloadUrl: "/pages/main?gameId=89"),
 
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/help?gameId=25"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/help?gameId=45"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/help?gameId=68"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/pages/help?gameId=89"),
-
-            new DownloadItem(downloadUrl: $"{signalUrl}/Group"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/Friend"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/Room"),
-            new DownloadItem(downloadUrl: $"{signalUrl}/WheelFortune"),
+            new DownloadItem(htmlName : "Help25", baseUrl:signalUrl, downloadUrl: "/pages/help?gameId=25"),
+            new DownloadItem(htmlName : "Help45", baseUrl:signalUrl, downloadUrl: "/pages/help?gameId=45"),
+            new DownloadItem(htmlName : "Help68", baseUrl:signalUrl, downloadUrl: "/pages/help?gameId=68"),
+            new DownloadItem(htmlName : "Help89", baseUrl:signalUrl, downloadUrl: "/pages/help?gameId=89"),
+            
+            new DownloadItem(htmlName : "Group",  baseUrl:signalUrl, downloadUrl: "/pages/Group"),
+            new DownloadItem(htmlName : "Frind",  baseUrl:signalUrl, downloadUrl: "/pages/Friend"),
+            new DownloadItem(htmlName : "Room",   baseUrl:signalUrl, downloadUrl: "/pages/Room"),
+            new DownloadItem(htmlName : "WheelFortune", baseUrl:signalUrl, downloadUrl: "/pages/WheelFortune"),
         });
 
-        //stream
+        //streams
         list.AddRange(new List<DownloadItem>{
-            new DownloadItem(downloadUrl: $"{streamUrl}/rangOraz"),
+            new DownloadItem(htmlName : "rangOraz", baseUrl:streamUrl, downloadUrl: "/rangOraz"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/rangOraz.min.js"),
+
+            new DownloadItem(htmlName : "afsonVajeh", baseUrl:streamUrl, downloadUrl: "/afsonVajeh"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/afsonVajeh.min.js"),
+            
+            new DownloadItem(htmlName : "nabardKhande", baseUrl:streamUrl, downloadUrl: "/nabardKhande"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/nabardKhande.min.js"),
+            
+            new DownloadItem(htmlName : "mafia", baseUrl:streamUrl, downloadUrl: "/mafia"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/mafia.min.js")
         });
 
         return Result<List<DownloadItem>>.Successful(data: list);
     }
     
-    [HttpPost, Route("api/app/updateList")]
+    [HttpPost, Route("api/app/UpdateList")]
     public async Task<Result<List<DownloadItem>>> UpdateList()
     {
 

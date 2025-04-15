@@ -43,5 +43,8 @@ paint.Component(app);
 imgsForSpy.Component(app);
 help.Component(app);
 sticker.Component(app);
-vm = app.mount('#app');
-socketHandler.initSoket();
+
+document.addEventListener("DOMContentLoaded", () => {
+    vm = app.mount('#app');
+    socketHandler.initSoket();
+});

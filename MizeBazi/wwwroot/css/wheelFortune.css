@@ -1,0 +1,54 @@
+.fading-image {
+    background-image: url('/img/WheelFortune.png');
+}
+    .fading-image::after {
+        background: radial-gradient(circle, #141e30b8 0%, var(--BackgroundColor) 100%);
+    }
+.ui-wheel-of-fortune {
+    --_items: 18;
+    all: unset;
+    aspect-ratio: 1 / 1;
+    container-type: inline-size;
+    direction: ltr;
+    display: grid;
+    position: relative;
+    color: #000;
+}
+
+    .ui-wheel-of-fortune::after {
+        background-color: crimson;
+        clip-path: polygon(0 100%, 0 0, 100% 50%);
+        content: "";
+        height: 1rem;
+        width: 1rem;
+        left: 0;
+        top: calc(50% - .5rem);
+        position: absolute;
+    }
+
+    .ui-wheel-of-fortune button {
+        position: absolute;
+        aspect-ratio: 1 / 1;
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 5cqi;
+        place-self: center;
+        width: 20cqi;
+        background: var(--BaseColor);
+        color: var(--TextColor);
+    }
+.wheelMain {
+    padding: 5px;
+    width: 320px;
+    height: 320px;
+    background: #dc143c;
+    border-radius: 50%;
+    margin: 30px auto
+}
+.ui-wheel-of-fortune {
+    width: 310px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: greenyellow;
+}

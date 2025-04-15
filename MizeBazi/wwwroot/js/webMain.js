@@ -67,5 +67,19 @@ $('#mainList .itemMain').each(function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    initSoket();    
+    initSoket();
+    addHelp(0);
 });
+
+function addHelp(i) {
+    const helpEl = document.getElementById(`help`);
+    const commentEl = document.querySelectorAll(`#comment span`);
+    if (i >= commentEl.length)
+        i = 0;
+    helpEl.innerHTML = commentEl[i].innerHTML;
+
+    setTimeout(() => {
+        i++;
+        addHelp(i);
+    }, "5000");
+}

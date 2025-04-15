@@ -4,18 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>@ViewData["Title"] - MizeBaziApi</title>
-    <script src="~/lib/jalaali.min.js"></script>
+    <script src="~/lib/jalaali.min.js" cache="inFile"></script>
     @await RenderSectionAsync("Scripts2", required: false)
-    <link rel="stylesheet" href="~/css/font.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/font.css" cache="inPage" />
+    <link rel="stylesheet" href="~/css/site.css" cache="inPage" />
     @await RenderSectionAsync("css", required: false)
 </head>
 <body>
     @RenderBody()
     <div id="errorBox"></div>
-    <script src="~/lib/vue.prod.min.js"></script>
-    <script src="~/lib/jquery.min.js"></script>
-    <script src="~/js/site.js"></script>
+    <script src="~/lib/vue.prod.min.js" cache="inFile"></script>
+    <script src="~/lib/jquery.min.js" cache="inFile"></script>
+    <script src="~/js/site.js" cache="inPage"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

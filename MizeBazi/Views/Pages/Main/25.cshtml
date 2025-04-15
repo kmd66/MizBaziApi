@@ -3,13 +3,7 @@
     var htmlMain = System.IO.File.ReadAllText("./Views/Pages/Main/main.html");
 }
 @section css {
-    <style>
-        .fading-image {
-            background-image: url('/img/1.png');
-        }
-
-    </style>
-    <link rel="stylesheet" href="~/css/webMain.css" />
+    <link rel="stylesheet" href="~/css/webMain.css" cache="inPage" />
 }
 @section Scripts2 {
     <script>
@@ -21,9 +15,9 @@
     <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
 }
 @section Scripts {
-    <script src="~/js/webMain.js"></script>
+    <script src="~/js/webMain.js" cache="inPage"></script>
 }
-<div class="fading-image"></div>
+<div class="fading-image image1"></div>
 
 <div id="comment" style="display:none">
     <span>jsj 1</span>

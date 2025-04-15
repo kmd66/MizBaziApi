@@ -162,8 +162,10 @@ main.Component = function (app) {
             },
             addChalesh() {
                 if (tI > 5) {
-                    tI = 1;
+                    tI = 5;
                     removeChalesh();
+                    main.getDefensePosition(5);
+                    tI = 1;
                     return;
                 }
                 addChalesh(tI);

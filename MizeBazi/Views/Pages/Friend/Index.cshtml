@@ -7,7 +7,7 @@
     var block = System.IO.File.ReadAllText("./Views/Pages/Friend/block.html");
 }
 @section css {
-    <link rel="stylesheet" href="~/css/friend.css" />
+    <link rel="stylesheet" href="~/css/friend.css" cache="inPage" />
 }
 @section Scripts2 {
     <script src="~/lib/signalr.min.js"></script>
@@ -15,7 +15,7 @@
     <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
 }
 @section Scripts {
-    <script src="~/js/friend.js"></script>
+    <script src="~/js/friend.js" cache="inPage"></script>
 }
 
 <div class="fading-image"></div>

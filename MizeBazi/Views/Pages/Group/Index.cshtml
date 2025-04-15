@@ -7,7 +7,7 @@
     var chatGroupUser = System.IO.File.ReadAllText("./Views/Pages/Group/chatGroupUser.html");
 }
 @section css {
-    <link rel="stylesheet" href="~/css/group.css" />
+    <link rel="stylesheet" href="~/css/group.css" cache="inPage"/>
 }
 @section Scripts2 {
     <script src="~/lib/signalr.min.js"></script>
@@ -15,7 +15,7 @@
     <script src="~/lib/signalr-protocol-msgpack.min.js"></script>
 }
 @section Scripts {
-    <script src="~/js/group.js"></script>
+    <script src="~/js/group.js" cache="inPage"></script>
 }
 <div class="fading-image"></div>
 
