@@ -141,9 +141,40 @@ body{
 .targetColor2 {
     color: var(--NaghshSiahColor)
 }
+.itemclickMain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #00000045;
+    z-index: 1002;
+}
 
-
-
+.moadalBady {
+    position: absolute;
+    margin: auto;
+    width: 250px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px;
+    background: var(--BaseColor);
+    border-radius: 14px;
+}
+.modalTarget {
+    justify-content: space-around !important;
+}
+.modalTargetItem1, .modalTargetItem2 {
+    font-size: 2.5rem;
+    padding: 0 7px;
+    border: 1px solid;
+    border-radius: 7px;
+    color: var(--NaghshSefidColor);
+}
+.modalTargetItem2 {
+    color: var(--NaghshSiahColor);
+}
 @keyframes zoom {
     0%, 100% {
         transform: scale(1);

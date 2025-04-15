@@ -27,6 +27,8 @@ function initShare() {
     socketHandler = {};
 
     sticker = {};
+
+    itemclick = {};
 }
 
 initShare();

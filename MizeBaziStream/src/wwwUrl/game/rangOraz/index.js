@@ -5,6 +5,7 @@ import './paint'
 import './imgsForSpy'
 import './help'
 import '../sticker'
+import '../itemclick'
 
 
 const app = Vue.createApp({
@@ -43,6 +44,7 @@ paint.Component(app);
 imgsForSpy.Component(app);
 help.Component(app);
 sticker.Component(app);
+itemclick.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

@@ -18,6 +18,9 @@ class PageRoot {
     constructor() { }
 
     public async rangOraz(req: Request, res: Response) {
+        const fileItemclick = path.join(__dirname, '../../public/itemclick.html');
+        const itemclickTemplate = fs.readFileSync(fileItemclick, 'utf8');
+
         const fileSticker = path.join(__dirname, '../../public/sticker.html');
         const stickerTemplate = fs.readFileSync(fileSticker, 'utf8');
 
@@ -42,6 +45,7 @@ class PageRoot {
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
             sticker: stickerTemplate,
+            itemclick: itemclickTemplate ,
 
             body: bodyPartial,
             main: mainPartial,

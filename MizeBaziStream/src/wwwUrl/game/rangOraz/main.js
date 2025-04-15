@@ -172,8 +172,7 @@ main.Component = function (app) {
                 tI++;
             },
             itemMainClick(i) {
-                const coinToss = Math.random() > 0.5 ? 0 : 1;
-                addTarget(i, coinToss);
+                vm.$refs.childitemclick.click(i);
             }
         }
     });

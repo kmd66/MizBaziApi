@@ -8,7 +8,6 @@ publicHubBaseUrl = '';
 
 let mainTemplate;
 let isAddChalesh = true;
-let isAddTarget = true;
 
 function setMainTemplate() {
     mainTemplate = document.querySelector(`.mainTemplate`);
@@ -94,31 +93,4 @@ function removeChalesh() {
 
     const el = document.getElementsByClassName(`chaleshForItem`);
     Array.from(el).map(x => x.remove());
-}
-function addTarget(i, type) {
-    if (!isAddTarget)
-        return;
-       
-    const chaleshForItemEl = document.querySelector(`.targetForItem.el${i}`);
-    if (chaleshForItemEl)
-        return;
-
-    const selector = `.itemMain${i}`;
-    const itemMain = document.querySelector(selector);
-    const rectEl = itemMain.getBoundingClientRect();
-    const divEl = document.createElement('div');
-
-    let c = `targetForItem el${i}`;
-
-    c += i > 6 ? ' target2' : ' target1';
-    c += type == 0 ? ' targetColor1' : ' targetColor2';
-
-    divEl.className = c;
-    divEl.style.left = `${rectEl.left -25}px`;
-    divEl.style.top = `${rectEl.top +10}px`;
-    mainTemplate.appendChild(divEl);
-    setTimeout(() => {
-        divEl.remove()
-    }, 
-    1400);
 }
