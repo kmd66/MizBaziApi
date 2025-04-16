@@ -54,13 +54,12 @@ class SocketManager {
         if (!handlers) return;
 
         namespace.on('connection', (socket: Socket) => {
-            //console.log(`New client connected to ${namespaceName}: ${socket.id}`);
+            //(`New client connected to ${namespaceName}: ${socket.id}`);
 
             // هندلر connection عمومی
             for (const [eventName, handler] of Object.entries(handlers.emit)) {
                 handler(socket);
             }
-
             // هندلر connection عمومی
             for (const [eventName, handler] of Object.entries(handlers.handler)) {
                 socket.on(eventName, () => handler(socket));
@@ -72,14 +71,28 @@ class SocketManager {
             }
         });
     }
-    public disconnectSocket(namespaceName: string, socketId: string): boolean {
-        const namespace = this.getNamespace(namespaceName);
-        const socket = namespace.sockets.get(socketId);
-        if (socket) {
-            socket.disconnect(true);
-            return true;
+    //public disconnectSocket(namespaceName: string, socketId: string): boolean {
+    //    const namespace = this.getNamespace(namespaceName);
+    //    const socket = namespace.sockets.get(socketId);
+    //    if (socket) {
+    //        socket.disconnect(true);
+    //        return true;
+    //    }
+    //    return false;
+    //}
+    public sendToMultipleSockets(namespaceName: string, eventName: string, connectionIds: any[], message: any): void {
+
+        if (eventName && connectionIds && connectionIds.length > 0) {
+            const namespace = this.getNamespace(namespaceName);
+            connectionIds!.forEach(connectionId => {
+                if (connectionId) {
+                    const socket = namespace.sockets.get(connectionId);
+                    if (socket && socket.connected) {
+                        socket.emit(eventName, message);
+                    }
+                }
+            });
         }
-        return false;
     }
 
 }

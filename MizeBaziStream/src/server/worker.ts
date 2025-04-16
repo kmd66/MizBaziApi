@@ -5,7 +5,8 @@ import work from './handler/work';
 import api from './handler/api';
 import path from 'path';
 import { Server } from 'socket.io';
-import { SocketInit }  from './hub/socket';
+import { SocketInit } from './hub/socket';
+import { globalDb } from './model/globalDb';
 const https = require('httpolyglot');
 
 const app = express();
@@ -43,8 +44,9 @@ SocketInit(io, process.pid);
 //    await work.init();
 //})()
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || '3000';
 const ENV = process.env.NODE_ENV || 'production';
+globalDb(PORT);
 
 httpsServer.listen(PORT, () => {
     console.log(`serverid: ${process.pid}  ${ENV} work in http://localhost:${PORT}`);

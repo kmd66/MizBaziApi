@@ -18,12 +18,22 @@ socketHandler.initSoket = function () {
         socketCallBack();
     });
 
+    globalModel.connection.on('usersReceive', (users) => {
+        debugger
+        users.map((x) => x.row = x.index + 1);
+        vm.$refs.childmain.user = users.find(x => x.id == socketHandler.userId) 
+        vm.$refs.childmain.users = users;
+    });
+
+    globalModel.connection.on('userStatusReceive', (user) => {
+        console.log(user);
+    });
+
     globalModel.connection.on('disconnect', () => {
         console.log(`---a---disconnect :`);
     });
 
     globalModel.connection.on('imgReceive', ({ img }) => {
-        console.log(img)
         const imgE = document.getElementById('img');
         const decompressed = new TextDecoder().decode(pako.inflate(img));
         imgE.src = decompressed;

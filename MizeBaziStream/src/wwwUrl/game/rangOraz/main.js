@@ -138,7 +138,10 @@ main.Component = function (app) {
                 progressbarWidth: '0px',
                 soundDivI: false,
                 soundDivSpan: false,
-                soundDivTime: false
+                soundDivTime: false,
+
+                user: {},
+                users: []
             }
         },
         props: {
@@ -157,7 +160,7 @@ main.Component = function (app) {
                 }
             },
             handleStickersUpdate(text) {
-                main.addSticker(text, 1);
+                main.addSticker(text, this.user.row);
                 this.stickers = false;
             },
             addChalesh() {

@@ -52,7 +52,7 @@ export interface User {
     connectionId?: string;
 
     userInGameStatus: userInGameStatusType;
-    lastConnectAt?: Date;
+    lastConnectAt: Date | null;
     oflineSecond: number;
 }
 export interface RoomUsers {
@@ -65,4 +65,5 @@ export interface RoomUsers {
 }
 export interface RoomRangOraz extends RoomUsers {
     createdAt?: Date;       // تاریخ و زمان ایجاد رکورد
+    isShowOstad: boolean ;
 }

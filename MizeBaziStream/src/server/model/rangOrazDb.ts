@@ -1,101 +1,143 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import { RoomUsers, RoomRangOraz, User } from './interfaces';
+import { RoomRangOraz, User } from './interfaces';
 import { GameType, userInGameStatusType } from './gameInterfaces';
-import GlobalsDb from './globalDb';
+import { globalDb } from './globalDb';
+import Loki from 'lokijs';
 
 class UserInDb {
     private static instance: UserInDb;
     constructor() { }
 
-    public static getInstance(): UserInDb {
+    public static Instance(): UserInDb {
         if (!UserInDb.instance) {
             UserInDb.instance = new UserInDb();
         }
         return UserInDb.instance;
     }
 
-    public get(roomId: string, userId: string): User | undefined {
-        const room = GlobalsDb.getRoom(roomId);
-        return room?.users.find((user: User) => user.key == userId);
+    public get(roomId: string, userKey: string): User | undefined {
+        const room = globalDb().getRoom(roomId);
+        return room?.users.find((user: User) => user.key == userKey && user.userInGameStatus != userInGameStatusType.ekhraj);
+    }
+    public getByConnectionId(roomId: string, connectionId: string): User | undefined {
+        const room = globalDb().getRoom(roomId);
+        return room?.users.find((user: User) => user.connectionId == connectionId && user.userInGameStatus != userInGameStatusType.ekhraj);
+    }
+    public getAll(roomId: string, filterFn?: (user: User) => boolean): User[] | undefined {
+        const room = globalDb().getRoom(roomId);
+        if (!room || !room?.users) return undefined;
+
+        return filterFn ? room.users.filter(filterFn) : room.users;
+    }
+    public getUselFaal(roomId: string): User[] | undefined {
+        const room = globalDb().getRoom(roomId);
+        if (!room || !room?.users) return undefined;
+
+        return room.users.filter((user: User) => user.userInGameStatus === userInGameStatusType.faal || user.userInGameStatus === userInGameStatusType.koshte);
     }
 
     public update(roomId: string, updates: Partial<User>): boolean {
-        const room = GlobalsDb.getRoom(roomId);
-        if (!room) return false;
+        const db = globalDb().getDbByid(roomId);
+        if (!db) return false;
+
+        var room = db.get(roomId);
         const userIndex = room.users.findIndex((user: User) => user.key == updates.key);
 
         if (userIndex === -1) return false;
 
         room.users[userIndex] = { ...room.users[userIndex], ...updates };
-        return true;
+        return db.update(roomId, room );
     }
 }
-export const userInDb = UserInDb.getInstance();
+export const userInDb = UserInDb.Instance;
 
 class RangOrazDb {
     private static _instance: RangOrazDb
-    private db: Map<string, RoomRangOraz>;
     public users: UserInDb;
+    public db: Loki;
+    public rooms: Loki.Collection<RoomRangOraz>;
 
-    constructor() {
-        this.db = new Map<string, RoomRangOraz>();
+    private constructor() {
+        let port = globalDb().port;
+        //اصلاح
+        // حذف ذخیره خودکار 
+        this.db = new Loki(`RangOrazDb${port}.db`, {
+            autoload: true,
+            autoloadCallback: this.initializeDatabase.bind(this),
+            autosave: true,
+            autosaveInterval: 1000
+        });
+        this.rooms = this.db.addCollection<RoomRangOraz>('rooms', {});
         this.users = new UserInDb();
     }
 
-    public static getInstance(): RangOrazDb {
+    private initializeDatabase(): void {
+        this.rooms.clear();
+        var c = this.db.getCollection('rooms');
+        if (c) {
+            this.rooms = this.db.addCollection<RoomRangOraz>('rooms', {});
+        }
+        else {
+            this.rooms = c;
+        }
+
+        const ids = this.rooms.find().map(doc => doc.id);
+        globalDb().addAll(ids, GameType.rangOraz);
+    }
+
+    public static Instance(): RangOrazDb {
         if (!RangOrazDb._instance) {
-            RangOrazDb._instance = (global as any).__RangOrazDb_INSTANCE || new RangOrazDb();
-            (global as any).__RangOrazDb_INSTANCE = RangOrazDb._instance
+            RangOrazDb._instance = new RangOrazDb();
         }
         return RangOrazDb._instance
     }
 
-    public add(room: RoomUsers): RoomRangOraz {
-        const newRoom: RoomRangOraz = {
+    public add(room: Omit<RoomRangOraz, 'id' | 'createdAt'>): RoomRangOraz {
+        const newRoom = {
             ...room,
             id: uuidv4(),
             createdAt: new Date(),
-        }
-        this.db.set(newRoom.id, newRoom);
-        GlobalsDb.add(newRoom.id, GameType.rangOraz);
+            isShowOstad:false
+        };
+        globalDb().add(newRoom.id, GameType.rangOraz);
+        this.rooms.insert(newRoom);
         return newRoom
     }
 
-    public get(id: string): RoomRangOraz | undefined {
-        return this.db.get(id);
+    public get(id: string): RoomRangOraz | null {
+        return this.rooms.findOne({ id });
     }
 
     public getCount(): number {
-        return this.db.size;
+        return this.rooms.count();
     }
 
-    public update(key: string, newValue: RoomRangOraz): boolean {
-        if (this.db.has(key)) {
-            this.db.set(key, newValue);
-            return true;
-        }
-        return false;
-    }
+    public update(id: string, updatedRoom: RoomRangOraz): boolean {
+        const room = this.rooms.findOne({ id });
+        if (!room) return false;
 
-    public keys(): IterableIterator<string> {
-        return this.db.keys();
-    }
+        const newRoom = {
+            ...room,
+            ...updatedRoom
+        };
 
-    public has(key: string): boolean {
-        return this.db.has(key);
+        this.rooms.update(newRoom);
+        return true;
     }
 
     public delete(id: string): void {
-        this.db.delete(id);
-        GlobalsDb.delete(id);
+        const room = this.rooms.findOne({ id });
+        if (room) {
+            this.rooms.remove(room);
+        }
     }
 
     public clear(): void {
-        this.db.clear();
+        this.rooms.clear();
     }
 }
 
-export const rangOrazDb = RangOrazDb.getInstance();
+export const rangOrazDb = RangOrazDb.Instance;
 
 
 

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import ejs from 'ejs';
 import path from 'path';
-import GlobalsDb from '../model/globalDb';
+import {globalDb} from '../model/globalDb';
 
 
 class PageRoot {
@@ -145,7 +145,7 @@ class ApiRoot {
                 });
             });
 
-            var roomDb = GlobalsDb.getDb(model.type);
+            var roomDb = globalDb().getDb(model.type);
             var newRoom = roomDb?.add(model);
             model.id = newRoom.id;
             resultUser.roomId = newRoom.id;
@@ -174,7 +174,7 @@ class TestApiRoot {
     public async testCreateRoom(req: Request, res: Response): Promise<any> {
         const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/userdata-rangoraz.json', 'utf-8');
         const model: RoomUsers = JSON.parse(jsonData);
-        GlobalsDb.clear();
+        globalDb().clear();
         model.key = config.apiKey;
         const req1 = {
             body: model

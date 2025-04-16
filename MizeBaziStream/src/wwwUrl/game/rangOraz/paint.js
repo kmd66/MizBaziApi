@@ -29,7 +29,6 @@
 paint.init = function () {
     paint.sendImgTimer = setInterval(() => {
         const dataURL = canvas.toDataURL("image/jpeg", 0.005);
-        console.log(dataURL);
         const compressed = pako.deflate(dataURL);
         globalModel.connection.emit('sendImg', { data: compressed })
     }, 1000);

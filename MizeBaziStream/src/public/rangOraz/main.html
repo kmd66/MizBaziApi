@@ -17,50 +17,20 @@
 
             <div class="mainRight">
 
-                <div class="itemMain">
+                <span @click="click(i)">
+                    {{e}}
+                </span>
+
+                <div v-for="user in users" class="itemMain">
                     <div class="d-flex">
-                        <div class="sitNumber">1</div>
-                        <i class="icon-star4" style="color: var(--NaghshSefidColor);"></i>
+                        <div class="sitNumber">{{user.row}}</div>
+                        <i v-show="user.type && user.type == 1" class="icon-star4" style="color: var(--NaghshSefidColor);"></i>
+                        <i v-show="user.type && user.type == 2" class="icon-medal4" style="color: var(--NaghshSefidColor);"></i>
                     </div>
-                    <div class="itemMain1" @click="itemMainClick(1)">
-                        <div class="itemImg"><img src="/thumbnail/9246708e10e346cea0f5a690a92dbe0490.jpg"></div>
-                        <div class="itemName">مرتضی محمدی</div>
-                        <div class="userName">mori66</div>
-                    </div>
-                </div>
-                <div class="itemMain">
-                    <div class="sitNumber">2</div>
-                    <div class="itemMain2" @click="itemMainClick(2)">
-                        <div class="itemImg"><i class="icon-mortarboardHat" style="font-size: 2.8rem;"></i></div>
-                        <div class="itemName">مرتضی محمدی</div>
-                        <div class="userName">mori66</div>
-                    </div>
-                </div>
-                <div class="itemMain">
-                    <div class="sitNumber">3</div>
-                    <div class="itemMain3" @click="itemMainClick(3)">
-                        <div class="itemImg"><i class="icon-spy" style="font-size: 2.8rem;"></i></div>
-                        <div class="itemName">مرتضی محمدی</div>
-                        <div class="userName">mori66</div>
-                    </div>
-                </div>
-                <div class="itemMain">
-                    <div class="d-flex">
-                        <div class="sitNumber">4</div>
-                        <i class="icon-medal4" style="color: var(--NaghshSefidColor);"></i>
-                    </div>
-                    <div class="itemMain4">
-                        <div class="itemImg"><i class="icon-policeHat" style="font-size: 2.8rem;"></i></div>
-                        <div class="itemName">مرتضی محمدی</div>
-                        <div class="userName">mori66</div>
-                    </div>
-                </div>
-                <div class="itemMain">
-                    <div class="sitNumber">5</div>
-                    <div class="itemMain5">
-                        <div class="itemImg"><i class="icon-artistHat" style="font-size: 2.8rem;"></i></div>
-                        <div class="itemName">مرتضی محمدی</div>
-                        <div class="userName">mori66</div>
+                    <div :class="'itemMain'+user.row" @click="itemMainClick(user.row)">
+                        <div class="itemImg"><img :src="user.info.Img+'90.jpg'"></div>
+                        <div class="itemName">{{user.info.FirstName}}</div>
+                        <div class="userName">{{user.info.UserName}}</div>
                     </div>
                 </div>
 
