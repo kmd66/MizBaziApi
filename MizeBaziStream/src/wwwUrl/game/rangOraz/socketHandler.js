@@ -19,14 +19,13 @@ socketHandler.initSoket = function () {
     });
 
     globalModel.connection.on('usersReceive', (users) => {
-        debugger
         users.map((x) => x.row = x.index + 1);
         vm.$refs.childmain.user = users.find(x => x.id == socketHandler.userId) 
         vm.$refs.childmain.users = users;
     });
 
-    globalModel.connection.on('userStatusReceive', (user) => {
-        console.log(user);
+    globalModel.connection.on('userStatusReceive', (users) => {
+        vm.$refs.childmain.usersStatus = users;
     });
 
     globalModel.connection.on('disconnect', () => {

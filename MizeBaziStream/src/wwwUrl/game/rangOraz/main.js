@@ -141,7 +141,8 @@ main.Component = function (app) {
                 soundDivTime: false,
 
                 user: {},
-                users: []
+                users: [],
+                usersStatus: []
             }
         },
         props: {
@@ -176,6 +177,21 @@ main.Component = function (app) {
             },
             itemMainClick(i) {
                 vm.$refs.childitemclick.click(i);
+            },
+            itemStatus(id) {
+                var item = this.usersStatus.find(x => x.id== id)
+                if (item) {
+                    switch (item.userInGameStatus) {
+                        case 1:
+                            return 'a6s5d4q';
+                        case 10:
+                            return 'imgStatus icon-ofline';
+                        case 2:
+                        case 11:
+                            return 'imgStatus icon-death';
+                    }
+                }
+                return 'imgStatus icon-ofline';
             }
         }
     });

@@ -18,7 +18,6 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
     var _userInDb = userInDb();
     const user = _userInDb.get(roomId, userKey);
     if (user) {
-
         const userConnectionId = user.connectionId;
 
         user.connectionId = connectionId;
@@ -31,13 +30,10 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
             socket2?.disconnect(true);
         }
 
-        const connectionIdsUsers: User[] | undefined = userInDb().getUselFaal(socket.handshake.auth.roomId);
-        const connectionIds = connectionIdsUsers?.map(user => user.connectionId).filter(Boolean) || [];
-        SocketManager.sendToMultipleSockets('hubRangOraz', 'userStatusReceive', connectionIds, userStatus(user))
-
-        const users: User[] | undefined = userInDb().getAll(socket.handshake.auth.roomId);
+        const users: User[] | undefined = userInDb().getAll(roomId);
         const room = rangOrazDb().get(roomId);
         socket.emit('usersReceive', SafeUserModelRangoRaz(room!.isShowOstad, users));
+        statusReceive(roomId);
         return;
     }
 
@@ -49,9 +45,7 @@ function disconnect(roomId: string, connectionId: string): boolean {
     if (user) {
         user.userInGameStatus = userInGameStatusType.ofline;
         _userInDb.update(roomId, user);
-        const users: User[] | undefined = userInDb().getUselFaal(roomId);
-        const connectionIds = users?.map(user => user.connectionId) || [];
-        SocketManager.sendToMultipleSockets('hubRangOraz', 'userStatusReceive', connectionIds, userStatus(user));
+        statusReceive(roomId);
         return true;
     }
     return false;
@@ -59,6 +53,17 @@ function disconnect(roomId: string, connectionId: string): boolean {
     //const lastConnectDate = user.lastDisConnectAt ? new Date(user.lastDisConnectAt) : new Date();
     //const newDate = new Date();
     //user.oflineSecond += (newDate.getTime() - lastConnectDate.getTime()) / 1000;
+}
+function statusReceive(roomId: string): boolean {
+    var _userInDb = userInDb();
+    const users = _userInDb.getAll(roomId);
+    if (users) {
+        const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
+        const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
+        SocketManager.sendToMultipleSockets('hubRangOraz', 'userStatusReceive', connectionIds, userStatus(users));
+        return true;
+    }
+    return false;
 }
 
 export function RangOrazMethod() {

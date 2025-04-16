@@ -28,7 +28,10 @@
                         <i v-show="user.type && user.type == 2" class="icon-medal4" style="color: var(--NaghshSefidColor);"></i>
                     </div>
                     <div :class="'itemMain'+user.row" @click="itemMainClick(user.row)">
-                        <div class="itemImg"><img :src="user.info.Img+'90.jpg'"></div>
+                        <div class="itemImg">
+                            <img :src="user.info.Img+'90.jpg'">
+                            <div :class="itemStatus(user.id)"></div>
+                        </div>
                         <div class="itemName">{{user.info.FirstName}}</div>
                         <div class="userName">{{user.info.UserName}}</div>
                     </div>

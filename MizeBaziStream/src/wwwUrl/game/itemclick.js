@@ -23,8 +23,7 @@ function addTarget(i, type) {
     mainTemplate.appendChild(divEl);
     setTimeout(() => {
         divEl.remove()
-    },
-        1400);
+    },1400);
 }
 
 itemclick.Component = function (app) {

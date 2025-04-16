@@ -18,6 +18,18 @@
     color: var(--TextColor2);
 }
 
+.icon-ofline:before {
+  content: "\e940";
+}
+.icon-death:before {
+  content: "\e941";
+}
+.icon-hand-o-left:before {
+  content: "\e942";
+}
+.icon-hand-o-right:before {
+  content: "\e944";
+}
 .icon-chalesh:before {
   content: "\e93f";
 }
