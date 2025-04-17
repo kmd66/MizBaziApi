@@ -1,20 +1,28 @@
 ﻿
 <template id="help-template">
-    <div class="main">
+    <div class="helpMain" v-show="appModel.state == 'help'">
+        <div class="main">
+            <div class="helpIcon"><i :class="selectItem.icon"></i></div>
+            <div class="helpTitle">{{selectItem.title}}</div>
+            <div style="margin-top: 14px;" v-html="selectItem.comment"></div>
+        </div>
+        <div class="mainBottom d-flex">
+            <div v-for="item in helpComment" class="item"
+                 @click="changeSelectType(item)"
+                 :style="{ backgroundColor: selectType == item.type ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+                <i :class="item.icon"></i>
+                <span>{{item.title}}</span>
+            </div>
+            <div class="item" @click="appModel.state = 'main'">
+                <i class="icon-chevron-left"></i>
+                <span>بازگشت</span>
+            </div>
+        </div>
+    </div>
+   
+    <div class="naghshCard" v-show="isShowCard">
+        <div class="helpTitle" style=" color: var(--LinkColor);">نقش شما</div>
         <div class="helpIcon"><i :class="selectItem.icon"></i></div>
         <div class="helpTitle">{{selectItem.title}}</div>
-        <div style="margin-top: 14px;" v-html="selectItem.comment"></div>
-    </div>
-    <div class="mainBottom d-flex">
-        <div v-for="item in helpComment" class="item"
-                @click="changeSelectType(item)"
-                :style="{ backgroundColor: selectType == item.type ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
-            <i :class="item.icon"></i>
-            <span>{{item.title}}</span>
-        </div>
-        <div class="item" @click="appModel.state = 'main'">
-            <i class="icon-chevron-left"></i>
-            <span>بازگشت</span>
-        </div>
     </div>
 </template>

@@ -14,9 +14,8 @@
             <div class="imgsForSpyMain" v-show="appModel.state == 'imgsForSpy'">
                 <imgs-for-spy-component ref="childimgsForSpy" :app-model="appModel"></imgs-for-spy-component>
             </div>
-            <div class="helpMain" v-show="appModel.state == 'help'">
-                <help-component ref="childhelp" :app-model="appModel"></help-component>
-            </div>
+
+            <help-component ref="childhelp" :app-model="appModel"></help-component>
 
             <itemclick-component ref="childitemclick"></itemclick-component>
         </div>

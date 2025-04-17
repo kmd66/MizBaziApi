@@ -80,8 +80,16 @@ class SocketManager {
     //    }
     //    return false;
     //}
+    public sendToSocket(namespaceName: string, eventName: string, connectionId: any, message: any): void {
+        if (eventName && connectionId) {
+            const namespace = this.getNamespace(namespaceName);
+            const socket = namespace.sockets.get(connectionId);
+            if (socket && socket.connected) {
+                socket.emit(eventName, message);
+            }
+        }
+    }
     public sendToMultipleSockets(namespaceName: string, eventName: string, connectionIds: any[], message: any): void {
-
         if (eventName && connectionIds && connectionIds.length > 0) {
             const namespace = this.getNamespace(namespaceName);
             connectionIds!.forEach(connectionId => {

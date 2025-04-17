@@ -19,13 +19,15 @@ socketHandler.initSoket = function () {
     });
 
     globalModel.connection.on('usersReceive', (users) => {
-        users.map((x) => x.row = x.index + 1);
-        vm.$refs.childmain.user = users.find(x => x.id == socketHandler.userId) 
-        vm.$refs.childmain.users = users;
+        globalModel.usersReceive(users);
     });
 
     globalModel.connection.on('userStatusReceive', (users) => {
         vm.$refs.childmain.usersStatus = users;
+    });
+
+    globalModel.connection.on('roomReceive', (room) => {
+        globalModel.roomReceive(room)
     });
 
     globalModel.connection.on('disconnect', () => {

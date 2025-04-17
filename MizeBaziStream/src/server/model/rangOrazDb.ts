@@ -1,5 +1,5 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import { RoomRangOraz, User } from './interfaces';
+import { RoomRangOraz, User, RangOrazDoor } from './interfaces';
 import { GameType, userInGameStatusType } from './gameInterfaces';
 import { globalDb } from './globalDb';
 import Loki from 'lokijs';
@@ -97,7 +97,10 @@ class RangOrazDb {
             ...room,
             id: uuidv4(),
             createdAt: new Date(),
-            isShowOstad:false
+            isShowOstad: false,
+            door: RangOrazDoor.d0,
+            wait: new Date(Date.now() + 10000),
+            user:0
         };
         globalDb().add(newRoom.id, GameType.rangOraz);
         this.rooms.insert(newRoom);
@@ -139,5 +142,25 @@ class RangOrazDb {
 
 export const rangOrazDb = RangOrazDb.Instance;
 
+class RoomTimer {
+    private timers: Map<string, NodeJS.Timeout> = new Map();
 
+    start(roomId: string) {
+        this.stop(roomId);
 
+        const intervalId = setInterval(() => {
+            console.log(`Processing room ${roomId}`);
+            // منطق کسب و کار...
+        }, 10000);
+
+        this.timers.set(roomId, intervalId);
+    }
+
+    stop(roomId: string) {
+        const timer = this.timers.get(roomId);
+        if (timer) {
+            clearInterval(timer);
+            this.timers.delete(roomId);
+        }
+    }
+}

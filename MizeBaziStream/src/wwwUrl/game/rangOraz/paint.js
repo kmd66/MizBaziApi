@@ -1,4 +1,6 @@
-﻿paint.setPainSize = function () {
+﻿paint.reset = function () {
+}
+paint.setPainSize = function () {
     paint.painSize = true;
     const elContainerGame = document.querySelector('.containerGame');
     const elPaint = document.querySelector('.paint');
@@ -17,7 +19,7 @@
         { height: `100%` },
         { height: `0%` }
     ], {
-        duration: globalModel.progressTime * 1000,
+        duration: globalModel.room.progressTime * 1000,
         easing: 'linear',
         fill: 'forwards'
     });

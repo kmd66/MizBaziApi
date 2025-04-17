@@ -63,7 +63,21 @@ export interface RoomUsers {
     users: User[];
 
 }
-export interface RoomRangOraz extends RoomUsers {
-    createdAt?: Date;       // تاریخ و زمان ایجاد رکورد
-    isShowOstad: boolean ;
+export interface RoomRangOraz extends RoomUsers{
+    createdAt?: Date; // تاریخ و زمان ایجاد رکورد
+    isShowOstad: boolean;
+    door: RangOrazDoor;
+    user: number;
+    wait: Date;
+}
+export enum RangOrazDoor {
+    d0 = 'معارفه' ,
+    d1 ='تعیین موضوع',
+    d2 ='نقاشی',
+    d3 ='نقاشی جاسوس',
+    d4 ='دور 1',
+    d5 ='دور 2',
+    d6 ='دور 3',
+    d7 ='دور 4',
+    d8 = 'دور 5',
 }

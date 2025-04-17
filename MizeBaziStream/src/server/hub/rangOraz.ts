@@ -2,12 +2,8 @@
 import { rangOrazDb, userInDb } from '../model/rangOrazDb';
 import SocketManager from './socket';
 import { userInGameStatusType } from '../model/gameInterfaces';
-import { User } from '../model/interfaces';
-import { SafeUserModelRangoRaz, userStatus } from '../handler/extensions';
-interface ChatMessage {
-    username: string;
-    message: string;
-}
+import { User} from '../model/interfaces';
+import { RangOrazControll } from '../handler/extensions';
 
 function connectionReceive(roomId: string, userKey: string, connectionId: string): void {
 
@@ -29,10 +25,8 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
             const socket2 = namespace.sockets.get(userConnectionId);
             socket2?.disconnect(true);
         }
-
-        const users: User[] | undefined = userInDb().getAll(roomId);
-        const room = rangOrazDb().get(roomId);
-        socket.emit('usersReceive', SafeUserModelRangoRaz(room!.isShowOstad, users));
+        roomReceive(roomId, connectionId);
+        usersReceive(roomId, userKey, connectionId);
         statusReceive(roomId);
         return;
     }
@@ -60,7 +54,32 @@ function statusReceive(roomId: string): boolean {
     if (users) {
         const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
         const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
-        SocketManager.sendToMultipleSockets('hubRangOraz', 'userStatusReceive', connectionIds, userStatus(users));
+        SocketManager.sendToMultipleSockets(
+            'hubRangOraz', 'userStatusReceive',
+            connectionIds, RangOrazControll.userStatus(users)
+        );
+        return true;
+    }
+    return false;
+}
+function usersReceive(roomId: string, userKey: string, connectionId: string): boolean {
+    var _userInDb = userInDb();
+    const users = _userInDb.getAll(roomId);
+    if (users) {
+        const users: User[] | undefined = userInDb().getAll(roomId);
+        const room = rangOrazDb().get(roomId);
+        SocketManager.sendToSocket(
+            'hubRangOraz', 'usersReceive',
+            connectionId, RangOrazControll.SafeUsers(userKey, room!.isShowOstad, users)
+        );
+        return true;
+    }
+    return false;
+}
+function roomReceive(roomId: string, connectionId: string): boolean {
+    const room = rangOrazDb().get(roomId);
+    if (room) {
+        SocketManager.sendToSocket('hubRangOraz', 'roomReceive', connectionId, RangOrazControll.SafeRoom(room));
         return true;
     }
     return false;
@@ -89,14 +108,6 @@ export function RangOrazMethod() {
                     timestamp: new Date()
                 });
             },
-
-            'exitRoom': (socket: Socket, msg: ChatMessage) => {
-                socket.emit('exitRoomReceive', {
-                    ...msg,
-                    timestamp: new Date()
-
-                });
-            }
         }
     };
 }

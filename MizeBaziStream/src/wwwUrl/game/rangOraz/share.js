@@ -1,4 +1,28 @@
-﻿
+﻿function reset() {
+    main.reset();
+    imgsForSpy.reset();
+    paint.reset();
+    itemclick.reset();
+    sticker.reset();
+    removeChalesh();
+    isAddChalesh = false;
+}
+
+function roomReceive(room) {
+    reset();
+    globalModel.room = room;
+    main.topTimeProgress(-100);
+    vm.$refs.childmain.door = room.door;
+
+}
+
+function usersReceive(users) {
+    users.map((x) => x.row = x.index + 1);
+    vm.$refs.childmain.user = users.find(x => x.id == socketHandler.userId)
+    vm.$refs.childmain.users = users;
+    const type = vm.$refs.childmain.user.type;
+    vm.$refs.childmain.iconNaghsh = help.usersReceive(type);
+}
 
 function initShare() {
 
@@ -10,7 +34,9 @@ function initShare() {
     globalModel.userId;
     globalModel.userIntId;
     globalModel.roomId;
-    globalModel.progressTime = 10;
+    globalModel.roomReceive = roomReceive;
+    globalModel.usersReceive = usersReceive;
+    globalModel.room = { };
 
     main = {};
     main.startStrimInt = -1;

@@ -54,6 +54,37 @@ const HELP_RANGORAZ_COMMENT = [
         "comment": RANGORAZ_COMMENT4
     }
 ]
+
+function showCard() {
+    vm.$refs.childhelp.isShowCard = true;
+    
+    const el = document.querySelector(`.naghshCard`);
+    el.top = `50%`;
+    setTimeout(() => {
+        const animation = el.animate([
+            { top: `50%`, transform: "translate(-50%, -50%) scale(1)" },
+            { top: `14px`, transform: "translate(-50%, -50%) scale(0.1)" }
+        ], {
+            duration: 400,
+            easing: 'ease-in-out',
+        });
+
+        animation.onfinish = () => {
+            vm.$refs.childhelp.isShowCard = false;
+        };
+    }, 2000)
+}
+help.usersReceive = function (type) {
+    const help = vm.$refs.childhelp.helpComment.find(x => x.type == (type == 21 ? 22 : type));
+    vm.$refs.childhelp.selectItem = help;
+    vm.$refs.childhelp.selectType = help.type;
+    if (globalModel.room.door == 'معارفه' && globalModel.room.user == 0) {
+        showCard()
+    }
+    return help.icon;
+
+}
+
 help.Component = function (app) {
     app.component('help-component', {
         template: '#help-template',
@@ -62,6 +93,7 @@ help.Component = function (app) {
                 helpComment: HELP_RANGORAZ_COMMENT,
                 selectItem: {},
                 selectType: 0,
+                isShowCard: false,
             }
         },
         props: {
@@ -72,7 +104,6 @@ help.Component = function (app) {
             },
         },
         created() {
-            this.selectItem = this.helpComment[0];
         },
         methods: {
             init() {

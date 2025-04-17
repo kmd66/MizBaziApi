@@ -1,4 +1,9 @@
-﻿sticker.Component = function (app) {
+﻿sticker.reset = function () {
+    sticker.isAddSticker = false;
+}
+sticker.isAddSticker = true;
+
+sticker.Component = function (app) {
     app.component('sticker-component', {
         template: '#sticker-template',
         data() {
@@ -18,6 +23,8 @@
         },
         methods: {
             click(i) {
+                if (!sticker.isAddSticker)
+                    return;
                 var text = this.texts[i];
                 this.$emit('update-stickers', text);
             },

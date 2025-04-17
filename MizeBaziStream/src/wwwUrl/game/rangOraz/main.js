@@ -1,4 +1,16 @@
-﻿
+﻿main.reset = function () {
+    const mainRightElements = document.querySelectorAll('.mainRight [class^="itemMain"]');
+    Array.from(mainRightElements).forEach(el => {
+        el.getAnimations().forEach(anim => anim.cancel());
+        el.style.position = 'unset';
+    });
+
+    vm.$refs.childmain.soundDivI = false;
+    vm.$refs.childmain.soundDivSpan = false;
+    main.startStrimInt = -1;
+    main.resetTimer();
+}
+
 main.setPainSize = function () {
     paint.painSize = true;
     const elPaint = document.querySelector('.mainTemplate .paintImg');
@@ -11,7 +23,7 @@ var tI = 1;
 main.getDefensePosition = function (i) {
     if (tI > 5)
         tI = 1;
-    main.resetDefensePosition();
+    main.reset();
     const position = document.querySelector(".mainTemplate .defensePosition");
     const rect = position.getBoundingClientRect();
     const el = document.querySelector(`.mainTemplate .itemMain${tI}`);
@@ -33,19 +45,6 @@ main.getDefensePosition = function (i) {
     };
 
     tI++;
-}
-
-main.resetDefensePosition = function () {
-    const mainRightElements = document.querySelectorAll('.mainRight [class^="itemMain"]');
-    Array.from(mainRightElements).forEach(el => {
-        el.getAnimations().forEach(anim => anim.cancel());
-        el.style.position = 'unset';
-    });
-
-    vm.$refs.childmain.soundDivI = false;
-    vm.$refs.childmain.soundDivSpan = false;
-    main.startStrimInt = -1;
-    main.resetTimer();
 }
 
 main.resetTimer = function () {
@@ -86,7 +85,7 @@ main.startStrim = function (i) {
 
 main.topTimeProgress = function (i) {
     if (i == -100) {
-        i = globalModel.progressTime;
+        i = globalModel.room.progressTime;
         const progressbar = document.querySelector('.aw213sdaf div');
         //const percentage = (100 * i) / total;
         progressbar.style.width = `100%`;
@@ -94,14 +93,14 @@ main.topTimeProgress = function (i) {
             { width: `100%` },
             { width: `0%` }
         ], {
-            duration: globalModel.progressTime * 1000,
+            duration: globalModel.room.progressTime * 1000,
             easing: 'linear',
             fill: 'forwards'
         });
     }
 
     if (i == 0) {
-        main.resetDefensePosition();
+        main.reset();
         return;
     }
     const newTime = i - 1;
@@ -133,7 +132,7 @@ main.Component = function (app) {
                 stickers: false,
                 addSticker: true,
                 mainTopTime: '- ----',
-                iconNaghsh:'icon-spy',
+                iconNaghsh:'icon-information4',
                 door: '-',
                 progressbarWidth: '0px',
                 soundDivI: false,

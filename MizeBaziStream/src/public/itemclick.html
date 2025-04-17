@@ -2,10 +2,11 @@
 <template id="itemclick-template">
     <div class="itemclickMain" v-show="modal" @click="modal = false">
         <div class="moadalBady">
-
-            <div class="modalTarget d-flex" @show="isAddTarget">
-                <div class="target1 modalTargetItem1" @click="target(0)"></div>
-                <div class="target2 modalTargetItem2" @click="target(1)"></div>
+            <div v-show="isAddTarget">
+                <div class="modalTarget d-flex">
+                    <div class="target1 modalTargetItem1" @click="target(0)"></div>
+                    <div class="target2 modalTargetItem2" @click="target(1)"></div>
+                </div>
             </div>
 
         </div>

@@ -1,4 +1,6 @@
-﻿
+﻿itemclick.reset = function () {
+    vm.$refs.childitemclick.isAddTarget = false;
+}
 function addTarget(i, type) {
     if (!vm.$refs.childitemclick.isAddTarget)
         return;
