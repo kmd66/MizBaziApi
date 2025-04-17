@@ -111,26 +111,11 @@ main.topTimeProgress = function (i) {
     }, 1000);
 }
 
-main.addSticker = async function (text, i) {
-    if (vm.$refs.childmain.addSticker == false)
-        return;
-    vm.$refs.childmain.addSticker = false;
-    try {
-        await addStickerVideo(text, i)
-        vm.$refs.childmain.addSticker = true;
-
-    } catch (error) {
-        vm.$refs.childmain.addSticker = true;
-    }
-}
-
 main.Component = function (app) {
     app.component('main-component', {
         template: '#main-template',
         data() {
             return {
-                stickers: false,
-                addSticker: true,
                 mainTopTime: '- ----',
                 iconNaghsh:'icon-information4',
                 door: '-',
@@ -158,10 +143,6 @@ main.Component = function (app) {
                         main.setPainSize();
                     });
                 }
-            },
-            handleStickersUpdate(text) {
-                main.addSticker(text, this.user.row);
-                this.stickers = false;
             },
             addChalesh() {
                 if (tI > 5) {

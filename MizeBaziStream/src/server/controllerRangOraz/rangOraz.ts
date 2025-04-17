@@ -3,14 +3,9 @@ import { rangOrazDb, userInDb } from './rangOrazDb';
 import SocketManager from '../handler/socket';
 import { userInGameStatusType } from '../model/gameInterfaces';
 import { User} from '../model/interfaces';
-import { RangOrazControll } from '../handler/extensions';
+import { RangOrazControll } from './extensions';
 
 function connectionReceive(roomId: string, userKey: string, connectionId: string): void {
-
-    const namespace = SocketManager.getNamespace('hubRangOraz');
-    const socket = namespace.sockets.get(connectionId);
-    if (!socket) return;
-
     var _userInDb = userInDb();
     const user = _userInDb.get(roomId, userKey);
     if (user) {
@@ -22,16 +17,15 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
         _userInDb.update(roomId, user);
 
         if (userConnectionId) {
-            const socket2 = namespace.sockets.get(userConnectionId);
-            socket2?.disconnect(true);
+            SocketManager.disconnectSocket('hubRangOraz', userConnectionId, 'home');
         }
         roomReceive(roomId, connectionId);
         usersReceive(roomId, userKey, connectionId);
-        statusReceive(roomId);
+        RangOrazControll.statusReceive(roomId);
         return;
     }
 
-    socket.disconnect(true);
+    SocketManager.disconnectSocket('hubRangOraz', connectionId, 'home');
 }
 function disconnect(roomId: string, connectionId: string): boolean {
     var _userInDb = userInDb();
@@ -39,25 +33,7 @@ function disconnect(roomId: string, connectionId: string): boolean {
     if (user) {
         user.userInGameStatus = userInGameStatusType.ofline;
         _userInDb.update(roomId, user);
-        statusReceive(roomId);
-        return true;
-    }
-    return false;
-
-    //const lastConnectDate = user.lastDisConnectAt ? new Date(user.lastDisConnectAt) : new Date();
-    //const newDate = new Date();
-    //user.oflineSecond += (newDate.getTime() - lastConnectDate.getTime()) / 1000;
-}
-function statusReceive(roomId: string): boolean {
-    var _userInDb = userInDb();
-    const users = _userInDb.getAll(roomId);
-    if (users) {
-        const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
-        const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
-        SocketManager.sendToMultipleSockets(
-            'hubRangOraz', 'userStatusReceive',
-            connectionIds, RangOrazControll.userStatus(users)
-        );
+        RangOrazControll.statusReceive(roomId);
         return true;
     }
     return false;

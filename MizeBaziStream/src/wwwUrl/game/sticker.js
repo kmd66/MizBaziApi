@@ -2,6 +2,32 @@
     sticker.isAddSticker = false;
 }
 sticker.isAddSticker = true;
+sticker.addSticker = true;
+
+sticker.addSticker = async function (text, i) {
+    if (sticker.addSticker == false)
+        return;
+    sticker.addSticker = false;
+    try {
+        await addStickerVideo(text, i)
+        sticker.addSticker = true;
+
+    } catch (error) {
+        sticker.addSticker = true;
+    }
+}
+
+sticker.handleUpdate = function (text) {
+    if (!sticker.isAddSticker)
+        return;
+
+    sticker.addSticker(text, globalModel.user.row);
+    sticker.stickers = false;
+}
+sticker.toggleTab = function () {
+    const el = document.querySelector('.stickerMain');
+    el.style.display = el.style.display == 'none' ? 'block' : 'none';
+}
 
 sticker.Component = function (app) {
     app.component('sticker-component', {
@@ -18,15 +44,11 @@ sticker.Component = function (app) {
                     "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9", "h10", "h11"]
             }
         },
-        props: {
-            stickers: Boolean,
-        },
         methods: {
             click(i) {
-                if (!sticker.isAddSticker)
-                    return;
                 var text = this.texts[i];
-                this.$emit('update-stickers', text);
+                sticker.handleUpdate(text);
+                sticker.toggleTab()
             },
         }
     });

@@ -71,15 +71,18 @@ class SocketManager {
             }
         });
     }
-    //public disconnectSocket(namespaceName: string, socketId: string): boolean {
-    //    const namespace = this.getNamespace(namespaceName);
-    //    const socket = namespace.sockets.get(socketId);
-    //    if (socket) {
-    //        socket.disconnect(true);
-    //        return true;
-    //    }
-    //    return false;
-    //}
+    public disconnectSocket(namespaceName: string, socketId: string, msg: string): boolean {
+        const namespace = this.getNamespace(namespaceName);
+        const socket = namespace.sockets.get(socketId);
+        if (socket) {
+            socket.emit('disconnectReceive', msg);
+            setTimeout(() => {
+                socket.disconnect(true);
+            }, 100);
+            return true;
+        }
+        return false;
+    }
     public sendToSocket(namespaceName: string, eventName: string, connectionId: any, message: any): void {
         if (eventName && connectionId) {
             const namespace = this.getNamespace(namespaceName);

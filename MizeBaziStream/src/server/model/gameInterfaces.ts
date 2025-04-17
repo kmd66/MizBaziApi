@@ -58,6 +58,17 @@ export enum userInGameStatusType {
     ofline = 10,
     ekhraj = 11,
 }
+export enum RangOrazDoor {
+    d0 = 'معارفه',
+    d1 = 'تعیین موضوع',
+    d2 = 'نقاشی',
+    d3 = 'نقاشی جاسوس',
+    d4 = 'دور 1',
+    d5 = 'دور 2',
+    d6 = 'دور 3',
+    d7 = 'دور 4',
+    d8 = 'دور 5',
+}
 
 export class GameTypeExtension{
     static count(type: GameType): number {

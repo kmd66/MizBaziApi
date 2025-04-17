@@ -1,7 +1,8 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import { RoomRangOraz, User, RangOrazDoor } from '../model/interfaces';
-import { GameType, userInGameStatusType } from '../model/gameInterfaces';
+import { RoomRangOraz, User } from '../model/interfaces';
+import { GameType, userInGameStatusType, RangOrazDoor } from '../model/gameInterfaces';
 import { globalDb } from '../handler/globalDb';
+import { rangOrazStart, rangOrazStartAll } from './extensions';
 import Loki from 'lokijs';
 
 class UserInDb {
@@ -82,7 +83,9 @@ class RangOrazDb {
         }
 
         const ids = this.rooms.find().map(doc => doc.id);
+        //اصلاح . حذف 
         globalDb().addAll(ids, GameType.rangOraz);
+        rangOrazStartAll(ids);
     }
 
     public static Instance(): RangOrazDb {
@@ -103,6 +106,7 @@ class RangOrazDb {
             user:0
         };
         globalDb().add(newRoom.id, GameType.rangOraz);
+        rangOrazStart(newRoom.id);
         this.rooms.insert(newRoom);
         return newRoom
     }
@@ -141,26 +145,3 @@ class RangOrazDb {
 }
 
 export const rangOrazDb = RangOrazDb.Instance;
-
-class RoomTimer {
-    private timers: Map<string, NodeJS.Timeout> = new Map();
-
-    start(roomId: string) {
-        this.stop(roomId);
-
-        const intervalId = setInterval(() => {
-            console.log(`Processing room ${roomId}`);
-            // منطق کسب و کار...
-        }, 10000);
-
-        this.timers.set(roomId, intervalId);
-    }
-
-    stop(roomId: string) {
-        const timer = this.timers.get(roomId);
-        if (timer) {
-            clearInterval(timer);
-            this.timers.delete(roomId);
-        }
-    }
-}

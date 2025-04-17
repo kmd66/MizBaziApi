@@ -57,15 +57,15 @@
 
         <div class="mainBottom d-flex">
             <div>
-                <i class="icon-like" @click="handleStickersUpdate('l1')"></i>
-                <i class="icon-dislike" @click="handleStickersUpdate('l2')" style="margin-right: 12px;"></i>
+                <i class="icon-like" onclick="sticker.handleUpdate('l1')"></i>
+                <i class="icon-dislike" onclick="sticker.handleUpdate('l2')" style="margin-right: 12px;"></i>
             </div>
-            <i class="icon-smileys" @click="stickers = !stickers"></i>
+            <i class="icon-smileys" onclick="sticker.toggleTab()"></i>
             <i class="icon-chalesh" @click="addChalesh()"></i>
             <!--<i class="icon-chalesh" onclick="main.getDefensePosition(2)"></i>-->
         </div>
     </div>
 
-    <sticker-component :stickers="stickers" @update-stickers="handleStickersUpdate"></sticker-component>
+    <sticker-component></sticker-component>
 
 </template>

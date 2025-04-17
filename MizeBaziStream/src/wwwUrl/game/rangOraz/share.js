@@ -18,7 +18,8 @@ function roomReceive(room) {
 
 function usersReceive(users) {
     users.map((x) => x.row = x.index + 1);
-    vm.$refs.childmain.user = users.find(x => x.id == socketHandler.userId)
+    globalModel.user = users.find(x => x.id == socketHandler.userId);
+    vm.$refs.childmain.user = globalModel.user;
     vm.$refs.childmain.users = users;
     const type = vm.$refs.childmain.user.type;
     vm.$refs.childmain.iconNaghsh = help.usersReceive(type);
@@ -30,12 +31,9 @@ function initShare() {
     vm = {};
 
     globalModel.connection;
-    globalModel.key;
-    globalModel.userId;
-    globalModel.userIntId;
-    globalModel.roomId;
     globalModel.roomReceive = roomReceive;
     globalModel.usersReceive = usersReceive;
+
     globalModel.room = { };
 
     main = {};

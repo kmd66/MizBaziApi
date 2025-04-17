@@ -139,6 +139,7 @@ class ApiRoot {
                 v.type = GameTypeExtension.getType(model.type, types[i]);
                 v.key = key;
                 v.lastConnectAt = new Date();
+                v.oflineSecond = 0;
                 resultUser.users.push({
                     userId: v.id,
                     userKey: key
