@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import ejs from 'ejs';
 import path from 'path';
-import {globalDb} from '../model/globalDb';
+import { globalDb } from '../handler/globalDb';
 
 
 class PageRoot {

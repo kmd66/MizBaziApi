@@ -1,7 +1,7 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import { RoomRangOraz, User, RangOrazDoor } from './interfaces';
-import { GameType, userInGameStatusType } from './gameInterfaces';
-import { globalDb } from './globalDb';
+import { RoomRangOraz, User, RangOrazDoor } from '../model/interfaces';
+import { GameType, userInGameStatusType } from '../model/gameInterfaces';
+import { globalDb } from '../handler/globalDb';
 import Loki from 'lokijs';
 
 class UserInDb {

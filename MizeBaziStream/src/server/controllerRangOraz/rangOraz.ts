@@ -1,6 +1,6 @@
 ﻿import { Socket } from 'socket.io';
-import { rangOrazDb, userInDb } from '../model/rangOrazDb';
-import SocketManager from './socket';
+import { rangOrazDb, userInDb } from './rangOrazDb';
+import SocketManager from '../handler/socket';
 import { userInGameStatusType } from '../model/gameInterfaces';
 import { User} from '../model/interfaces';
 import { RangOrazControll } from '../handler/extensions';

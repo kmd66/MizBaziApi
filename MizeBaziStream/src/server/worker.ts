@@ -5,8 +5,8 @@ import work from './handler/work';
 import api from './handler/api';
 import path from 'path';
 import { Server } from 'socket.io';
-import { SocketInit } from './hub/socket';
-import { globalDb } from './model/globalDb';
+import { SocketInit } from './handler/socket';
+import { globalDb } from './handler/globalDb';
 const https = require('httpolyglot');
 
 const app = express();

@@ -1,5 +1,5 @@
 ﻿import { Server, Namespace, Socket } from 'socket.io';
-import {RangOrazMethod} from './rangOraz';
+import { RangOrazMethod } from '../controllerRangOraz/rangOraz';
 import { pid } from 'process';
 
 type SocketHandler = (socket: Socket) => void;
