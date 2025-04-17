@@ -1,5 +1,5 @@
 ﻿import { GameType } from '../model/gameInterfaces';
-import { rangOrazDb } from '../controllerRangOraz/rangOrazDb';
+import { rangOrazDb } from '../controller/rangOrazDb';
 
 export class GlobalsDb {
     public port: string;

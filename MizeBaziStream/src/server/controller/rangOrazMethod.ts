@@ -1,9 +1,9 @@
 ﻿import { Socket } from 'socket.io';
-import { rangOrazDb, userInDb } from './rangOrazDb';
+import { userInDb } from './userInDb';
 import SocketManager from '../handler/socket';
 import { userInGameStatusType } from '../model/gameInterfaces';
-import { User} from '../model/interfaces';
-import { RangOrazControll } from './extensions';
+import { User } from '../model/interfaces';
+import { RangOrazControll } from './RangOrazExtensions';
 
 function connectionReceive(roomId: string, userKey: string, connectionId: string): void {
     var _userInDb = userInDb();
@@ -15,12 +15,11 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
         user.userInGameStatus = userInGameStatusType.faal;
         user.lastConnectAt = new Date();
         _userInDb.update(roomId, user);
-
         if (userConnectionId) {
             SocketManager.disconnectSocket('hubRangOraz', userConnectionId, 'home');
         }
         roomReceive(roomId, connectionId);
-        usersReceive(roomId, userKey, connectionId);
+        usersReceive(roomId, user.type, connectionId);
         RangOrazControll.statusReceive(roomId);
         return;
     }
@@ -38,24 +37,24 @@ function disconnect(roomId: string, connectionId: string): boolean {
     }
     return false;
 }
-function usersReceive(roomId: string, userKey: string, connectionId: string): boolean {
+function usersReceive(roomId: string, userType: number, connectionId: string): boolean {
     var _userInDb = userInDb();
     const users = _userInDb.getAll(roomId);
     if (users) {
         const users: User[] | undefined = userInDb().getAll(roomId);
-        const room = rangOrazDb().get(roomId);
+        const handler = RangOrazControll.getRangOrazHandler(roomId);
         SocketManager.sendToSocket(
             'hubRangOraz', 'usersReceive',
-            connectionId, RangOrazControll.SafeUsers(userKey, room!.isShowOstad, users)
+            connectionId, RangOrazControll.SafeUsers(userType, handler!.isShowOstad, users)
         );
         return true;
     }
     return false;
 }
 function roomReceive(roomId: string, connectionId: string): boolean {
-    const room = rangOrazDb().get(roomId);
+    const room = RangOrazControll.SafeRoom(roomId);
     if (room) {
-        SocketManager.sendToSocket('hubRangOraz', 'roomReceive', connectionId, RangOrazControll.SafeRoom(room));
+        SocketManager.sendToSocket('hubRangOraz', 'roomReceive', connectionId, room);
         return true;
     }
     return false;

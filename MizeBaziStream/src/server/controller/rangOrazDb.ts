@@ -1,60 +1,12 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import { RoomRangOraz, User } from '../model/interfaces';
-import { GameType, userInGameStatusType, RangOrazDoor } from '../model/gameInterfaces';
+import { RoomRangOraz } from '../model/interfaces';
+import { GameType } from '../model/gameInterfaces';
 import { globalDb } from '../handler/globalDb';
-import { rangOrazStart, rangOrazStartAll } from './extensions';
+import { rangOrazStart, rangOrazStartAll } from './RangOrazExtensions';
 import Loki from 'lokijs';
-
-class UserInDb {
-    private static instance: UserInDb;
-    constructor() { }
-
-    public static Instance(): UserInDb {
-        if (!UserInDb.instance) {
-            UserInDb.instance = new UserInDb();
-        }
-        return UserInDb.instance;
-    }
-
-    public get(roomId: string, userKey: string): User | undefined {
-        const room = globalDb().getRoom(roomId);
-        return room?.users.find((user: User) => user.key == userKey && user.userInGameStatus != userInGameStatusType.ekhraj);
-    }
-    public getByConnectionId(roomId: string, connectionId: string): User | undefined {
-        const room = globalDb().getRoom(roomId);
-        return room?.users.find((user: User) => user.connectionId == connectionId && user.userInGameStatus != userInGameStatusType.ekhraj);
-    }
-    public getAll(roomId: string, filterFn?: (user: User) => boolean): User[] | undefined {
-        const room = globalDb().getRoom(roomId);
-        if (!room || !room?.users) return undefined;
-
-        return filterFn ? room.users.filter(filterFn) : room.users;
-    }
-    public getUselFaal(roomId: string): User[] | undefined {
-        const room = globalDb().getRoom(roomId);
-        if (!room || !room?.users) return undefined;
-
-        return room.users.filter((user: User) => user.userInGameStatus === userInGameStatusType.faal || user.userInGameStatus === userInGameStatusType.koshte);
-    }
-
-    public update(roomId: string, updates: Partial<User>): boolean {
-        const db = globalDb().getDbByid(roomId);
-        if (!db) return false;
-
-        var room = db.get(roomId);
-        const userIndex = room.users.findIndex((user: User) => user.key == updates.key);
-
-        if (userIndex === -1) return false;
-
-        room.users[userIndex] = { ...room.users[userIndex], ...updates };
-        return db.update(roomId, room );
-    }
-}
-export const userInDb = UserInDb.Instance;
 
 class RangOrazDb {
     private static _instance: RangOrazDb
-    public users: UserInDb;
     public db: Loki;
     public rooms: Loki.Collection<RoomRangOraz>;
 
@@ -69,7 +21,6 @@ class RangOrazDb {
             autosaveInterval: 1000
         });
         this.rooms = this.db.addCollection<RoomRangOraz>('rooms', {});
-        this.users = new UserInDb();
     }
 
     private initializeDatabase(): void {
@@ -100,14 +51,10 @@ class RangOrazDb {
             ...room,
             id: uuidv4(),
             createdAt: new Date(),
-            isShowOstad: false,
-            door: RangOrazDoor.d0,
-            wait: new Date(Date.now() + 10000),
-            user:0
         };
         globalDb().add(newRoom.id, GameType.rangOraz);
-        rangOrazStart(newRoom.id);
         this.rooms.insert(newRoom);
+        rangOrazStart(newRoom.id);
         return newRoom
     }
 

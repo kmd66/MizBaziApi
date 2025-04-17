@@ -1,5 +1,5 @@
 ﻿
-import { GameType, userInGameStatusType, RangOrazDoor } from './gameInterfaces';
+import { GameType, userInGameStatusType } from './gameInterfaces';
 
 export class Result<T> implements IResult {
     public data: any;
@@ -61,12 +61,8 @@ export interface RoomUsers {
     type: GameType;
     info: any;
     users: User[];
+    createdAt?: Date; // تاریخ و زمان ایجاد رکورد
 
 }
 export interface RoomRangOraz extends RoomUsers{
-    createdAt?: Date; // تاریخ و زمان ایجاد رکورد
-    isShowOstad: boolean;
-    door: RangOrazDoor;
-    user: number;
-    wait: Date;
 }
