@@ -9,6 +9,7 @@
 }
 
 function roomReceive(room) {
+    console.log(room)
     reset();
     globalModel.room = room;
     main.topTimeProgress(-100);

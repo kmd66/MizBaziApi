@@ -8,16 +8,7 @@ import { User } from '../model/interfaces';
 export class RangOrazControll {
 
     public static getRangOrazHandler(roomId: string): RangOrazHandler | undefined {
-        var t = RangOrazTimer.instance.controllers.get(roomId);
         return RangOrazTimer.instance.controllers.get(roomId);
-    }
-
-    public static progressTime(model: Date): number {
-        const now = new Date();
-        const wait = new Date(Date.now() + 14000);
-        //const wait = new Date(model.wait);
-        const diff = (wait.getTime() - now.getTime())/1000;
-        return diff;
     }
 
     public static SafeUsers(userType: number, isShowOstad: boolean, model?: any[]): any {
@@ -32,6 +23,41 @@ export class RangOrazControll {
         }));
     }
 
+    public static roomReceive(roomId: string, connectionId?: string) {
+
+        const model = RangOrazControll.SafeRoom(roomId);
+
+        if (connectionId) {
+            SocketManager.sendToSocket('hubRangOraz', 'roomReceive', connectionId, model);
+            return true;
+        }
+
+        const users = userInDb().getAll(roomId);
+        if (users) {
+            const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
+            const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
+            SocketManager.sendToMultipleSockets('hubRangOraz', 'roomReceive', connectionIds, model);
+        }
+    }
+
+    public static roomAllMainWaitReceive(roomId: string) {
+        const handler = RangOrazControll.getRangOrazHandler(roomId);
+        const model = {
+            isShowOstad: handler!.isShowOstad,
+            door: 'بازگزاری',
+            progressTime: handler!.mainWait,
+            activeUser: handler!.activeUser,
+            isChalesh: 0,
+            isSticker: 0
+        };
+        const users = userInDb().getAll(roomId);
+        if (users) {
+            const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
+            const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
+            SocketManager.sendToMultipleSockets('hubRangOraz', 'roomReceive', connectionIds, model);
+        }
+    }
+
     public static SafeRoom(roomId: string): any {
         const handler = RangOrazControll.getRangOrazHandler(roomId);
         if (!handler)
@@ -41,9 +67,12 @@ export class RangOrazControll {
             isShowOstad: handler.isShowOstad,
             door: handler.door,
             progressTime: handler.wait,
-            activeUser: handler.activeUser
+            activeUser: handler.activeUser,
+            isChalesh: handler.isChalesh,
+            isSticker: handler.isSticker
         };
     }
+
     public static userStatus(model?: any[]): any {
         if (!model)
             return model;
@@ -68,55 +97,178 @@ export class RangOrazControll {
     }
 }
 
-class RangOrazHandler {
-    public roomId: string;
+enum NobatType {
+    undefined = 0,
+
+    nobat = 1, //'نوبت صحبت کردن',
+
+    raieGiri = 5, //'رایگیری',
+
+    bazporsi = 10, //'بازپرسی',
+}
+export class RangOrazHandler {
+    private roomId: string;
+
     public wait: number = 10;
-    public door: RangOrazDoor = RangOrazDoor.d0;
+    public mainWait: number = 3;
+    public door?: RangOrazDoor = RangOrazDoor.d0;
     public activeUser: number = 0;
     public isShowOstad: boolean = false;
+    public isChalesh: boolean = false;
+    public isSticker: boolean = false;
+
     public finish: boolean = false;
+
+    private raieGiriCount: Map<number, any> = new Map(); //[userId]
+
+    private timeoutId?: NodeJS.Timeout;
+
+    private chalenger: number = -1;
+    private bazporsi: number[] = [];
+
+    private nobatType: NobatType = NobatType.undefined;
+    private nobatIndex: number = -1;
+
+    public raieNahaii: boolean = false; //'رایگیری نهایی'
 
     constructor(roomId: string) {
         this.roomId = roomId;
     }
+    private delay(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-    public Start(room: RoomRangOraz) {
-        const nextSteps = this.getNextStep();
-        if (!nextSteps) {
-            this.finish = true;
+    public setRaieGiriCount(userId: number) {
+    }
+
+    public setChalenger(userId: number) {
+    }
+
+    public setBazporsi(userId: number) {
+    }
+
+    public cancel() {
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = undefined;
+        }
+        this.next();
+    }
+
+    public async main() {
+        if (this.door == undefined) {
+            this.setFinish();
+        }
+        if (this.finish)
+            return;
+        this.setWait();
+
+        await this.delay(500);
+        RangOrazControll.roomAllMainWaitReceive(this.roomId);
+        await this.delay(this.mainWait * 1000);
+        RangOrazControll.roomReceive(this.roomId);
+        this.timer();
+    }
+
+    private timer() {
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = undefined;
+        }
+        this.timeoutId = setTimeout(() => {
+            this.next();
+        }, this.wait * 1000);
+    }
+
+    private next() {
+        if ([RangOrazDoor.d0, RangOrazDoor.d2, RangOrazDoor.d3, RangOrazDoor.d4].indexOf(this.door!) != -1) {
+            this.nextReset();
             return;
         }
 
+        if (this.nobatType == NobatType.undefined) {
+            this.nobatType = NobatType.nobat;
+        }
+        else if (this.nobatType == NobatType.bazporsi) {
+            this.nobatType = NobatType.undefined;
+            this.nextReset();
+            return;
+        }
+
+        this.setNobatIndex();
     }
 
-    public getNextStep(): boolean {
+    private nextReset() {
+        this.activeUser = 0;
+        this.nobatIndex = -1;
+        this.getNextStep();
+        this.main();
+    }
+
+    private setNobatIndex() {
+        const room = rangOrazDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+
+        this.nobatIndex = this.nobatIndex + 1;
+
+        if (this.nobatIndex >= room.users.length - 1) {
+            if (this.nobatType == NobatType.nobat)
+                this.nobatType = NobatType.raieGiri;
+            if (this.nobatType == NobatType.raieGiri)
+                this.nobatType = NobatType.bazporsi;
+            this.getNextStep();
+            this.main();
+        }
+        //if (room.users[this.nobatIndex]?.userInGameStatus != 1) {
+        //    this.setNobatIndex();
+        //    return;
+        //}
+        this.activeUser = room.users[this.nobatIndex].index + 1;
+        this.main();
+    }
+
+    private getNextStep() {
         const keys = Object.keys(RangOrazDoor).filter(key => isNaN(Number(key)));
         const currentIndex = keys.findIndex(key => RangOrazDoor[key as keyof typeof RangOrazDoor] === this.door);
         if (currentIndex === -1 || currentIndex === keys.length - 1) {
-            return false;
+            this.door = undefined;
         }
         const nextKey = keys[currentIndex + 1];
         this.door = RangOrazDoor[nextKey as keyof typeof RangOrazDoor];
-        return true;
     }
 
-    public setWait(): number {
+    private setWait() {
+        if (this.nobatType == NobatType.raieGiri) {
+            this.wait = 5;
+            return;
+        }
+
         switch (this.door) {
             case RangOrazDoor.d0:
-                this.wait = 10;
-                return 10;
+                this.wait = 5;
+                return;
             case RangOrazDoor.d1:
             case RangOrazDoor.d2:
-                this.wait = 20;
-                return 20;
+                this.wait = 5;
+                return;
             case RangOrazDoor.d3:
             case RangOrazDoor.d4:
-                this.wait = 120;
-                return 120;
+                this.wait = 10;
+                return;
             default:
-                this.wait = 30;
-                return 30;
+                this.wait = 7;
+                return 7;
         }
+    }
+
+    public setFinish() {
+        this.finish = true;
+        //clearTimeout(this.timeoutId);
+        //rangOrazDb().delete(this.roomId);
+        //RangOrazTimer.instance.stop(this.roomId);
     }
 }
 
@@ -127,13 +279,17 @@ class RangOrazTimer {
     private disconnectTime: number = 14000;
     private disconnectAge: number = 20;
 
-
     public static Start(roomId: string) {
         if (!RangOrazTimer.instance) {
             RangOrazTimer.instance = new RangOrazTimer();
         }
+        const room = rangOrazDb().get(roomId);
+        if (!room) {
+            RangOrazTimer.instance.stop(roomId);
+            return;
+        }
         RangOrazTimer.instance.timerForDisconnect(roomId);
-        RangOrazTimer.instance.timerForGame(roomId);
+        RangOrazTimer.instance.gameHandler(roomId);
     }
 
     public static StartAll(roomIds: string[]) {
@@ -142,21 +298,30 @@ class RangOrazTimer {
         }
     }
 
-    private stop(name: string) {
+    public stop(roomId: string) {
+        this.stopTimer(`${roomId}timerForDisconnect`);
+        this.stopController(`${roomId}`);
+    }
+
+    private stopTimer(name: string) {
         const timer = this.timers.get(name);
         if (timer) {
             clearInterval(timer);
             this.timers.delete(name);
         }
+    }
+
+    private stopController(name: string) {
         const controller = this.controllers.get(name);
         if (controller) {
+            controller.finish = true;
             this.controllers.delete(name);
         }
     }
 
     private timerForDisconnect(roomId: string) {
         const name = `${roomId}timerForDisconnect`;
-        this.stop(name);
+        this.stopTimer(name);
 
         const intervalId = setInterval(() => {
             this.disconnectHandler(roomId);
@@ -168,7 +333,7 @@ class RangOrazTimer {
     private disconnectHandler(roomId: string) {
         const room = rangOrazDb().get(roomId);
         if (!room) {
-            this.stop(`${roomId}timerForDisconnect`);
+            this.stop(roomId);
             return;
         }
 
@@ -186,30 +351,14 @@ class RangOrazTimer {
         });
     }
 
-    private timerForGame(roomId: string) {
-        this.stop(roomId);
-        const c = new RangOrazHandler(roomId);
-        this.controllers.set(roomId, c);
-        this.gameHandler(roomId);
-    }
-
     private gameHandler(roomId: string) {
-        const controller = this.controllers.get(roomId);
-        const room = rangOrazDb().get(roomId);
-        if (!controller || !room) {
-            this.stop(roomId);
-            return;
-        }
-    }
-
-    private finishGame(roomId: string) {
-        const room = rangOrazDb().get(roomId);
-        const controller = this.controllers.get(roomId);
-        this.stop(`${roomId}timerForGame`);
-        this.stop(roomId);
-
+        this.stopController(roomId);
+        const controller = new RangOrazHandler(roomId);
+        this.controllers.set(roomId, controller);
+        controller.main();
     }
 
 }
+
 export const rangOrazStart = RangOrazTimer.Start;
 export const rangOrazStartAll = RangOrazTimer.StartAll;

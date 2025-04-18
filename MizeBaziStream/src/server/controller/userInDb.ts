@@ -31,7 +31,7 @@ class UserInDb {
         const room = globalDb().getRoom(roomId);
         if (!room || !room?.users) return undefined;
 
-        return room.users.filter((user: User) => user.userInGameStatus === userInGameStatusType.faal || user.userInGameStatus === userInGameStatusType.koshte);
+        return room.users.filter((user: User) => user.userInGameStatus != userInGameStatusType.ofline && user.userInGameStatus != userInGameStatusType.ekhraj);
     }
 
     public update(roomId: string, updates: Partial<User>): boolean {

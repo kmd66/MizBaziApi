@@ -21,12 +21,14 @@ main.setPainSize = function () {
 
 var tI = 1;
 main.getDefensePosition = function (i) {
-    if (tI > 5)
-        tI = 1;
+    if (tI == i)
+        return;
+
+    tI = i;
     main.reset();
     const position = document.querySelector(".mainTemplate .defensePosition");
     const rect = position.getBoundingClientRect();
-    const el = document.querySelector(`.mainTemplate .itemMain${tI}`);
+    const el = document.querySelector(`.mainTemplate .itemMain${i}`);
     const rectEl = el.getBoundingClientRect();
 
     el.style.position = 'fixed';
@@ -41,10 +43,7 @@ main.getDefensePosition = function (i) {
     });
 
     animation.onfinish = () => {
-        main.startStrim(i)
     };
-
-    tI++;
 }
 
 main.resetTimer = function () {

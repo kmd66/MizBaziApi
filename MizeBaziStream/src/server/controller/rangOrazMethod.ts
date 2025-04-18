@@ -12,13 +12,15 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
         const userConnectionId = user.connectionId;
 
         user.connectionId = connectionId;
-        user.userInGameStatus = userInGameStatusType.faal;
-        user.lastConnectAt = new Date();
-        _userInDb.update(roomId, user);
+        if (user.userInGameStatus != userInGameStatusType.koshte) {
+            user.userInGameStatus = userInGameStatusType.faal;
+            user.lastConnectAt = new Date();
+            _userInDb.update(roomId, user);
+        }
         if (userConnectionId) {
             SocketManager.disconnectSocket('hubRangOraz', userConnectionId, 'home');
         }
-        roomReceive(roomId, connectionId);
+        RangOrazControll.roomReceive(roomId, connectionId);
         usersReceive(roomId, user.type, connectionId);
         RangOrazControll.statusReceive(roomId);
         return;
@@ -43,18 +45,11 @@ function usersReceive(roomId: string, userType: number, connectionId: string): b
     if (users) {
         const users: User[] | undefined = userInDb().getAll(roomId);
         const handler = RangOrazControll.getRangOrazHandler(roomId);
+        if (!handler) return false;
         SocketManager.sendToSocket(
             'hubRangOraz', 'usersReceive',
             connectionId, RangOrazControll.SafeUsers(userType, handler!.isShowOstad, users)
         );
-        return true;
-    }
-    return false;
-}
-function roomReceive(roomId: string, connectionId: string): boolean {
-    const room = RangOrazControll.SafeRoom(roomId);
-    if (room) {
-        SocketManager.sendToSocket('hubRangOraz', 'roomReceive', connectionId, room);
         return true;
     }
     return false;
