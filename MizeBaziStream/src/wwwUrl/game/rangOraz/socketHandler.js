@@ -34,6 +34,27 @@ socketHandler.initSoket = function () {
         console.log(`---a---disconnect :`);
     });
 
+    globalModel.connection.on('getDefensePositionReceive', (model) => {
+        main.reset();
+        globalModel.activeUser = {
+            index: model.activeUser,
+            row: model.activeUser + 1
+        };
+        globalModel.room.progressTime = model.wate;
+        main.getDefensePosition();
+        main.topTimeProgress(-100);
+    });
+
+    globalModel.connection.on('startStream', (model) => {
+        main.reset(true);
+        globalModel.activeUser = {
+            index: model.activeUser,
+            row: model.activeUser + 1
+        };
+        globalModel.room.progressTime = model.wate;
+        main.topTimeProgress(-100);
+    });
+
     globalModel.connection.on('imgReceive', ({ img }) => {
         const imgE = document.getElementById('img');
         const decompressed = new TextDecoder().decode(pako.inflate(img));

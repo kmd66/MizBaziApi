@@ -9,8 +9,8 @@
 }
 
 function roomReceive(room) {
-    console.log(room)
     reset();
+    console.log(room)
     globalModel.room = room;
     main.topTimeProgress(-100);
     vm.$refs.childmain.door = room.door;

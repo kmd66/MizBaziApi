@@ -54,7 +54,6 @@ class RangOrazDb {
         };
         globalDb().add(newRoom.id, GameType.rangOraz);
         this.rooms.insert(newRoom);
-        console.log(`----------newRoom.id ${newRoom.id}`)
         rangOrazStart(newRoom.id);
         return newRoom
     }

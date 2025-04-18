@@ -1,9 +1,11 @@
-﻿main.reset = function () {
-    const mainRightElements = document.querySelectorAll('.mainRight [class^="itemMain"]');
-    Array.from(mainRightElements).forEach(el => {
-        el.getAnimations().forEach(anim => anim.cancel());
-        el.style.position = 'unset';
-    });
+﻿main.reset = function (itemMainFix) {
+    if (!itemMainFix) {
+        const mainRightElements = document.querySelectorAll('.mainRight [class^="itemMain"]');
+        Array.from(mainRightElements).forEach(el => {
+            el.getAnimations().forEach(anim => anim.cancel());
+            el.style.position = 'unset';
+        });
+    }
 
     vm.$refs.childmain.soundDivI = false;
     vm.$refs.childmain.soundDivSpan = false;
@@ -19,16 +21,11 @@ main.setPainSize = function () {
     elPaint.style.height = `${heightPaint}px`;
 }
 
-var tI = 1;
-main.getDefensePosition = function (i) {
-    if (tI == i)
-        return;
-
-    tI = i;
+main.getDefensePosition = function (duration) {
     main.reset();
     const position = document.querySelector(".mainTemplate .defensePosition");
     const rect = position.getBoundingClientRect();
-    const el = document.querySelector(`.mainTemplate .itemMain${i}`);
+    const el = document.querySelector(`.mainTemplate .itemMain${globalModel.activeUser.row}`);
     const rectEl = el.getBoundingClientRect();
 
     el.style.position = 'fixed';
@@ -37,7 +34,7 @@ main.getDefensePosition = function (i) {
         { top: `${rectEl.top}px`, left: `${rectEl.left}px` },
         { top: `${rect.top}px`, left: `${rect.left + 10}px` }
     ], {
-        duration: 400,
+        duration: duration ? duration : 400,
         easing: 'ease-in-out',
         fill: 'forwards'
     });
@@ -99,7 +96,7 @@ main.topTimeProgress = function (i) {
     }
 
     if (i == 0) {
-        main.reset();
+        main.reset(true);
         return;
     }
     const newTime = i - 1;
@@ -144,15 +141,7 @@ main.Component = function (app) {
                 }
             },
             addChalesh() {
-                if (tI > 5) {
-                    tI = 5;
-                    removeChalesh();
-                    main.getDefensePosition(5);
-                    tI = 1;
-                    return;
-                }
                 addChalesh(tI);
-                tI++;
             },
             itemMainClick(i) {
                 vm.$refs.childitemclick.click(i);

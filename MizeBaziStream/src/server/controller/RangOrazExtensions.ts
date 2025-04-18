@@ -5,6 +5,15 @@ import { userInDb } from './userInDb';
 import SocketManager from '../handler/socket';
 import { User } from '../model/interfaces';
 
+enum NobatType {
+    undefined = 0,
+
+    nobat = 1, //'نوبت صحبت کردن',
+
+    raieGiri = 5, //'رایگیری',
+
+    bazporsi = 10, //'بازپرسی',
+}
 export class RangOrazControll {
 
     public static getRangOrazHandler(roomId: string): RangOrazHandler | undefined {
@@ -24,38 +33,25 @@ export class RangOrazControll {
     }
 
     public static roomReceive(roomId: string, connectionId?: string) {
-
         const model = RangOrazControll.SafeRoom(roomId);
-
         if (connectionId) {
             SocketManager.sendToSocket('hubRangOraz', 'roomReceive', connectionId, model);
             return true;
         }
-
-        const users = userInDb().getAll(roomId);
-        if (users) {
-            const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
-            const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
-            SocketManager.sendToMultipleSockets('hubRangOraz', 'roomReceive', connectionIds, model);
-        }
+        RangOrazControll.sendToMultipleSockets(roomId, 'roomReceive', model);
     }
 
     public static roomAllMainWaitReceive(roomId: string) {
         const handler = RangOrazControll.getRangOrazHandler(roomId);
         const model = {
             isShowOstad: handler!.isShowOstad,
-            door: 'بازگزاری',
+            door: handler!.door,
             progressTime: handler!.mainWait,
-            activeUser: handler!.activeUser,
+            activeUser: -1,
             isChalesh: 0,
             isSticker: 0
         };
-        const users = userInDb().getAll(roomId);
-        if (users) {
-            const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
-            const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
-            SocketManager.sendToMultipleSockets('hubRangOraz', 'roomReceive', connectionIds, model);
-        }
+        RangOrazControll.sendToMultipleSockets(roomId, 'roomReceive', model);
     }
 
     public static SafeRoom(roomId: string): any {
@@ -80,39 +76,48 @@ export class RangOrazControll {
             id, userInGameStatus,
         }));
     }
-    
+
     public static statusReceive(roomId: string): boolean {
         const _userInDb = userInDb();
         const users = _userInDb.getAll(roomId);
         if (users) {
-            const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
-            const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
-            SocketManager.sendToMultipleSockets(
-                'hubRangOraz', 'userStatusReceive',
-                connectionIds, RangOrazControll.userStatus(users)
-            );
+            RangOrazControll.sendToMultipleSockets(roomId, 'userStatusReceive', RangOrazControll.userStatus(users));
             return true;
         }
         return false;
     }
+
+    public static sendToMultipleSockets(roomId: string, name: string, model: any) {
+        const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
+        const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
+        SocketManager.sendToMultipleSockets('hubRangOraz', name, connectionIds, model)
+    }
+
+    public static getDefensePositionReceive(handler: RangOrazHandler) {
+        const model = {
+            activeUser: handler.activeUser,
+            wate: handler.mainWait,
+            nobatType: handler!.nobatType,
+        };
+        RangOrazControll.sendToMultipleSockets(handler.roomId, 'getDefensePositionReceive', model);
+    }
+    public static startStream(handler: RangOrazHandler) {
+        const model = {
+            activeUser: handler.activeUser,
+            wate: handler.wait,
+            nobatType: handler!.nobatType,
+        };
+        RangOrazControll.sendToMultipleSockets(handler.roomId, 'startStream', model);
+    }
 }
 
-enum NobatType {
-    undefined = 0,
-
-    nobat = 1, //'نوبت صحبت کردن',
-
-    raieGiri = 5, //'رایگیری',
-
-    bazporsi = 10, //'بازپرسی',
-}
 export class RangOrazHandler {
-    private roomId: string;
+    public roomId: string;
 
     public wait: number = 10;
     public mainWait: number = 3;
     public door?: RangOrazDoor = RangOrazDoor.d0;
-    public activeUser: number = 0;
+    public activeUser: number = -1;
     public isShowOstad: boolean = false;
     public isChalesh: boolean = false;
     public isSticker: boolean = false;
@@ -126,7 +131,7 @@ export class RangOrazHandler {
     private chalenger: number = -1;
     private bazporsi: number[] = [];
 
-    private nobatType: NobatType = NobatType.undefined;
+    public nobatType: NobatType = NobatType.undefined;
     private nobatIndex: number = -1;
 
     public raieNahaii: boolean = false; //'رایگیری نهایی'
@@ -156,17 +161,26 @@ export class RangOrazHandler {
     }
 
     public async main() {
-        if (this.door == undefined) {
+        if(this.door == undefined) {
             this.setFinish();
         }
         if (this.finish)
             return;
-        this.setWait();
 
-        await this.delay(500);
-        RangOrazControll.roomAllMainWaitReceive(this.roomId);
-        await this.delay(this.mainWait * 1000);
-        RangOrazControll.roomReceive(this.roomId);
+        this.setWait();
+        
+        if (this.activeUser > -1) {
+            await this.delay(100);
+            RangOrazControll.getDefensePositionReceive(this);
+            await this.delay(this.mainWait * 1000);
+            RangOrazControll.startStream(this);
+        }
+        else {
+            RangOrazControll.roomAllMainWaitReceive(this.roomId);
+            await this.delay(this.mainWait * 1000);
+            RangOrazControll.roomReceive(this.roomId);
+        }
+        //RangOrazControll.roomReceive(this.roomId);
         this.timer();
     }
 
@@ -178,6 +192,14 @@ export class RangOrazHandler {
         this.timeoutId = setTimeout(() => {
             this.next();
         }, this.wait * 1000);
+    }
+
+    private nextReset() {
+        this.activeUser = -1;
+        this.nobatIndex = -1;
+        this.nobatType = NobatType.undefined;
+        this.getNextStep();
+        this.main();
     }
 
     private next() {
@@ -198,35 +220,44 @@ export class RangOrazHandler {
         this.setNobatIndex();
     }
 
-    private nextReset() {
-        this.activeUser = 0;
-        this.nobatIndex = -1;
-        this.getNextStep();
-        this.main();
-    }
-
     private setNobatIndex() {
         const room = rangOrazDb().get(this.roomId);
         if (!room) {
             this.setFinish();
+            this.main();
             return;
         }
 
         this.nobatIndex = this.nobatIndex + 1;
+        if (this.nobatIndex >= room.users.length) {
 
-        if (this.nobatIndex >= room.users.length - 1) {
+
+            if (this.door == RangOrazDoor.d1) {
+                this.nobatType = NobatType.undefined;
+                this.nextReset();
+                return;
+            }
+
             if (this.nobatType == NobatType.nobat)
                 this.nobatType = NobatType.raieGiri;
-            if (this.nobatType == NobatType.raieGiri)
+            else if (this.nobatType == NobatType.raieGiri)
                 this.nobatType = NobatType.bazporsi;
-            this.getNextStep();
+
+            this.activeUser = -1;
+            this.nobatIndex = -1;
             this.main();
+            return;
         }
-        //if (room.users[this.nobatIndex]?.userInGameStatus != 1) {
-        //    this.setNobatIndex();
-        //    return;
-        //}
-        this.activeUser = room.users[this.nobatIndex].index + 1;
+
+        if (room.users[this.nobatIndex]?.userInGameStatus != 1) {
+            if (room.users[this.nobatIndex]?.userInGameStatus != 10
+                || this.nobatType != NobatType.raieGiri) {
+                this.setNobatIndex();
+                return;
+            }
+        }
+
+        this.activeUser = room.users[this.nobatIndex].index;
         this.main();
     }
 
@@ -241,7 +272,13 @@ export class RangOrazHandler {
     }
 
     private setWait() {
+        this.wait = 2;
+        return;
         if (this.nobatType == NobatType.raieGiri) {
+            this.wait = 5;
+            return;
+        }
+        if (this.nobatType == NobatType.bazporsi) {
             this.wait = 5;
             return;
         }
@@ -336,7 +373,7 @@ class RangOrazTimer {
             this.stop(roomId);
             return;
         }
-
+        
         const users = room?.users.filter(user => user.userInGameStatus == 10) || [];
         users.map((x) => {
             x.oflineSecond++;
