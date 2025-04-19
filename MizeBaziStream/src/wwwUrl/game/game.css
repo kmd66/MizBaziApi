@@ -184,7 +184,8 @@ body{
     height: 100%;
     background: #0f0f0fd1;
 }
-    .imgStatus.icon-ofline, .imgStatus.icon-death {
+    .imgStatus.icon-ofline, .imgStatus.icon-death,
+    .imgStatus.icon-tarazo, .imgStatus.icon-judge, .imgStatus.icon-badge-police {
         color: red;
         padding: 12px;
     }

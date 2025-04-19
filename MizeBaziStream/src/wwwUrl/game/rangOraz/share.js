@@ -1,4 +1,5 @@
 ﻿function reset() {
+    globalModel.bazpors = {};
     main.reset();
     imgsForSpy.reset();
     paint.reset();
@@ -35,7 +36,9 @@ function initShare() {
     globalModel.roomReceive = roomReceive;
     globalModel.usersReceive = usersReceive;
 
-    globalModel.room = { };
+    globalModel.bazpors = {};
+
+    globalModel.room = {};
 
     main = {};
     main.startStrimInt = -1;

@@ -24,8 +24,19 @@ function startStreamReceive(model) {
 }
 
 function bazporsiReceive(model) {
-    globalModel.reset()
-    console.log(`-----bazporsiReceive- ${model}`)
+    globalModel.reset();
+    if (model == 1) {
+        vm.$refs.childmain.msg.show = true;
+        globalModel.room.progressTime = 14;
+        if (globalModel.user.type == 1) {
+            globalModel.bazpors = { select: true };
+            vm.$refs.childmain.msg.bazpors = true;
+        }
+        else
+            vm.$refs.childmain.msg.bazporsWait = true;
+        vm.$refs.childmain.door = 'بازپرسی';
+        main.topTimeProgress(-100);
+    }
 }
 
 socketHandler.initSoket = function () {
@@ -40,6 +51,7 @@ socketHandler.initSoket = function () {
             userKey: socketHandler.userKey
         }
     });
+
 
     globalModel.connection.on('connectionReceive', ({ socketId }) => {
         socketHandler.socketId = socketId;
@@ -59,13 +71,10 @@ socketHandler.initSoket = function () {
 
     globalModel.connection.on('bazporsiReceive', bazporsiReceive);
 
-    globalModel.connection.on('imgReceive', ({ img }) => {
-        const imgE = document.getElementById('img');
-        const decompressed = new TextDecoder().decode(pako.inflate(img));
-        imgE.src = decompressed;
-    })
 }
 function socketCallBack() {
     vm.appModel.loding = false;
     vm.changeState('main'); // help imgsForSpy 'main''paint';
+
+    itemclick.listen();
 }

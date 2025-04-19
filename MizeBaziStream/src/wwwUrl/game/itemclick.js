@@ -1,5 +1,43 @@
-﻿itemclick.reset = function () {
+﻿
+itemclick.reset = function () {
     vm.$refs.childitemclick.isAddTarget = false;
+    removeBazporsiForItem();
+}
+function removeBazporsiForItem() {
+    const elements = document.querySelectorAll('.bazporsiForItem');
+    elements.forEach(element => {
+        element.remove();
+    });
+}
+
+function itemMainClick(i) {
+    if (globalModel.bazpors?.select) {
+        const user = vm.$refs.childmain.users.find(x => x.row == i);
+        globalModel.connection.emit('setBazporsi', {
+            userId: user.id,
+            roomId: socketHandler.roomId,
+            userKey: socketHandler.userKey,
+        });
+        return;
+    }
+
+    vm.$refs.childitemclick.click(i);
+}
+itemclick.listen = function () {
+    globalModel.connection.on('setBazporsiReceive', (model) => {
+        removeBazporsiForItem();
+        if (model?.length > 0) {
+            const users = vm.$refs.childmain.users.filter(x => model.includes(x.id)) || [];
+            users.map((x) => {
+                const el = document.querySelector(`.itemMain${x.row} .itemImg`);
+                if (!el)
+                    return;
+                const divEl = document.createElement('div');
+                divEl.className = `bazporsiForItem imgStatus icon-badge-police`;
+                el.appendChild(divEl);
+            });
+        }
+    });
 }
 function addTarget(i, type) {
     if (!vm.$refs.childitemclick.isAddTarget)
@@ -29,13 +67,15 @@ function addTarget(i, type) {
 }
 
 itemclick.Component = function (app) {
+    app.config.globalProperties.itemMainClick = itemMainClick;
+
     app.component('itemclick-component', {
         template: '#itemclick-template',
         data() {
             return {
                 itemIndex:-1,
                 modal:false,
-                isAddTarget: true,
+                isAddTarget: false,
             }
         },
         props: {

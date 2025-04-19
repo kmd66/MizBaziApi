@@ -76,10 +76,10 @@ export function RangOrazMethod() {
         },
 
         customHandler: {
-            'message': (socket: Socket, msg: any) => {
-                socket.emit('exitRoomReceive', {
-                    timestamp: new Date()
-                });
+            'setBazporsi': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.setBazporsi(model)
             },
         }
     };

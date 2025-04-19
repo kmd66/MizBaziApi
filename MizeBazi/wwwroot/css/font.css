@@ -18,6 +18,15 @@
     color: var(--TextColor2);
 }
 
+.icon-judge:before {
+  content: "\e945";
+}
+.icon-badge-police:before {
+  content: "\e946";
+}
+.icon-tarazo:before {
+  content: "\e947";
+}
 .icon-ofline:before {
   content: "\e940";
 }

@@ -9,6 +9,7 @@
 
     vm.$refs.childmain.soundDivI = false;
     vm.$refs.childmain.soundDivSpan = false;
+    vm.$refs.childmain.msg = { };
     main.startStrimInt = -1;
     main.resetTimer();
 }
@@ -122,7 +123,9 @@ main.Component = function (app) {
 
                 user: {},
                 users: [],
-                usersStatus: []
+                usersStatus: [],
+
+                msg: {}
             }
         },
         props: {
@@ -142,9 +145,6 @@ main.Component = function (app) {
             },
             addChalesh() {
                 addChalesh(tI);
-            },
-            itemMainClick(i) {
-                vm.$refs.childitemclick.click(i);
             },
             itemStatus(id) {
                 var item = this.usersStatus.find(x => x.id== id)
