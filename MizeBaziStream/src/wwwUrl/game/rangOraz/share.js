@@ -10,7 +10,6 @@
 
 function roomReceive(room) {
     reset();
-    console.log(room)
     globalModel.room = room;
     main.topTimeProgress(-100);
     vm.$refs.childmain.door = room.door;
@@ -32,6 +31,7 @@ function initShare() {
     vm = {};
 
     globalModel.connection;
+    globalModel.reset = reset;
     globalModel.roomReceive = roomReceive;
     globalModel.usersReceive = usersReceive;
 

@@ -32,6 +32,9 @@ function disconnect(roomId: string, connectionId: string): boolean {
     var _userInDb = userInDb();
     const user = _userInDb.getByConnectionId(roomId, connectionId);
     if (user) {
+        if (user.userInGameStatus == 2)
+            return true;
+
         user.userInGameStatus = userInGameStatusType.ofline;
         _userInDb.update(roomId, user);
         RangOrazControll.statusReceive(roomId);

@@ -8,7 +8,7 @@ const RANGORAZ_COMMENT0 = `
 const RANGORAZ_COMMENT1 = ` <p>نقش بازپرس برای همه بوسیله نماد <i class="icon-star4" style="color: var(--NaghshSefidColor);"></i> مشخص است</p>
 <p>نقش استاد به بازپرس اعلام میشود</p>
 <p>بازپرس از بین موضوهای اعلامی یک موضوع را برای نقاشی انتخاب میکند<p>
-<p>بازپرس میتواند یک بار رای خروج را لغو کند </p>`;
+<p>بازپرس میتواند در هر دور 2 نفر را برای رایگیری انتخاب کند </p>`;
 
 const RANGORAZ_COMMENT2 = `<p>نقش استاد برای بازپرس مشخص است<p>
 <p>استاد با رای گیری از بازی خارج نمیشود و تنها نقش او برای دیگر اعضا افشا میشود</p>
@@ -55,7 +55,10 @@ const HELP_RANGORAZ_COMMENT = [
     }
 ]
 
+let isShowCard = false;
 function showCard() {
+    if (isShowCard) return;
+    isShowCard = true;
     vm.$refs.childhelp.isShowCard = true;
     
     const el = document.querySelector(`.naghshCard`);
@@ -78,9 +81,7 @@ help.usersReceive = function (type) {
     const help = vm.$refs.childhelp.helpComment.find(x => x.type == (type == 21 ? 22 : type));
     vm.$refs.childhelp.selectItem = help;
     vm.$refs.childhelp.selectType = help.type;
-    if (globalModel.room.door == 'معارفه' && globalModel.room.user == 0) {
-        showCard()
-    }
+    showCard()
     return help.icon;
 
 }
