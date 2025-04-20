@@ -168,4 +168,26 @@
 }
 .mainBottom i {
     padding: 5px;
-}   
+}
+.defaeMain .mainRight {
+    float: unset;
+    justify-content: space-around;
+    width:unset
+}
+.defaeMain .itemMain {
+    margin: auto;
+    height:unset;
+    width:100%
+}
+.raigiriResponseUser .itemImg {
+    height: 30px;
+    width: 30px;
+    border: 1px solid rgb(255 0 0);
+}
+.defaeMain .sitNumber {
+    margin: auto;
+    margin-bottom: 5px;
+}
+.defaeMain .d-flex.f {
+    justify-content: space-around !important;
+}

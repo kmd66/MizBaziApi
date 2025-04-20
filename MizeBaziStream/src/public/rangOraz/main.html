@@ -17,10 +17,6 @@
 
             <div class="mainRight">
 
-                <span @click="click(i)">
-                    {{e}}
-                </span>
-
                 <div v-for="user in users" class="itemMain">
                     <div class="d-flex">
                         <div class="sitNumber">{{user.row}}</div>
@@ -67,7 +63,6 @@
             </div>
             <i class="icon-smileys" onclick="sticker.toggleTab()"></i>
             <i class="icon-chalesh" @click="addChalesh()"></i>
-            <!--<i class="icon-chalesh" onclick="main.getDefensePosition(2)"></i>-->
         </div>
     </div>
 

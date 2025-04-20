@@ -1,9 +1,10 @@
 ﻿
 itemclick.reset = function () {
     vm.$refs.childitemclick.isAddTarget = false;
-    removeBazporsiForItem();
+    removeItemIcon();
 }
-function removeBazporsiForItem() {
+
+function removeItemIcon() {
     const elements = document.querySelectorAll('.bazporsiForItem');
     elements.forEach(element => {
         element.remove();
@@ -25,7 +26,7 @@ function itemMainClick(i) {
 }
 itemclick.listen = function () {
     globalModel.connection.on('setBazporsiReceive', (model) => {
-        removeBazporsiForItem();
+        removeItemIcon();
         if (model?.length > 0) {
             const users = vm.$refs.childmain.users.filter(x => model.includes(x.id)) || [];
             users.map((x) => {

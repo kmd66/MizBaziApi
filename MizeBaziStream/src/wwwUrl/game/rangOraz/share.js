@@ -22,6 +22,7 @@ function usersReceive(users) {
     globalModel.user = users.find(x => x.id == socketHandler.userId);
     vm.$refs.childmain.user = globalModel.user;
     vm.$refs.childmain.users = users;
+
     const type = vm.$refs.childmain.user.type;
     vm.$refs.childmain.iconNaghsh = help.usersReceive(type);
 }

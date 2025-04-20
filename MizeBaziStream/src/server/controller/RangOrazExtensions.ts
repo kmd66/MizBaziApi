@@ -143,7 +143,15 @@ class RangOrazProperty {
     protected timeoutId?: NodeJS.Timeout;
 
     protected chalenger: number = -1;
+
     protected bazporsiUsers: number[] = [];
+    protected bazporsiWait: any = {
+        start: 5,
+        end: 0,
+        raigiriStart: 15,
+        raigiriEnd: 0,
+        raigiriResponse: 15,
+    }
 
     public nobatType: NobatType = NobatType.undefined;
     protected nobatIndex: number = -1;
@@ -211,16 +219,52 @@ class BaseRangOrazHandler extends RangOrazProperty{
         super(roomId);
     }
 
-    public setRaieGiriCount(userId: number) {
-    }
+    public setRaieGiriCount(model: any) {
+        // اصلاح
+        //if (this.nobatType != NobatType.bazporsi) return;
 
+        const room = rangOrazDb().get(this.roomId);
+        const user1 = room?.users.find((x: User) => x.key == model.userKey);
+        if (!user1 || this.bazporsiUsers.includes(user1.id)) return;
+        const user2 = room?.users.find((x: User) => x.id == model.userId && [11, 2].indexOf(x.userInGameStatus) == -1);
+        if (!user2 || !this.bazporsiUsers.includes(user2.id)) return;
+        if (this.raieGiriCount.has(user1.id)) {
+            this.raieGiriCount.delete(user1.id);
+        }
+        this.raieGiriCount.set(user1.id, user2.id);
+        SocketManager.sendToSocket('hubRangOraz', 'setRaieGiriCountReceive', user1.connectionId,
+            {
+                userId: user2.id,
+                b: this.raieGiriCount.has(user1.id) ? true : false
+            });
+    }
     public setChalenger(userId: number) {
     }
 
-    public setBazporsi(userId: number) {
+    public setBazporsi(model: any) {
+        // اصلاح
+        //if (this.nobatType != NobatType.bazporsi) return;
+        const room = rangOrazDb().get(this.roomId);
+        const bazporsUser = room?.users.find((x: User) => x.type == 1 && x.key == model.userKey);
+        if (!bazporsUser) return;
+        const user = room?.users.find((x: User) => x.id == model.userId && [11, 2].indexOf(x.userInGameStatus) == -1);
+        if (!user) return;
+
+        if (this.bazporsiUsers.includes(model.userId)) {
+            this.bazporsiUsers = this.bazporsiUsers.filter(userId => userId !== model.userId);
+        } else {
+            this.bazporsiUsers.push(model.userId);
+        }
+
+        if (this.bazporsiUsers.length > 2)
+            this.bazporsiUsers = this.bazporsiUsers.slice(1);
+        SocketManager.sendToSocket('hubRangOraz', 'setBazporsiReceive', bazporsUser.connectionId, this.bazporsiUsers);
     }
 
-    public setShowOstad(userId: number) {
+    public setShowOstad(model:any) {
+        const room = rangOrazDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.type == 2 && x.key == model.userKey);
+        if (!user) return;
         this.isShowOstad = true;
         this.showOstadReceive();
     }
@@ -232,12 +276,10 @@ class BaseRangOrazHandler extends RangOrazProperty{
     //---------------Receive
 
     protected showOstadReceive() {
-        const model = {
-            activeUser: this.activeUser,
-            wate: this.mainWait,
-            nobatType: this.nobatType,
-        };
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'defaeReceive', model);
+        const room = rangOrazDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.type == 2);
+        if (!user) return;
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'showOstadReceive', user.id);
     }
 
     protected bazporsiReceive(type: receiveType) {
@@ -246,34 +288,38 @@ class BaseRangOrazHandler extends RangOrazProperty{
 
     protected defaeReceive(type: receiveType, userIndex: number) {
         const model = {
-            activeUser: this.activeUser,
-            wate: this.mainWait,
-            nobatType: this.nobatType,
+            type: type,
+            userIndex: userIndex,
+            users: this.bazporsiUsers,
+            wait:3
         };
+        if (type == receiveType.start)
+            model.wait = this.bazporsiWait.start;
+
         RangOrazControll.sendToMultipleSockets(this.roomId, 'defaeReceive', model);
     }
-    protected raigiriReceive(thistype: receiveType) {
-        const model = {
-            activeUser: this.activeUser,
-            wate: this.mainWait,
-            nobatType: this.nobatType,
-        };
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'defaeReceive', model);
+    protected raigiriReceive(type: receiveType, wait: number) {
+        const model={
+            type: type,
+            wait: wait,
+            raieGiriCount: Array.from(this.raieGiriCount.entries()),
+        }
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'raigiriReceive', model);
     }
     protected hadseNaghshReceive(type: receiveType) {
-        const model = {
-        };
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'defaeReceive', model);
+        //const model = {
+        //};
+        //RangOrazControll.sendToMultipleSockets(this.roomId, 'hadseNaghshReceive', model);
     }
     protected gameResponseReceive(type: receiveType) {
-        const model = {
-        };
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'defaeReceive', model);
+        //const model = {
+        //};
+        //RangOrazControll.sendToMultipleSockets(this.roomId, 'gameResponseReceive', model);
     }
     protected hadseNaghshUserReceive() {
-        const model = {
-        };
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'defaeReceive', model);
+        //const model = {
+        //};
+        //RangOrazControll.sendToMultipleSockets(this.roomId, 'hadseNaghshUserReceive', model);
     }
 
 }
@@ -392,10 +438,10 @@ export class RangOrazHandler extends BaseRangOrazHandler {
             return;
 
         this.bazporsiUsers = [];
-
         this.bazporsiReceive(receiveType.start);
         await this.delay(15000);
         this.bazporsiReceive(receiveType.end);
+        await this.delay(100);
 
         if (this.bazporsiUsers.length == 2) {
             this.defae();
@@ -405,7 +451,7 @@ export class RangOrazHandler extends BaseRangOrazHandler {
                 this.barandeyeTasadofi();
             }
             else
-                this.nextReset();
+            this.nextReset();
         }
     }
 
@@ -413,20 +459,21 @@ export class RangOrazHandler extends BaseRangOrazHandler {
         if (this.finish)
             return;
 
+        
         await this.delay(1000);
         this.defaeReceive(receiveType.wait, -1);
-        await this.delay(5000);
+        await this.delay(3000);
 
         //نفر 1
         this.defaeReceive(receiveType.start, 0);
-        await this.delay(30000);
+        await this.delay(this.bazporsiWait.start *1000);
         this.defaeReceive(receiveType.end, 0);
 
-        await this.delay(5000);
+        await this.delay(3000);
 
         //نفر 2
         this.defaeReceive(receiveType.start, 1);
-        await this.delay(30000);
+        await this.delay(this.bazporsiWait.start * 1000);
         this.defaeReceive(receiveType.end, 1);
 
         this.raigiri();
@@ -437,12 +484,15 @@ export class RangOrazHandler extends BaseRangOrazHandler {
             return;
 
         this.raieGiriCount.clear();
+        this.loserUser = 0;
 
-        await this.delay(1000);
+        await this.delay(500);
+        this.raigiriReceive(receiveType.wait,0);
+        await this.delay(500);
 
-        this.raigiriReceive(receiveType.start);
-        await this.delay(15000);
-        this.raigiriReceive(receiveType.end);
+        this.raigiriReceive(receiveType.start, this.bazporsiWait.raigiriStart);
+        await this.delay(this.bazporsiWait.raigiriStart *1000);
+        this.raigiriReceive(receiveType.end,0);
 
         this.natigeRaigiri();
     }
@@ -454,21 +504,22 @@ export class RangOrazHandler extends BaseRangOrazHandler {
             this.main();
             return;
         }
-
         const unvotedUsers = room.users.filter((user: User) => !this.raieGiriCount.has(user.id) && user.userInGameStatus == 1);
 
         if (unvotedUsers.length > 0) {
             unvotedUsers.map((x) => {
                 const randomBazpors = this.bazporsiUsers[Math.floor(Math.random() * this.bazporsiUsers.length)];
-                this.raieGiriCount.set(x.id, randomBazpors);
+                if (!this.bazporsiUsers.includes(x.id)) {
+                    this.raieGiriCount.set(x.id, randomBazpors);
+                }
             })
         }
         const values = Array.from(this.raieGiriCount.values());
         const count0 = values.filter(v => v === this.bazporsiUsers[0]).length;
         const count1 = values.filter(v => v === this.bazporsiUsers[1]).length;
 
-        this.raigiriReceive(receiveType.response);
-        await this.delay(5000);
+        this.raigiriReceive(receiveType.response, this.bazporsiWait.raigiriResponse);
+        await this.delay(this.bazporsiWait.raigiriResponse * 1000);
 
         let loser = 0;
 
@@ -517,11 +568,11 @@ export class RangOrazHandler extends BaseRangOrazHandler {
 
     public async hadseNaghsh() {
         if (!this.isShowOstad) {
-            this.hadseNaghshReceive(receiveType.wait)
+            this.hadseNaghshReceive(receiveType.start)
             await this.delay(10000);
         }
 
-        this.hadseNaghshReceive(receiveType.start)
+        this.hadseNaghshReceive(receiveType.end)
         await this.delay(3000);
 
         this.gameResponseReceive(receiveType.response)
@@ -609,7 +660,6 @@ class RangOrazTimer {
             this.stop(roomId);
             return;
         }
-        
         const users = room?.users.filter(user => user.userInGameStatus == 10) || [];
         users.map((x) => {
             x.oflineSecond++;

@@ -6,6 +6,7 @@ import './imgsForSpy'
 import './help'
 import '../sticker'
 import '../itemclick'
+import './defae'
 
 
 const app = Vue.createApp({
@@ -34,6 +35,8 @@ const app = Vue.createApp({
                     vm.$refs.childimgsForSpy.init(); break;
                 case 'help':
                     vm.$refs.childhelp.init(); break;
+                case 'defae':
+                    vm.$refs.childdefae.init(); break;
             }
             this.appModel.state = state;
         }
@@ -45,6 +48,7 @@ imgsForSpy.Component(app);
 help.Component(app);
 sticker.Component(app);
 itemclick.Component(app);
+defae.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

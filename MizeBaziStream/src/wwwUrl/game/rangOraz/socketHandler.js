@@ -22,6 +22,12 @@ function startStreamReceive(model) {
     globalModel.room.progressTime = model.wate;
     main.topTimeProgress(-100);
 }
+function showOstadReceive(model) {
+    vm.changeState('main'); 
+    globalModel.room.isShowOstad = true;
+    const index = vm.$refs.childmain.users.findIndex(x => x.id == model);
+    vm.$refs.childmain.users[index].type = 2;
+}
 
 function bazporsiReceive(model) {
     globalModel.reset();
@@ -36,6 +42,56 @@ function bazporsiReceive(model) {
             vm.$refs.childmain.msg.bazporsWait = true;
         vm.$refs.childmain.door = 'بازپرسی';
         main.topTimeProgress(-100);
+        defae.removeItemIcon();
+    }
+}
+function defaeReceive(model) {
+    vm.$refs.childdefae.raigiriResponse = false;
+    defae.raieGiriCount.clear();
+    vm.$refs.childdefae.loseUser = null;
+
+    if (model.userIndex == -1) {
+        vm.$refs.childdefae.users = [];
+        vm.changeState('defae'); 
+        model.users.map(x => {
+            const user = vm.$refs.childmain.users.find(u => u.id == x);
+            if (user)
+                vm.$refs.childdefae.users.push(user);
+        });
+    }
+
+    defae.progressTime(model.wait);
+}
+function raigiriReceive(model) {
+    if ([1, 10].indexOf(model.type) >-1) {
+        vm.$refs.childdefae.raigiri = true;
+    }
+    else{
+        vm.$refs.childdefae.raigiri = false;
+    }
+    defae.progressTime(model.wait);
+
+    if (model.type == 20) {
+        vm.$refs.childdefae.users?.map((u) => {
+            if (!defae.raieGiriCount.has(u.id))
+                defae.raieGiriCount.set(u.id, []);
+            model.raieGiriCount?.map((x) => {
+                if (x[1] == u.id)
+                    defae.raieGiriCount.get(u.id).push(x[0]);
+            });
+        });
+
+        let maxLength = -Infinity;
+        let maxKey = null;
+        for (const [key, list] of defae.raieGiriCount.entries()) {
+            if (list.length > maxLength) {
+                maxLength = list.length;
+                maxKey = key;
+            }
+        }
+
+        vm.$refs.childdefae.loseUser = vm.$refs.childmain.users.find(u => u.id == maxKey);
+        vm.$refs.childdefae.raigiriResponse = true;
     }
 }
 
@@ -68,8 +124,14 @@ socketHandler.initSoket = function () {
 
     globalModel.connection.on('getDefensePositionReceive', getDefensePositionReceive);
     globalModel.connection.on('startStreamReceive', startStreamReceive);
+    
+    globalModel.connection.on('showOstadReceive', showOstadReceive);
 
     globalModel.connection.on('bazporsiReceive', bazporsiReceive);
+
+    globalModel.connection.on('defaeReceive', defaeReceive);
+    globalModel.connection.on('raigiriReceive', raigiriReceive);
+    globalModel.connection.on('setRaieGiriCountReceive', defae.setRaieGiriCountReceive);
 
 }
 function socketCallBack() {

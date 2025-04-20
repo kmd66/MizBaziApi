@@ -15,6 +15,10 @@
                 <imgs-for-spy-component ref="childimgsForSpy" :app-model="appModel"></imgs-for-spy-component>
             </div>
 
+            <div class="defaeMain" v-show="appModel.state == 'defae'">
+                <defae-component ref="childdefae" :app-model="appModel"></defae-component>
+            </div>
+
             <help-component ref="childhelp" :app-model="appModel"></help-component>
 
             <itemclick-component ref="childitemclick"></itemclick-component>

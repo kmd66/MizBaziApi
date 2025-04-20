@@ -1,0 +1,57 @@
+﻿<template id="defae-template">
+
+    <div class="mainTemplate">
+        <div class="mainTop d-flex">
+        </div>
+
+        <div class="progressbar aw287sdaf">
+            <div :style="{ width: progressbarWidth }"></div>
+        </div>
+
+        <div class="main">
+
+            <div class="mainRight">
+
+                <div v-for="user in users" class="itemMain">
+                    <div class="sitNumber">{{user.row}}</div>
+                    <div :class="'itemDefae'+user.row" @click="click(user.id)">
+                        <div class="itemImg">
+                            <img :src="user.info.Img+'90.jpg'">
+                        </div>
+                        <div class="itemName">{{user.info.FirstName}}</div>
+                        <div class="userName">{{user.info.UserName}}</div>
+                    </div>
+
+                    <div v-show="raigiriResponse">
+                        <div style="color: red; font-size: 0.8rem; margin:5px 0">
+                            رای خروج
+                        </div>
+                        <div class="d-flex f">
+                            <div v-for="x in raigiriResponseUser(user.id)" class="raigiriResponseUser">
+                                <div class="itemImg">
+                                    <img :src="x.info.Img+'90.jpg'">
+                                </div>
+                                <div class="itemName">{{x.info.UserName}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="defaeMsg" v-show="raigiri">
+                    <p style="color: aquamarine;">یک نفر را برای خروج از بازی باید انتخاب کنید. درصورت عدم انتخاب شما, سیستم بصورت تصادفی یک نفر بجای شما انتخاب خواهد کرد</p>
+                </div>
+                <div class="defaeMsg" v-show="loseUser != null">
+                    <p style="color: aquamarine;"><span style="color:red">{{loseUser?.info.UserName}}</span> با رایگیری خارخ شد</p>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="mainBottom d-flex">
+        </div>
+    </div>
+
+
+</template>

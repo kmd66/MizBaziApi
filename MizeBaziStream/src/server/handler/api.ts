@@ -42,6 +42,9 @@ class PageRoot {
         const fileHelp = path.join(__dirname, '../../public/rangOraz/help.html');
         const helpPartial = fs.readFileSync(fileHelp, 'utf8');
 
+        const defaeFile = path.join(__dirname, '../../public/rangOraz/defae.html');
+        const defaePartial = fs.readFileSync(defaeFile, 'utf8');
+
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
             sticker: stickerTemplate,
@@ -52,6 +55,8 @@ class PageRoot {
             paint: paintPartial,
             imgsForSpy: imgsForSpyPartial,
             help: helpPartial,
+            defae: defaePartial, 
+
             title: 'رنگ و راز',
         });
         res.send(renderedHtml);

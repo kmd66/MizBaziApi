@@ -81,6 +81,16 @@ export function RangOrazMethod() {
                 if (handler)
                     handler.setBazporsi(model)
             },
+            'setRaieGiriCount': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.setRaieGiriCount(model)
+            },
+            'setShowOstad': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.setShowOstad(model)
+            },
         }
     };
 }
