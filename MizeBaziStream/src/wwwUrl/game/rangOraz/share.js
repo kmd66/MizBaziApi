@@ -29,7 +29,9 @@ function usersReceive(users) {
 
 function initShare() {
 
-    globalModel = {};
+    globalModel = {
+        gameName:'rangOraz'
+    };
     vm = {};
 
     globalModel.connection;
@@ -52,6 +54,7 @@ function initShare() {
 
     imgsForSpy = {};
     help = {};
+    defae = {};
 
     socketHandler = {
         socketId: '',

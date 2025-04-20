@@ -1,14 +1,37 @@
-
+﻿
 <template id="itemclick-template">
     <div class="itemclickMain" v-show="modal" @click="modal = false">
-        <div class="moadalBady">
-            <div v-show="isAddTarget">
+        <div class="modalBady">
+
+            <div>
                 <div class="modalTarget d-flex">
-                    <div class="target1 modalTargetItem1" @click="target(0)"></div>
-                    <div class="target2 modalTargetItem2" @click="target(1)"></div>
+                    <div class="icon icon-information4" @click="info()"></div>
+                    <div v-show="isShowOstad && isMy" class="icon icon-medal4" @click="showOstad()"></div>
+                </div>
+            </div>
+
+            <div v-show="isAddTarget && !isMy">
+                <div class="modalTarget d-flex">
+                    <div class="icon target1 modalTargetItem1" @click="target(0)"></div>
+                    <div class="icon target2 modalTargetItem2" @click="target(1)"></div>
                 </div>
             </div>
 
         </div>
     </div>
+
+
+    <div class="itemclickMain info" v-show="userInfo != null" @click="userInfo = null">
+        <div class="modalBady" style="text-align:center">
+            <div class="itemImg">
+                <img :src="userInfo?.info?.Img+'90.jpg'">
+            </div>
+            <p>{{userInfo?.info?.FirstName}} {{userInfo?.info?.LastName}}</p>
+            <p>{{userInfo?.info?.UserName}}</p>
+            <p>{{userInfo?.info?.BirthDate}}</p>
+            <p>{{userInfo?.info?.Date}}</p>
+            <button class="btn btn-Greenlight " v-show="!isMy">درخاست دوستی</button>
+        </div>
+    </div>
+
 </template>

@@ -146,11 +146,12 @@ class RangOrazProperty {
 
     protected bazporsiUsers: number[] = [];
     protected bazporsiWait: any = {
-        start: 5,
+        bazporsiReceive:3,
+        start: 2,
         end: 0,
-        raigiriStart: 15,
+        raigiriStart: 5,
         raigiriEnd: 0,
-        raigiriResponse: 15,
+        raigiriResponse: 2,
     }
 
     public nobatType: NobatType = NobatType.undefined;
@@ -283,7 +284,11 @@ class BaseRangOrazHandler extends RangOrazProperty{
     }
 
     protected bazporsiReceive(type: receiveType) {
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'bazporsiReceive', type);
+        let model = {
+            type: type,
+            wait: type == receiveType.start ? this.bazporsiWait.bazporsiReceive : 0
+        }
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'bazporsiReceive', model);
     }
 
     protected defaeReceive(type: receiveType, userIndex: number) {
@@ -291,7 +296,7 @@ class BaseRangOrazHandler extends RangOrazProperty{
             type: type,
             userIndex: userIndex,
             users: this.bazporsiUsers,
-            wait:3
+            wait:2
         };
         if (type == receiveType.start)
             model.wait = this.bazporsiWait.start;
@@ -439,7 +444,7 @@ export class RangOrazHandler extends BaseRangOrazHandler {
 
         this.bazporsiUsers = [];
         this.bazporsiReceive(receiveType.start);
-        await this.delay(15000);
+        await this.delay(this.bazporsiWait.bazporsiReceive * 1000);
         this.bazporsiReceive(receiveType.end);
         await this.delay(100);
 
@@ -451,7 +456,7 @@ export class RangOrazHandler extends BaseRangOrazHandler {
                 this.barandeyeTasadofi();
             }
             else
-            this.nextReset();
+                this.nextReset();
         }
     }
 
@@ -462,14 +467,14 @@ export class RangOrazHandler extends BaseRangOrazHandler {
         
         await this.delay(1000);
         this.defaeReceive(receiveType.wait, -1);
-        await this.delay(3000);
+        await this.delay(2000);
 
         //نفر 1
         this.defaeReceive(receiveType.start, 0);
         await this.delay(this.bazporsiWait.start *1000);
         this.defaeReceive(receiveType.end, 0);
 
-        await this.delay(3000);
+        await this.delay(2000);
 
         //نفر 2
         this.defaeReceive(receiveType.start, 1);

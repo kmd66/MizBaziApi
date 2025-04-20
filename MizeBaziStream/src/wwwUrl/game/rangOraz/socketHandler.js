@@ -27,13 +27,20 @@ function showOstadReceive(model) {
     globalModel.room.isShowOstad = true;
     const index = vm.$refs.childmain.users.findIndex(x => x.id == model);
     vm.$refs.childmain.users[index].type = 2;
+
+    const divEl = document.createElement('div');
+    divEl.className = `naghshCard`;
+    divEl.innerHTML = `<div class="" style="color: var(--LinkColor);text-align: center;margin-bottom: 5px;">استاد</div><div class="itemImg"><img src="${vm.$refs.childmain.users[index].info.Img}90.jpg"></div><div class="" style="text-align: center;">${vm.$refs.childmain.users[index].info.FirstName}</div><div class="" style="text-align: center;">${vm.$refs.childmain.users[index].info.UserName}</div>`;
+    document.body.appendChild(divEl);
+    setTimeout(() => {
+        divEl.remove();
+    }, 5000);
 }
 
 function bazporsiReceive(model) {
     globalModel.reset();
-    if (model == 1) {
+    if (model.type == 1) {
         vm.$refs.childmain.msg.show = true;
-        globalModel.room.progressTime = 14;
         if (globalModel.user.type == 1) {
             globalModel.bazpors = { select: true };
             vm.$refs.childmain.msg.bazpors = true;
@@ -41,6 +48,8 @@ function bazporsiReceive(model) {
         else
             vm.$refs.childmain.msg.bazporsWait = true;
         vm.$refs.childmain.door = 'بازپرسی';
+
+        globalModel.room.progressTime = model.wait;
         main.topTimeProgress(-100);
         defae.removeItemIcon();
     }

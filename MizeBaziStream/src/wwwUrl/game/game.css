@@ -130,12 +130,10 @@ body{
 .target1::before {
     font-family: 'icomoon' !important;
     content: '\e944';
-    margin: 0 4px;
 }
 .target2::before {
     font-family: 'icomoon' !important;
     content: '\e942';
-    margin: 0 4px;
 }
 .targetColor1 {
     color: var(--NaghshSefidColor)
@@ -149,11 +147,11 @@ body{
     left: 0;
     bottom: 0;
     right: 0;
-    background: #00000045;
+    background: #00000075;
     z-index: 1002;
 }
 
-.moadalBady {
+.modalBady {
     position: absolute;
     margin: auto;
     width: 250px;
@@ -167,11 +165,15 @@ body{
 .modalTarget {
     justify-content: space-around !important;
 }
-.modalTargetItem1, .modalTargetItem2 {
-    font-size: 2rem;
+.modalBady .icon {
+    font-size: 1.5rem;
     padding: 0 7px;
     border: 1px solid;
     border-radius: 7px;
+    margin: 10px 0;
+    line-height: unset;s
+}
+.modalTargetItem1{
     color: var(--NaghshSefidColor);
 }
 .modalTargetItem2 {
@@ -219,4 +221,7 @@ body{
     50% {
         transform: scale(1.2);
     }
+}
+.itemclickMain.info button, .itemclickMain.info p {
+    margin: 12px 0;
 }

@@ -11,34 +11,49 @@ function removeItemIcon() {
     });
 }
 
+let rowNum = -1;
 function itemMainClick(i) {
-    if (globalModel.bazpors?.select) {
-        const user = vm.$refs.childmain.users.find(x => x.row == i);
-        globalModel.connection.emit('setBazporsi', {
-            userId: user.id,
-            roomId: socketHandler.roomId,
-            userKey: socketHandler.userKey,
-        });
-        return;
+    rowNum = i;
+    vm.$refs.childitemclick.isMy = false;
+    if (i == globalModel.user.row)
+        vm.$refs.childitemclick.isMy = true;
+
+    if (globalModel.gameName == 'rangOraz') {
+        vm.$refs.childitemclick.isShowOstad = false;
+        if (globalModel.user.type == 2 && !globalModel.room.isShowOstad) 
+            vm.$refs.childitemclick.isShowOstad = true;
+
+        if (globalModel.bazpors?.select) {
+            const user = vm.$refs.childmain.users.find(x => x.row == i);
+            globalModel.connection.emit('setBazporsi', {
+                userId: user.id,
+                roomId: socketHandler.roomId,
+                userKey: socketHandler.userKey,
+            });
+            return;
+        }
     }
 
     vm.$refs.childitemclick.click(i);
 }
 itemclick.listen = function () {
-    globalModel.connection.on('setBazporsiReceive', (model) => {
-        removeItemIcon();
-        if (model?.length > 0) {
-            const users = vm.$refs.childmain.users.filter(x => model.includes(x.id)) || [];
-            users.map((x) => {
-                const el = document.querySelector(`.itemMain${x.row} .itemImg`);
-                if (!el)
-                    return;
-                const divEl = document.createElement('div');
-                divEl.className = `bazporsiForItem imgStatus icon-badge-police`;
-                el.appendChild(divEl);
-            });
-        }
-    });
+
+    if (globalModel.gameName == 'rangOraz') {
+        globalModel.connection.on('setBazporsiReceive', (model) => {
+            removeItemIcon();
+            if (model?.length > 0) {
+                const users = vm.$refs.childmain.users.filter(x => model.includes(x.id)) || [];
+                users.map((x) => {
+                    const el = document.querySelector(`.itemMain${x.row} .itemImg`);
+                    if (!el)
+                        return;
+                    const divEl = document.createElement('div');
+                    divEl.className = `bazporsiForItem imgStatus icon-badge-police`;
+                    el.appendChild(divEl);
+                });
+            }
+        });
+    }
 }
 function addTarget(i, type) {
     if (!vm.$refs.childitemclick.isAddTarget)
@@ -76,7 +91,11 @@ itemclick.Component = function (app) {
             return {
                 itemIndex:-1,
                 modal:false,
+                userInfo: null,
+
                 isAddTarget: false,
+                isMy: false,
+                isShowOstad: false
             }
         },
         props: {
@@ -84,10 +103,26 @@ itemclick.Component = function (app) {
         methods: {
             click(i) {
                 this.itemIndex = i;
-                this.modal = true;
+                if (this.isAddTarget || (this.isShowOstad && this.isMy)) {
+                    this.modal = true;
+                }
+                else {
+                    this.info();
+                }
             },
             target(type) {
                 addTarget(this.itemIndex, type)
+            },
+            info() {
+                this.userInfo = vm.$refs.childmain.users.find(x => x.row == rowNum);
+            },
+            showOstad() {
+                if (globalModel.gameName == 'rangOraz' && this.showOstad) {
+                    globalModel.connection.emit('setShowOstad', {
+                        roomId: socketHandler.roomId,
+                        userKey: socketHandler.userKey,
+                    });
+                }
             }
         }
     });
