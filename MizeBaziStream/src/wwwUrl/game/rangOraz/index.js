@@ -7,6 +7,7 @@ import './help'
 import '../sticker'
 import '../itemclick'
 import './defae'
+import '../gameresponse'
 
 
 const app = Vue.createApp({
@@ -37,6 +38,8 @@ const app = Vue.createApp({
                     vm.$refs.childhelp.init(); break;
                 case 'defae':
                     vm.$refs.childdefae.init(); break;
+                case 'gameresponse':
+                    vm.$refs.childGameresponse.init(); break;
             }
             this.appModel.state = state;
         }
@@ -49,6 +52,7 @@ help.Component(app);
 sticker.Component(app);
 itemclick.Component(app);
 defae.Component(app);
+gameresponse.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

@@ -22,6 +22,11 @@
             <help-component ref="childhelp" :app-model="appModel"></help-component>
 
             <itemclick-component ref="childitemclick"></itemclick-component>
+
+            <div class="gameresponseMain" v-show="appModel.state == 'gameresponse'">
+                <gameresponse-component ref="childGameresponse"></gameresponse-component>
+            </div>
+
         </div>
     </div>
 </div>

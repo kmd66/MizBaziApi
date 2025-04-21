@@ -48,6 +48,7 @@ defae.Component = function (app) {
         template: '#defae-template',
         data() {
             return {
+                door: '-',
                 raigiri: false,
                 raigiriResponse: false,
                 progressbarWidth: '0px',

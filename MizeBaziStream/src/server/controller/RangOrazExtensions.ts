@@ -3,7 +3,6 @@ import { rangOrazDb } from './rangOrazDb';
 import { userInDb } from './userInDb';
 import SocketManager from '../handler/socket';
 import { User } from '../model/interfaces';
-import { count } from 'console';
 
 enum NobatType {
     undefined = 0,
@@ -23,6 +22,12 @@ enum receiveType {
     wait = 10,
     response = 20,
 }
+enum winnerType {
+    undefined = 0,
+    sefid = 1,
+    siah = 2,
+}
+
 export class RangOrazControll {
 
     public static getRangOrazHandler(roomId: string): RangOrazHandler | undefined {
@@ -99,6 +104,7 @@ export class RangOrazControll {
     public static sendToMultipleSockets(roomId: string, name: string, model: any) {
         const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
         const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
+        if (connectionIds.length > 0)
         SocketManager.sendToMultipleSockets('hubRangOraz', name, connectionIds, model)
     }
 
@@ -146,12 +152,12 @@ class RangOrazProperty {
 
     protected bazporsiUsers: number[] = [];
     protected bazporsiWait: any = {
-        bazporsiReceive:3,
-        start: 2,
+        bazporsiReceive:10, //10
+        start: 20, //20
         end: 0,
-        raigiriStart: 5,
+        raigiriStart: 12, //12
         raigiriEnd: 0,
-        raigiriResponse: 2,
+        raigiriResponse: 10, //10
     }
 
     public nobatType: NobatType = NobatType.undefined;
@@ -159,8 +165,11 @@ class RangOrazProperty {
 
     public raieNahaii: boolean = false; //'رایگیری نهایی'
 
-    public loserUser: number = 0;
-    public hadseNaghshUser: number = 0;
+    protected winner: winnerType = winnerType.undefined;
+
+    public loserUser: any = {};
+
+    public hadseNaghsh: any = {};
 
     protected delay(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -269,9 +278,20 @@ class BaseRangOrazHandler extends RangOrazProperty{
         this.isShowOstad = true;
         this.showOstadReceive();
     }
-    public setHadseNaghshUser(userId: number) {
-        this.isShowOstad = true;
-        this.hadseNaghshUserReceive();
+
+    public setHadseNaghsh(model: any) {
+        if (!this.loserUser?.id) return;
+        const room = rangOrazDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.id == this.loserUser?.id);
+        if (!user) return;
+
+        const userHadseNaghsh = room?.users.find((x: User) => x.id == model.userId);
+        if (!userHadseNaghsh) return;
+        this.hadseNaghsh = {
+            id: userHadseNaghsh.id,
+            type: userHadseNaghsh.type
+        }
+        SocketManager.sendToSocket('hubRangOraz', 'getHadseNaghsh', user.connectionId, model.userId)
     }
 
     //---------------Receive
@@ -312,19 +332,26 @@ class BaseRangOrazHandler extends RangOrazProperty{
         RangOrazControll.sendToMultipleSockets(this.roomId, 'raigiriReceive', model);
     }
     protected hadseNaghshReceive(type: receiveType) {
-        //const model = {
-        //};
-        //RangOrazControll.sendToMultipleSockets(this.roomId, 'hadseNaghshReceive', model);
+        const model = {
+            loserUser: this.loserUser,
+            type: type,
+            wait: type == receiveType.start ? 14 : 10,
+            hadseNaghsh: type == receiveType.end ? this.hadseNaghsh : {}
+        };
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'hadseNaghshReceive', model);
     }
-    protected gameResponseReceive(type: receiveType) {
-        //const model = {
-        //};
-        //RangOrazControll.sendToMultipleSockets(this.roomId, 'gameResponseReceive', model);
-    }
-    protected hadseNaghshUserReceive() {
-        //const model = {
-        //};
-        //RangOrazControll.sendToMultipleSockets(this.roomId, 'hadseNaghshUserReceive', model);
+    protected gameResponseReceive() {
+        const users: any = [];
+
+        const room = rangOrazDb().get(this.roomId);
+        room?.users.map(({ id, type }) => {
+            users.push({ id: id, type: type })
+        });
+        const model = {
+            winner: this.winner,
+            users: users
+        };
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'gameResponseReceive', model);
     }
 
 }
@@ -489,7 +516,7 @@ export class RangOrazHandler extends BaseRangOrazHandler {
             return;
 
         this.raieGiriCount.clear();
-        this.loserUser = 0;
+        this.loserUser = {};
 
         await this.delay(500);
         this.raigiriReceive(receiveType.wait,0);
@@ -567,21 +594,70 @@ export class RangOrazHandler extends BaseRangOrazHandler {
             return;
         }
 
-        this.loserUser = user.id;
-        this.hadseNaghsh();
+        this.loserUser = {
+            id: user.id,
+            type: user.type
+        };
+        this.hadseNaghshHandler();
     }
 
-    public async hadseNaghsh() {
+    public async hadseNaghshHandler() {
+        this.hadseNaghshReceive(receiveType.wait)
+        await this.delay(10000);
+
         if (!this.isShowOstad) {
             this.hadseNaghshReceive(receiveType.start)
+            await this.delay(14000);
+        }
+
+        if (this.hadseNaghsh?.id) {
+            this.hadseNaghshReceive(receiveType.end)
             await this.delay(10000);
         }
 
-        this.hadseNaghshReceive(receiveType.end)
-        await this.delay(3000);
+        this.endGame();
+    }
 
-        this.gameResponseReceive(receiveType.response)
-        await this.delay(120000);
+    public async endGame() {
+
+        const room = rangOrazDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            this.main();
+            return;
+        }
+
+        const ostad = room.users.find((x: User) => x.type == 2);
+        const jasos = room.users.find((x: User) => x.type == 11);
+
+        const loser = room.users.find((x: User) => x.id == this.loserUser.id);
+        const hadseNaghsh = room.users.find((x: User) => x.id == this.hadseNaghsh?.id);
+
+        if (ostad?.userInGameStatus == 2 || ostad?.userInGameStatus == 11) {
+            this.winner = winnerType.siah;
+        }
+        else if (jasos?.userInGameStatus == 2 || jasos?.userInGameStatus == 11) {
+            this.winner = winnerType.sefid;
+        }
+        else if (loser?.type == 11) {
+            if (hadseNaghsh?.type == 2) this.winner = winnerType.siah;
+            else this.winner = winnerType.sefid;
+        }
+        else if (loser?.type != 11) {
+            if (hadseNaghsh?.type == 11) this.winner = winnerType.sefid;
+            else this.winner = winnerType.siah;
+        }
+        else {
+            this.winner = winnerType.sefid;
+        }
+
+
+        this.gameResponseReceive()
+        await this.delay(90000);
+
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'endGameReceive', true);
+        await this.delay(500);
+
         this.setFinish();
     }
 
@@ -590,13 +666,19 @@ export class RangOrazHandler extends BaseRangOrazHandler {
     public barandeyeTasadofi() {
         const room = rangOrazDb().get(this.roomId);
         const unvotedUsers = room?.users.filter((user: User) => user.userInGameStatus == 1 || user.userInGameStatus == 10);
-        if (unvotedUsers) {
+        if (!unvotedUsers) {
             this.setFinish();
             this.main();
             return;
         }
-        this.loserUser = unvotedUsers![Math.floor(Math.random() * unvotedUsers!.length)].id;
-        this.hadseNaghsh();
+        const user = unvotedUsers![Math.floor(Math.random() * unvotedUsers!.length)];
+
+        this.loserUser = {
+            id: user.id,
+            type: user.type
+        };
+
+        this.hadseNaghshHandler();
     }
 
 } 
@@ -695,13 +777,18 @@ class RangOrazTimer {
 
         const userjasos = room.users.find((x: User) => x.userInGameStatus == 11 && (x.type == 11 || x.type == 2));
         if (userjasos) {
-            controller.loserUser = userjasos.id;
-            controller.hadseNaghsh();
+            controller.loserUser = {
+                id: userjasos.id,
+                type: userjasos.type
+            };
+            controller.hadseNaghshHandler();
             return;
         }
-        const users = room?.users.filter(x => x.userInGameStatus == 10 || x.userInGameStatus == 1) || [];
-        if (users.length <= 2)
+        const bazpors = room.users.find((x: User) => x.userInGameStatus == 11 && x.type == 1);
+        if (bazpors) {
             controller.barandeyeTasadofi();
+            return;
+        }
     }
 
     private gameHandler(roomId: string) {

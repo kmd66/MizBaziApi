@@ -1,4 +1,3 @@
-﻿
 <template id="itemclick-template">
     <div class="itemclickMain" v-show="modal" @click="modal = false">
         <div class="modalBady">
@@ -24,7 +23,7 @@
     <div class="itemclickMain info" v-show="userInfo != null" @click="userInfo = null">
         <div class="modalBady" style="text-align:center">
             <div class="itemImg">
-                <img :src="userInfo?.info?.Img+'90.jpg'">
+                <img v-if="userInfo != null" :src="userInfo?.info?.Img+'90.jpg'">
             </div>
             <p>{{userInfo?.info?.FirstName}} {{userInfo?.info?.LastName}}</p>
             <p>{{userInfo?.info?.UserName}}</p>

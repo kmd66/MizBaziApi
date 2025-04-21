@@ -19,22 +19,41 @@ function itemMainClick(i) {
         vm.$refs.childitemclick.isMy = true;
 
     if (globalModel.gameName == 'rangOraz') {
-        vm.$refs.childitemclick.isShowOstad = false;
-        if (globalModel.user.type == 2 && !globalModel.room.isShowOstad) 
-            vm.$refs.childitemclick.isShowOstad = true;
-
-        if (globalModel.bazpors?.select) {
-            const user = vm.$refs.childmain.users.find(x => x.row == i);
-            globalModel.connection.emit('setBazporsi', {
-                userId: user.id,
-                roomId: socketHandler.roomId,
-                userKey: socketHandler.userKey,
-            });
+        let b = rangOrazClick(i);
+        if (b) 
             return;
-        }
     }
 
     vm.$refs.childitemclick.click(i);
+}
+
+function rangOrazClick(i) {
+
+    if (globalModel.hadseNaghsh && !vm.$refs.childitemclick.isMy) {
+        const user = vm.$refs.childmain.users.find(x => x.row == i);
+        globalModel.connection.emit('setHadseNaghsh', {
+            userId: user.id,
+            roomId: socketHandler.roomId,
+            userKey: socketHandler.userKey,
+        });
+        return true;
+    }
+
+    vm.$refs.childitemclick.isShowOstad = false;
+    if (globalModel.user.type == 2 && !globalModel.room.isShowOstad)
+        vm.$refs.childitemclick.isShowOstad = true;
+
+    if (globalModel.bazpors?.select) {
+        const user = vm.$refs.childmain.users.find(x => x.row == i);
+        globalModel.connection.emit('setBazporsi', {
+            userId: user.id,
+            roomId: socketHandler.roomId,
+            userKey: socketHandler.userKey,
+        });
+        return true;
+    }
+
+    return false;
 }
 itemclick.listen = function () {
 

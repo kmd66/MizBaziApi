@@ -1,4 +1,5 @@
 ﻿import io from 'socket.io-client'
+import './socketExcessHandle'
 
 function userStatusReceive(model) {
     vm.$refs.childmain.usersStatus = model;
@@ -43,10 +44,10 @@ function bazporsiReceive(model) {
         vm.$refs.childmain.msg.show = true;
         if (globalModel.user.type == 1) {
             globalModel.bazpors = { select: true };
-            vm.$refs.childmain.msg.bazpors = true;
+            vm.$refs.childmain.msg.html = '<p style="color: red;">دو نفر را برای بازپرسی انتخاب کنید</p>';
         }
         else
-            vm.$refs.childmain.msg.bazporsWait = true;
+            vm.$refs.childmain.msg.html = ' <p style="color: aquamarine;">بازپرس در حال انتخاب است </p>';
         vm.$refs.childmain.door = 'بازپرسی';
 
         globalModel.room.progressTime = model.wait;
@@ -55,6 +56,7 @@ function bazporsiReceive(model) {
     }
 }
 function defaeReceive(model) {
+    vm.$refs.childdefae.door = 'دفاع';
     vm.$refs.childdefae.raigiriResponse = false;
     defae.raieGiriCount.clear();
     vm.$refs.childdefae.loseUser = null;
@@ -71,7 +73,9 @@ function defaeReceive(model) {
 
     defae.progressTime(model.wait);
 }
+
 function raigiriReceive(model) {
+    vm.$refs.childdefae.door = 'رای‌گیری';
     if ([1, 10].indexOf(model.type) >-1) {
         vm.$refs.childdefae.raigiri = true;
     }
@@ -141,11 +145,17 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('defaeReceive', defaeReceive);
     globalModel.connection.on('raigiriReceive', raigiriReceive);
     globalModel.connection.on('setRaieGiriCountReceive', defae.setRaieGiriCountReceive);
+    globalModel.connection.on('getHadseNaghsh', socketHandler.getHadseNaghsh);
+    globalModel.connection.on('hadseNaghshReceive', socketHandler.hadseNaghshReceive);
+
+    globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
+    globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
+    globalModel.connection.on('getMessage', gameresponse.getMessage);
 
 }
 function socketCallBack() {
     vm.appModel.loding = false;
-    vm.changeState('main'); // help imgsForSpy 'main''paint';
+    vm.changeState('main'); // help imgsForSpy 'main''paint' gameresponse;
 
     itemclick.listen();
 }

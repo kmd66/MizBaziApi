@@ -14,7 +14,6 @@ function roomReceive(room) {
     globalModel.room = room;
     main.topTimeProgress(-100);
     vm.$refs.childmain.door = room.door;
-
 }
 
 function usersReceive(users) {
@@ -30,7 +29,8 @@ function usersReceive(users) {
 function initShare() {
 
     globalModel = {
-        gameName:'rangOraz'
+        gameName: 'rangOraz',
+        hadseNaghsh:false
     };
     vm = {};
 
@@ -55,6 +55,7 @@ function initShare() {
     imgsForSpy = {};
     help = {};
     defae = {};
+    gameresponse = {};
 
     socketHandler = {
         socketId: '',

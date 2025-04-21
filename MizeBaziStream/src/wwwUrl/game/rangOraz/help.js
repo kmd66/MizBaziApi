@@ -60,7 +60,7 @@ function showCard() {
     if (isShowCard) return;
     isShowCard = true;
     vm.$refs.childhelp.isShowCard = true;
-    
+
     const el = document.querySelector(`.naghshCard`);
     el.top = `50%`;
     setTimeout(() => {
@@ -77,10 +77,13 @@ function showCard() {
         };
     }, 2000)
 }
+help.find = function (type) {
+    return vm.$refs.childhelp.helpComment.find(h => h.type == (type == 21 ? 22 : type));
+}
 help.usersReceive = function (type) {
-    const help = vm.$refs.childhelp.helpComment.find(x => x.type == (type == 21 ? 22 : type));
-    vm.$refs.childhelp.selectItem = help;
-    vm.$refs.childhelp.selectType = help.type;
+    const helpItem = help.find(type);
+    vm.$refs.childhelp.selectItem = helpItem;
+    vm.$refs.childhelp.selectType = helpItem.type;
     showCard()
     return help.icon;
 

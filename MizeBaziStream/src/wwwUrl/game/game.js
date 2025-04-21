@@ -94,3 +94,27 @@ function removeChalesh() {
     const el = document.getElementsByClassName(`chaleshForItem`);
     Array.from(el).map(x => x.remove());
 }
+function scrollEl(el, b) {
+    setTimeout(() => {
+        const element = typeof el === 'string' ? document.querySelector(el) : el;
+
+        if (!element) return;
+
+        const outerHeight = element.offsetHeight +
+            parseInt(getComputedStyle(element).marginTop) +
+            parseInt(getComputedStyle(element).marginBottom);
+
+        const scrollTop = element.scrollTop;
+        const scrollHeight = element.scrollHeight;
+        const h2_3 = outerHeight - (outerHeight / 5);
+        const outerscrollTop = outerHeight + scrollTop;
+        const t = scrollHeight - outerscrollTop;
+
+        if (b || t < h2_3) {
+            element.scrollTo({
+                top: scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }, 500);
+}

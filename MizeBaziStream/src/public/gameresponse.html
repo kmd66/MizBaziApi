@@ -1,0 +1,39 @@
+<template id="gameresponse-template">
+    <div class="sdfe89r-main">
+        <div>
+            <p v-show="winner">برنده بازی: <span :style="{ color: winnerColor }">{{winner}}</span></p>
+
+            <hr v-show="winner" style="margin:14px" />
+
+            <div v-for="user in users" class="d-flex">
+                <div>
+                    <div class="itemImg">
+                        <img :src="user.img+'90.jpg'">
+                    </div>
+                    <div class="itemInfo">{{user.userName}}</div>
+                </div>
+                <div>
+                    {{user.title}}
+                </div>
+                <i :class="user.icon"></i>
+            </div>
+
+            <hr v-show="isSendMessage" style="margin:14px" />
+
+            <div v-for="msg in messages">
+                <div v-html="msg"></div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="sdfe89r-Bottom">
+        <div v-show="isSendMessage" style="height:100%">
+            <div class="inputText-group" style="height:100%">
+                <div class="label">
+                    <i class="icon-send-14" @click="addMessage()"></i>
+                </div><input v-model="message" class="inputText" placeholder="ارسال پیام" autocomplete="off">
+            </div>
+        </div>
+    </div>
+</template>

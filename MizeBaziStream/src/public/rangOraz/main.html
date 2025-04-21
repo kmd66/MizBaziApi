@@ -1,4 +1,4 @@
-﻿<template id="main-template">
+<template id="main-template">
 
     <div class="mainTemplate">
         <div class="mainTop d-flex">
@@ -37,8 +37,7 @@
 
             <div class="mainLeft">
                 <div class="msg" v-show="msg.show">
-                    <p style="color: red;" v-show="msg.bazpors">دو نفر را برای بازپرسی انتخاب کنید</p>
-                    <p style="color: aquamarine;" v-show="msg.bazporsWait">بازپرس در حال انتخاب است </p>
+                    <div v-if="msg.html" v-html="msg.html"></div>
                 </div>
 
                 <div class="soundDiv">

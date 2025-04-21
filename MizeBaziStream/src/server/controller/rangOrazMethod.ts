@@ -4,6 +4,7 @@ import SocketManager from '../handler/socket';
 import { userInGameStatusType } from '../model/gameInterfaces';
 import { User } from '../model/interfaces';
 import { RangOrazControll } from './RangOrazExtensions';
+import { rangOrazDb } from './rangOrazDb';
 
 function connectionReceive(roomId: string, userKey: string, connectionId: string): void {
     var _userInDb = userInDb();
@@ -57,6 +58,25 @@ function usersReceive(roomId: string, userType: number, connectionId: string): b
     }
     return false;
 }
+function setMessage(model: any) {
+    if (!model.message || model.message == '') return;
+    const room = rangOrazDb().get(model.roomId);
+    if (!room) return;
+    const user = room?.users.find((x: User) => x.key == model.userKey);
+    if (!user) return;
+    var users = room?.users.filter((user: User) => user.userInGameStatus != userInGameStatusType.ofline && user.userInGameStatus != userInGameStatusType.ekhraj);
+    if (!users) return;
+
+    if (model.message.length > 50)
+        model.message = model.message.slice(0, 50)
+
+    const message = {
+        msg: model.message,
+        userId: user.id
+    };
+    const connectionIds = users?.map(user => user.connectionId) || [];
+    SocketManager.sendToMultipleSockets('hubRangOraz', 'getMessage', connectionIds, message)
+}
 
 export function RangOrazMethod() {
     return {
@@ -90,6 +110,9 @@ export function RangOrazMethod() {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setShowOstad(model)
+            },
+            'setMessage': (socket: Socket, model: any) => {
+                setMessage(model)
             },
         }
     };

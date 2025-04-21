@@ -18,11 +18,15 @@ class PageRoot {
     constructor() { }
 
     public async rangOraz(req: Request, res: Response) {
-        const fileItemclick = path.join(__dirname, '../../public/itemclick.html');
-        const itemclickTemplate = fs.readFileSync(fileItemclick, 'utf8');
+        const itemclickFile = path.join(__dirname, '../../public/itemclick.html');
+        const itemclickTemplate = fs.readFileSync(itemclickFile, 'utf8');
 
-        const fileSticker = path.join(__dirname, '../../public/sticker.html');
-        const stickerTemplate = fs.readFileSync(fileSticker, 'utf8');
+        const stickerFile = path.join(__dirname, '../../public/sticker.html');
+        const stickerTemplate = fs.readFileSync(stickerFile, 'utf8');
+
+        const gameresponseFile = path.join(__dirname, '../../public/gameresponse.html');
+        const gameresponsePartial = fs.readFileSync(gameresponseFile, 'utf8');
+
 
         const filePathindex = path.join(__dirname, '../../public/rangOraz/index.html');
         const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
@@ -48,7 +52,8 @@ class PageRoot {
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
             sticker: stickerTemplate,
-            itemclick: itemclickTemplate ,
+            itemclick: itemclickTemplate,
+            gameresponse: gameresponsePartial,
 
             body: bodyPartial,
             main: mainPartial,

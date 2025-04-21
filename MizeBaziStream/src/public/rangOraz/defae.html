@@ -1,7 +1,8 @@
-﻿<template id="defae-template">
+<template id="defae-template">
 
     <div class="mainTemplate">
-        <div class="mainTop d-flex">
+        <div class="mainTop" style="text-align:center">
+            {{door}}
         </div>
 
         <div class="progressbar aw287sdaf">
@@ -38,10 +39,10 @@
                 </div>
 
                 <div class="defaeMsg" v-show="raigiri">
-                    <p style="color: aquamarine;">یک نفر را برای خروج از بازی باید انتخاب کنید. درصورت عدم انتخاب شما, سیستم بصورت تصادفی یک نفر بجای شما انتخاب خواهد کرد</p>
+                    <p style="color: aquamarine;">یک نفر را برای خروج از بازی باید انتخاب شود. درصورت عدم انتخاب, سیستم بصورت تصادفی یک نفر بجای شما انتخاب خواهد کرد</p>
                 </div>
                 <div class="defaeMsg" v-show="loseUser != null">
-                    <p style="color: aquamarine;"><span style="color:red">{{loseUser?.info.UserName}}</span> با رایگیری خارخ شد</p>
+                    <!--<p style="color: aquamarine;"><span style="color:red">{{loseUser?.info.UserName}}</span> با رایگیری خارخ شد</p>-->
                 </div>
 
             </div>
