@@ -85,7 +85,7 @@ help.usersReceive = function (type) {
     vm.$refs.childhelp.selectItem = helpItem;
     vm.$refs.childhelp.selectType = helpItem.type;
     showCard()
-    return help.icon;
+    return helpItem.icon;
 
 }
 
