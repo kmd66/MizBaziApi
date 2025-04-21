@@ -14,6 +14,10 @@ function roomReceive(room) {
     globalModel.room = room;
     main.topTimeProgress(-100);
     vm.$refs.childmain.door = room.door;
+
+    if (room.state == 'paint') { }
+    else
+        vm.changeState(room.state);
 }
 
 function usersReceive(users) {

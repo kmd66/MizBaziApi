@@ -79,7 +79,8 @@ export class RangOrazControll {
             progressTime: handler.wait,
             activeUser: handler.activeUser,
             isChalesh: handler.isChalesh,
-            isSticker: handler.isSticker
+            isSticker: handler.isSticker,
+            state: handler.state
         };
     }
 
@@ -141,6 +142,7 @@ class RangOrazProperty {
     public isShowOstad: boolean = false;
     public isChalesh: boolean = false;
     public isSticker: boolean = false;
+    public state: string = 'main';
 
     public finish: boolean = false;
 
@@ -376,6 +378,16 @@ export class RangOrazHandler extends BaseRangOrazHandler {
         this.main();
     }
 
+    private setState() {
+        if (this.door! == RangOrazDoor.d2) {
+            // this.state = 'main'; d2 = 'تعیین موضوع',
+        } else if ([RangOrazDoor.d3, RangOrazDoor.d4].indexOf(this.door!) != -1) {
+            this.state = 'paint';
+        } else {
+            this.state = 'main';
+        }
+    }
+
     //-----------main
 
     public async main() {
@@ -390,7 +402,7 @@ export class RangOrazHandler extends BaseRangOrazHandler {
             this.bazporsiMain();
             return
         }
-
+        this.setState();
         this.setWait();
 
         if (this.activeUser > -1) {
@@ -466,6 +478,8 @@ export class RangOrazHandler extends BaseRangOrazHandler {
     //------------bazporsiMain
 
     private async bazporsiMain() {
+        this.state = 'main';
+
         if (this.finish)
             return;
 
@@ -488,6 +502,8 @@ export class RangOrazHandler extends BaseRangOrazHandler {
     }
 
     private async defae() {
+        this.state = 'defae';
+
         if (this.finish)
             return;
 
@@ -602,6 +618,8 @@ export class RangOrazHandler extends BaseRangOrazHandler {
     }
 
     public async hadseNaghshHandler() {
+        this.state = 'main';
+
         this.hadseNaghshReceive(receiveType.wait)
         await this.delay(10000);
 
@@ -619,6 +637,7 @@ export class RangOrazHandler extends BaseRangOrazHandler {
     }
 
     public async endGame() {
+        this.state = 'gameresponse';
 
         const room = rangOrazDb().get(this.roomId);
         if (!room) {
