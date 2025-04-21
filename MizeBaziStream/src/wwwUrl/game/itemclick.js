@@ -28,7 +28,6 @@ function itemMainClick(i) {
 }
 
 function rangOrazClick(i) {
-
     if (globalModel.hadseNaghsh && !vm.$refs.childitemclick.isMy) {
         const user = vm.$refs.childmain.users.find(x => x.row == i);
         globalModel.connection.emit('setHadseNaghsh', {

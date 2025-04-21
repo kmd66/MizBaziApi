@@ -111,6 +111,11 @@ export function RangOrazMethod() {
                 if (handler)
                     handler.setShowOstad(model)
             },
+            'setHadseNaghsh': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.setHadseNaghsh(model)
+            },
             'setMessage': (socket: Socket, model: any) => {
                 setMessage(model)
             },

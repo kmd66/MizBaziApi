@@ -19,6 +19,7 @@ gameresponse.getMessage = function (model) {
     scrollEl('.sdfe89r-main', false)
 }
 gameresponse.endGameReceive = function (model) {
+
 }
 gameresponse.gameResponseReceive = function (model) {
     globalModel.gameResponse = model;
@@ -42,17 +43,6 @@ gameresponse.Component = function (app) {
         },
         methods: {
             init() {
-                globalModel.gameResponse = {
-                    winner: 1,
-                    users: [
-                        { id: 587, type: 1 },
-                        { id: 56, type: 2 },
-                        { id: 665, type: 11 },
-                        { id: 123, type: 21 },
-                        { id: 486, type: 22 }
-                    ]
-                }
-
                 setTimeout(() => {
                     setWinner(globalModel.gameResponse.winner);
                     this.addUser();

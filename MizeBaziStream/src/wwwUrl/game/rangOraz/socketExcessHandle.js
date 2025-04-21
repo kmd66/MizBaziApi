@@ -40,9 +40,10 @@ function hadseNaghshReceive1(model) {
     const user = vm.$refs.childmain.users.find(x => x.id == model.loserUser?.id);
 
     vm.$refs.childmain.msg.show = true;
+    globalModel.hadseNaghsh = true;
+
     if (globalModel.user.id == user?.id) {
         const m = user.type == 11 ? 'استاد' : 'جاسوس';
-        globalModel.hadseNaghsh = true;
         if (user)
             vm.$refs.childmain.msg.html = `<p style="color: aquamarine;"><span style="color: red;"> ${m} </span> را برای خارج کردن از بازی انتخاب کنید </p>`;
     }
