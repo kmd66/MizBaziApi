@@ -1,6 +1,35 @@
-﻿paint.reset = function () {
+﻿const paintState = {
+    sendImgTimer: null,
+    canvasListeners: {
+        mousedown: null,
+        mouseup: null,
+        mousemove: null,
+        touchstart: null,
+        touchend: null,
+        touchmove: null,
+        preventTouchStart: null,
+        preventTouchMove: null
+    }
+};
+let animation, canvas;
+paint.reset = function () {
+    if (paintState.sendImgTimer) {
+        clearInterval(paintState.sendImgTimer);
+        paintState.sendImgTimer = null;
+    }
+    if (animation)
+        animation.cancel();
 }
-paint.setPainSize = function () {
+paint.init = function () {
+    vm.changeState('paint');
+    if (canvas) {
+        paint.reset();
+        setPainSize();
+        start();
+        progressTime();
+    }
+}
+function setPainSize() {
     paint.painSize = true;
     const elContainerGame = document.querySelector('.containerGame');
     const elPaint = document.querySelector('.paint');
@@ -12,10 +41,13 @@ paint.setPainSize = function () {
     elPaint.style.height = `${heightPaint}px`;
     elPaint.width = widthPaint;
     elPaint.height = heightPaint;
+}
+
+function progressTime() {
 
     const el = document.querySelector(`.awa32sdaf div`);
     el.style.height = `100%`;
-    const  animation = el.animate([
+    const animation = el.animate([
         { height: `100%` },
         { height: `0%` }
     ], {
@@ -28,16 +60,24 @@ paint.setPainSize = function () {
         el.style.height = `0px`;
     };
 }
-paint.init = function () {
-    paint.sendImgTimer = setInterval(() => {
-        const dataURL = canvas.toDataURL("image/jpeg", 0.005);
-        const compressed = pako.deflate(dataURL);
-        globalModel.connection.emit('sendImg', { data: compressed })
-    }, 1000);
 
-    const canvas = document.querySelector('.paint');
+function start() {
+    if (!globalModel.user?.type) return;
+
+    canvas = document.querySelector('.paint');
+    if (canvas) {
+        removeAllCanvasListeners(canvas);
+    }
+
+    if (globalModel.user.type != 1 || globalModel.user.type != 11) {
+        paintState.sendImgTimer = setInterval(() => {
+            const dataURL = canvas.toDataURL("image/jpeg", 0.005);
+            const compressed = pako.deflate(dataURL);
+            globalModel.connection.emit('sendImg', { data: compressed });
+        }, 1000);
+    }
+
     const ctx = canvas.getContext('2d');
-
     let drawing = false;
     var penColor = '#000';
 
@@ -83,19 +123,49 @@ paint.init = function () {
         ctx.moveTo(pos.x, pos.y);
     };
 
+    const preventDefault = (e) => e.preventDefault();
 
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mouseup', endDrawing);
-    canvas.addEventListener('mousemove', draw);
+    // 6. اضافه کردن event listeners جدید و ذخیره رفرنس‌ها
+    paintState.canvasListeners.mousedown = startDrawing;
+    paintState.canvasListeners.mouseup = endDrawing;
+    paintState.canvasListeners.mousemove = draw;
+    paintState.canvasListeners.touchstart = startDrawing;
+    paintState.canvasListeners.touchend = endDrawing;
+    paintState.canvasListeners.touchmove = draw;
+    paintState.canvasListeners.preventTouchStart = preventDefault;
+    paintState.canvasListeners.preventTouchMove = preventDefault;
 
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchend', endDrawing);
-    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('mousedown', paintState.canvasListeners.mousedown);
+    canvas.addEventListener('mouseup', paintState.canvasListeners.mouseup);
+    canvas.addEventListener('mousemove', paintState.canvasListeners.mousemove);
+    canvas.addEventListener('touchstart', paintState.canvasListeners.touchstart);
+    canvas.addEventListener('touchend', paintState.canvasListeners.touchend);
+    canvas.addEventListener('touchmove', paintState.canvasListeners.touchmove);
+    canvas.addEventListener('touchstart', paintState.canvasListeners.preventTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', paintState.canvasListeners.preventTouchMove, { passive: false });
+}
 
-    // جلوگیری از اسکرول کردن صفحه هنگام استفاده از بوم
-    canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
-    canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+function removeAllCanvasListeners(canvas) {
+    if (!canvas) return;
 
+    canvas.removeEventListener('mousedown', paintState.canvasListeners.mousedown);
+    canvas.removeEventListener('mouseup', paintState.canvasListeners.mouseup);
+    canvas.removeEventListener('mousemove', paintState.canvasListeners.mousemove);
+    canvas.removeEventListener('touchstart', paintState.canvasListeners.touchstart);
+    canvas.removeEventListener('touchend', paintState.canvasListeners.touchend);
+    canvas.removeEventListener('touchmove', paintState.canvasListeners.touchmove);
+    canvas.removeEventListener('touchstart', paintState.canvasListeners.preventTouchStart);
+    canvas.removeEventListener('touchmove', paintState.canvasListeners.preventTouchMove);
+    paintState.canvasListeners = {
+        mousedown: null,
+        mouseup: null,
+        mousemove: null,
+        touchstart: null,
+        touchend: null,
+        touchmove: null,
+        preventTouchStart: null,
+        preventTouchMove: null
+    };
 }
 
 paint.Component = function (app) {
@@ -118,8 +188,8 @@ paint.Component = function (app) {
         methods: {
             init() {
                 if (!main.painSize) {
-                    paint.setPainSize();
-                    paint.init()
+                    setPainSize();
+                    start();
                 }
             },
         }

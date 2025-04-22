@@ -21,8 +21,8 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
         if (userConnectionId) {
             SocketManager.disconnectSocket('hubRangOraz', userConnectionId, 'home');
         }
-        RangOrazControll.roomReceive(roomId, connectionId);
-        usersReceive(roomId, user.type, connectionId);
+        infoRoomReceive(roomId, user.type, connectionId);
+
         RangOrazControll.statusReceive(roomId);
         return;
     }
@@ -43,20 +43,39 @@ function disconnect(roomId: string, connectionId: string): boolean {
     }
     return false;
 }
-function usersReceive(roomId: string, userType: number, connectionId: string): boolean {
+function infoRoomReceive(roomId: string, userType: number, connectionId: string): boolean {
+
+    const handler = RangOrazControll.getRangOrazHandler(roomId);
+    if (!handler)
+        return false;
+    const modelRoom = {
+        isShowOstad: handler.isShowOstad,
+        door: handler.door,
+        progressTime: handler.wait,
+        activeUser: handler.activeUser,
+        state: handler.state,
+        loserUser: handler.loserUser,
+        hadseNaghsh: handler.hadseNaghsh,
+        bazporsiUsers: handler.bazporsiUsers,
+        mozoeNaghashi: handler.mozoeNaghashi,
+        naghashi: handler.naghashi
+    };
     var _userInDb = userInDb();
     const users = _userInDb.getAll(roomId);
-    if (users) {
-        const users: User[] | undefined = userInDb().getAll(roomId);
-        const handler = RangOrazControll.getRangOrazHandler(roomId);
-        if (!handler) return false;
-        SocketManager.sendToSocket(
-            'hubRangOraz', 'usersReceive',
-            connectionId, RangOrazControll.SafeUsers(userType, handler!.isShowOstad, users)
-        );
-        return true;
+    if (!users)
+        return false;
+
+    const model = {
+        room: modelRoom,
+        users: RangOrazControll.SafeUsers(userType, handler!.isShowOstad, users),
+        status: RangOrazControll.userStatus(users)
     }
-    return false;
+
+    SocketManager.sendToSocket(
+        'hubRangOraz', 'infoRoomReceive',
+        connectionId, model
+    );
+    return true;
 }
 function setMessage(model: any) {
     if (!model.message || model.message == '') return;
@@ -118,6 +137,44 @@ export function RangOrazMethod() {
             },
             'setMessage': (socket: Socket, model: any) => {
                 setMessage(model)
+            },
+
+            'setCancel': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.cancel(model)
+            },
+
+            'addChalesh': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.addChalesh(model)
+            },
+            'addSticker': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.addSticker(model)
+            },
+            'addTarget': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.addTarget(model)
+            },
+            'setChalesh': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.setChalesh(model)
+            },
+
+            'sendImgForSpy': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.sendImgForSpy(model)
+            },
+            'sendImg': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.sendImg(model)
             },
         }
     };

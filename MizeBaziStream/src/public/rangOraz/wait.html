@@ -1,0 +1,31 @@
+<template id="wait-template">
+
+    <div class="mainTop" style="text-align:center">
+        {{door}}
+    </div>
+    <div class="progressbar agh574daf">
+        <div style="width:0px"></div>
+    </div>
+
+    <div class="wrapper">
+        <div class="d-flex" style="justify-content: space-around !important;">
+            <i id="replaySgame" class="icon-repeat4"></i>
+            <span id="scoreSgame">00</span>
+        </div>
+        <div id="canvasSgame">
+
+        </div>
+    </div>
+    <div class="btnSgame">
+        <div>
+            <i class="icon-chevron-up" @click="addArrow('ArrowUp')"></i>
+        </div>
+        <div class="d-flex" style="justify-content: space-around !important;">
+            <i class="icon-chevron-right" @click="addArrow('ArrowRight')"></i>
+            <i class="icon-chevron-left" @click="addArrow('ArrowLeft')"></i>
+        </div>
+        <div>
+            <i class="icon-chevron-down" @click="addArrow('ArrowDown')"></i>
+        </div>
+    </div>
+</template>

@@ -191,3 +191,27 @@
 .defaeMain .d-flex.f {
     justify-content: space-around !important;
 }
+#canvasSgame {
+    width: 300px;
+    margin: auto;
+    border: 1px solid #3f3f4e
+}
+#replaySgame{
+    float:left;padding:7px;
+}
+#scoreSgame{float:right}
+.wrapper{
+    margin-top:20px;
+}
+.btnSgame {
+    text-align: center;
+    margin: 14px;
+    position: fixed;
+    width: 100%;
+    bottom: 10px;
+}
+    .btnSgame i {
+        padding: 7px;
+        border: 1px solid var(--TextColor2);
+        border-radius: 50%;
+    }

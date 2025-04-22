@@ -24,7 +24,7 @@ function startStreamReceive(model) {
     main.topTimeProgress(-100);
 }
 function showOstadReceive(model) {
-    vm.changeState('main'); 
+    vm.changeState('main');
     globalModel.room.isShowOstad = true;
     const index = vm.$refs.childmain.users.findIndex(x => x.id == model);
     vm.$refs.childmain.users[index].type = 2;
@@ -36,6 +36,9 @@ function showOstadReceive(model) {
     setTimeout(() => {
         divEl.remove();
     }, 5000);
+}
+function stateReceive(model) {
+    vm.changeState(model);
 }
 
 function bazporsiReceive(model) {
@@ -130,15 +133,16 @@ socketHandler.initSoket = function () {
         console.log(`---a---disconnect :`);
     });
 
-    globalModel.connection.on('usersReceive', globalModel.usersReceive);
+    globalModel.connection.on('infoRoomReceive', globalModel.infoRoomReceive);
     globalModel.connection.on('userStatusReceive', userStatusReceive);
 
-    globalModel.connection.on('roomReceive', globalModel.roomReceive);
+    globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
 
     globalModel.connection.on('getDefensePositionReceive', getDefensePositionReceive);
     globalModel.connection.on('startStreamReceive', startStreamReceive);
     
     globalModel.connection.on('showOstadReceive', showOstadReceive);
+    globalModel.connection.on('stateReceive', stateReceive);
 
     globalModel.connection.on('bazporsiReceive', bazporsiReceive);
 

@@ -27,6 +27,10 @@
                 <gameresponse-component ref="childGameresponse"></gameresponse-component>
             </div>
 
+            <div class="waitMain" v-show="appModel.state == 'wait'">
+                <wait-component ref="childWait"></wait-component>
+            </div>
+
         </div>
     </div>
 </div>

@@ -24,3 +24,5 @@ dotnet ef database update --context FlwContexts
  WaitGameReceive RestartGameReceive InitGameReceive ReloadtGameReceive
  ---------------
  چند نخی در nodjs
+
+ دیتای موضوع نقاشی

@@ -1,4 +1,6 @@
-﻿function reset() {
+﻿
+globalModel = {};
+function reset() {
     globalModel.bazpors = {};
     main.reset();
     imgsForSpy.reset();
@@ -7,27 +9,72 @@
     sticker.reset();
     removeChalesh();
     isAddChalesh = false;
+    waitState.reset();
 }
 
-function roomReceive(room) {
+function infoMainReceive(room) {
     reset();
     globalModel.room = room;
     main.topTimeProgress(-100);
     vm.$refs.childmain.door = room.door;
+    taeinDoor(room);
 
-    if (room.state == 'paint') { }
-    else
-        vm.changeState(room.state);
 }
+function taeinDoor(room) {
+    if (!globalModel.user?.type) return;
+    if (room.door == 'نقاشی' || room.door == 'نقاشی جاسوس') {
+        if (globalModel.user.type == 1) {
+            waitState.init();
+        } else if (room.door == 'نقاشی') {
+            if (globalModel.user.type == 11)
+                imgsForSpy.init();
+            else
+                paint.init();
+        } else if (room.door == 'نقاشی جاسوس') {
+            if (globalModel.user.type == 11)
+                paint.init();
+            else
+                vm.changeState('wait');
+        }
 
-function usersReceive(users) {
-    users.map((x) => x.row = x.index + 1);
-    globalModel.user = users.find(x => x.id == socketHandler.userId);
+        vm.$refs.childWait.door = room.door;
+    }
+    else if (room.door == 'دور 1') {
+        vm.changeState('main');
+    }
+
+}
+function infoRoomReceive(model) {
+    globalModel.infoMainReceive(model.room)
+    //loserUser: handler.loserUser,
+    //hadseNaghsh: handler.hadseNaghsh,
+    if (model.room.state) {
+        if (model.room.state == 'paint') { }
+        else
+            vm.changeState(model.room.state);
+    }
+
+    model.users.map((x) => x.row = x.index + 1);
+    globalModel.user = model.users.find(x => x.id == socketHandler.userId);
     vm.$refs.childmain.user = globalModel.user;
-    vm.$refs.childmain.users = users;
+    vm.$refs.childmain.users = model.users;
+
+    vm.$refs.childmain.usersStatus = model.status;
 
     const type = vm.$refs.childmain.user.type;
     vm.$refs.childmain.iconNaghsh = help.usersReceive(type);
+
+    taeinDoor(model.room);
+
+    if (model.room.bazporsiUsers?.length > 0) {
+        model.room.bazporsiUsers.map(x => {
+            const user = vm.$refs.childmain.users.find(u => u.id == x);
+            if (user)
+                vm.$refs.childdefae.users.push(user);
+        });
+    }
+
+
 }
 
 function initShare() {
@@ -40,8 +87,8 @@ function initShare() {
 
     globalModel.connection;
     globalModel.reset = reset;
-    globalModel.roomReceive = roomReceive;
-    globalModel.usersReceive = usersReceive;
+    globalModel.infoMainReceive = infoMainReceive;
+    globalModel.infoRoomReceive = infoRoomReceive;
 
     globalModel.bazpors = {};
 
@@ -71,6 +118,8 @@ function initShare() {
     sticker = {};
 
     itemclick = {};
+
+    waitState = {};
 }
 
 initShare();

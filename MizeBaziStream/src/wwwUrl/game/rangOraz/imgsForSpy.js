@@ -1,7 +1,12 @@
 ﻿imgsForSpy.reset = function () {
 }
+
 imgsForSpy.init = function () {
+    vm.changeState('imgsForSpy');
     const el = document.querySelector(`.awe57adaf div`);
+    if (!el)
+        return;
+
     el.style.width = `100%`;
     const animation = el.animate([
         { width: `100%` },
@@ -33,7 +38,6 @@ imgsForSpy.Component = function (app) {
         },
         methods: {
             init() {
-                imgsForSpy.init()
             },
         }
     });

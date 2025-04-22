@@ -331,3 +331,6 @@ body{
     left: -0.99rem;
     right: unset;
 }
+.iconDisabled {
+    color: #002e5b !important
+}

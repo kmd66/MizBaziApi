@@ -49,6 +49,9 @@ class PageRoot {
         const defaeFile = path.join(__dirname, '../../public/rangOraz/defae.html');
         const defaePartial = fs.readFileSync(defaeFile, 'utf8');
 
+        const waitFile = path.join(__dirname, '../../public/rangOraz/wait.html');
+        const waitPartial = fs.readFileSync(waitFile, 'utf8');
+
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
             sticker: stickerTemplate,
@@ -60,7 +63,8 @@ class PageRoot {
             paint: paintPartial,
             imgsForSpy: imgsForSpyPartial,
             help: helpPartial,
-            defae: defaePartial, 
+            defae: defaePartial,
+            wait: waitPartial, 
 
             title: 'رنگ و راز',
         });

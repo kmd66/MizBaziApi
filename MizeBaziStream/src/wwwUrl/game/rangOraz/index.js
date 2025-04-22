@@ -8,6 +8,7 @@ import '../sticker'
 import '../itemclick'
 import './defae'
 import '../gameresponse'
+import './wait'
 
 
 const app = Vue.createApp({
@@ -26,6 +27,8 @@ const app = Vue.createApp({
     },
     methods: {
         changeState(state) {
+            if (this.appModel.state == state) return;
+
             switch (state) {
                 case 'main':
                     vm.$refs.childmain.init();
@@ -40,6 +43,8 @@ const app = Vue.createApp({
                     vm.$refs.childdefae.init(); break;
                 case 'gameresponse':
                     vm.$refs.childGameresponse.init(); break;
+                case 'wait':
+                    vm.$refs.childWait.init(); break;
             }
             this.appModel.state = state;
         }
@@ -53,6 +58,7 @@ sticker.Component(app);
 itemclick.Component(app);
 defae.Component(app);
 gameresponse.Component(app);
+waitState.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');
