@@ -111,6 +111,12 @@ function raigiriReceive(model) {
     }
 }
 
+function mozoeNaghashRieceive(model) {
+    globalModel.mozoeNaghashi = model;
+    if (globalModel.user?.type != 11)
+        vm.$refs.childpaint.mozoeNaghashi = model;
+}
+
 socketHandler.initSoket = function () {
     let params = new URLSearchParams(document.location.search);
     socketHandler.roomId = params.get("roomId");
@@ -155,6 +161,12 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
     globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
     globalModel.connection.on('getMessage', gameresponse.getMessage);
+    
+    globalModel.connection.on('mozoeNaghashListRieceive', (model) => vm.$refs.childmain.mozoeNaghashiList = model);
+    globalModel.connection.on('setMozoeNaghashiReceive', (model) => vm.$refs.childmain.mozoeNaghashiList = null);
+    globalModel.connection.on('mozoeNaghashRieceive', mozoeNaghashRieceive);
+
+    globalModel.connection.on('getImgForSpy', imgsForSpy.getImgForSpy);
 
 }
 function socketCallBack() {

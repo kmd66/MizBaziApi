@@ -74,6 +74,7 @@
 }
 .paintImg img {
     width: 100%;
+    height: 100%;
 }
 .paint {
     margin: 14px 0;
@@ -212,3 +213,7 @@
         border: 1px solid var(--TextColor2);
         border-radius: 50%;
     }
+.paintImg {
+    padding: 5px;
+    margin: 0 auto;
+}

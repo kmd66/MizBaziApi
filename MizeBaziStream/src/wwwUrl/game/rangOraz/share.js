@@ -24,6 +24,9 @@ function taeinDoor(room) {
     if (!room.door || room.door == 'بارگزاری' || !globalModel.user?.type) return;
 
     if (room.door == 'نقاشی' || room.door == 'نقاشی جاسوس') {
+        if (vm.$refs.childmain.mozoeNaghashiList != null)
+            vm.$refs.childmain.mozoeNaghashiList = null;
+
         if (globalModel.user.type == 1) {
             waitState.init();
         } else if (room.door == 'نقاشی') {
@@ -40,9 +43,18 @@ function taeinDoor(room) {
 
         vm.$refs.childWait.door = room.door;
     }
+
     else if (room.door == 'دور 1') {
         vm.changeState('main');
+        vm.$refs.childmain.mozoeNaghashi = globalModel.mozoeNaghashi;
     }
+
+    if (room.door == 'تعیین موضوع') {
+        vm.$refs.childmain.msg = {
+            show: true,
+            html: `<p style="color: aquamarine;">استاد در حال تعیین موضوع برای طراحی است.</p>`
+        };
+    } 
 
 }
 function infoRoomReceive(model) {
@@ -75,7 +87,11 @@ function infoRoomReceive(model) {
                 vm.$refs.childdefae.users.push(user);
         });
     }
-
+    main.imgsRieceive(model.room.naghashi);
+    if (model.room.mozoeNaghashi && model.room.mozoeNaghashi != '') {
+        globalModel.mozoeNaghashi = model.room.mozoeNaghashi;
+        vm.$refs.childmain.mozoeNaghashi = globalModel.mozoeNaghashi;
+    }
 
 }
 
@@ -87,6 +103,7 @@ function initShare() {
     };
     vm = {};
 
+    globalModel.naghashi = new Map();
     globalModel.connection;
     globalModel.reset = reset;
     globalModel.infoMainReceive = infoMainReceive;

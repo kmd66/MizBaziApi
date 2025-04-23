@@ -16,10 +16,14 @@ main.reset = function (itemMainFix) {
 }
 
 main.setPainSize = function () {
-    paint.painSize = true;
+    const elMainLeft = document.querySelector('.mainLeft');
     const elPaint = document.querySelector('.mainTemplate .paintImg');
-    const widthPaint = elPaint.offsetWidth;
+    if (!elMainLeft | elPaint) return;
+    let widthPaint = elMainLeft.offsetWidth;
+    if (widthPaint > 350)
+        widthPaint = 350;
     const heightPaint = (widthPaint * 3) / 2;
+    elPaint.style.width = `${widthPaint}px`;
     elPaint.style.height = `${heightPaint}px`;
 }
 
@@ -127,6 +131,9 @@ main.Component = function (app) {
                 user: {},
                 users: [],
                 usersStatus: [],
+                mozoeNaghashiList: null,
+                mozoeNaghashi: null,
+                mainImg: null,
 
                 msg: {}
             }
@@ -166,6 +173,13 @@ main.Component = function (app) {
             },
             setCancel() {
                 globalModel.connection.emit('setCancel', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+            setMozoeNaghashi(m) {
+                globalModel.connection.emit('setMozoeNaghashi', {
+                    mozoe:m,
                     roomId: socketHandler.roomId,
                     userKey: socketHandler.userKey,
                 });

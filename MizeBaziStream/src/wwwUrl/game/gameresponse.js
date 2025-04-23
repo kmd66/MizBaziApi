@@ -1,4 +1,23 @@
-﻿function setWinner(w) {
+﻿function progressTime(t) {
+    const el = document.querySelector(`.awq78f7af div`);
+    if (!el)
+        return;
+
+    el.style.width = `100%`;
+    const animation = el.animate([
+        { width: `100%` },
+        { width: `0%` }
+    ], {
+        duration: t * 1000,
+        easing: 'linear',
+        fill: 'forwards'
+    });
+
+    animation.onfinish = () => {
+        el.style.width = `0px`;
+    };
+}
+function setWinner(w) {
     if (globalModel.gameName == 'rangOraz') {
         if (w == 1)
             vm.$refs.childGameresponse.winner = 'تیم نقاش‌ها';
@@ -24,6 +43,7 @@ gameresponse.endGameReceive = function (model) {
 gameresponse.gameResponseReceive = function (model) {
     globalModel.gameResponse = model;
     vm.changeState('gameresponse');
+    progressTime(model.wait)
 }
 
 gameresponse.Component = function (app) {

@@ -44,6 +44,9 @@ function setPainSize() {
 }
 
 function progressTime() {
+    let t = globalModel.room.progressTime;
+    if (globalModel.room.progressTime > 10)
+        t = globalModel.room.progressTime - 5;
 
     const el = document.querySelector(`.awa32sdaf div`);
     el.style.height = `100%`;
@@ -51,13 +54,17 @@ function progressTime() {
         { height: `100%` },
         { height: `0%` }
     ], {
-        duration: globalModel.room.progressTime * 1000,
+        duration: t * 1000,
         easing: 'linear',
         fill: 'forwards'
     });
 
     animation.onfinish = () => {
         el.style.height = `0px`;
+        if (paintState.sendImgTimer) {
+            clearInterval(paintState.sendImgTimer);
+            paintState.sendImgTimer = null;
+        }
     };
 }
 
@@ -69,12 +76,16 @@ function start() {
         removeAllCanvasListeners(canvas);
     }
 
-    if ([2, 21, 22].indexOf(globalModel.user.type) > -1) {
+    if (globalModel.user.type != 1) {
         paintState.sendImgTimer = setInterval(() => {
-            const dataURL = canvas.toDataURL("image/jpeg", 0.005);
+            const dataURL = canvas.toDataURL("image/jpeg", 0.1);
             const compressed = pako.deflate(dataURL);
-            globalModel.connection.emit('sendImg', { data: compressed });
-        }, 1000);
+            globalModel.connection.emit('sendImg', {
+                data: compressed,
+                roomId: socketHandler.roomId,
+                userKey: socketHandler.userKey,
+            });
+        }, 4000);
     }
 
     const ctx = canvas.getContext('2d');
@@ -175,7 +186,8 @@ paint.Component = function (app) {
             return {
                 erasing: false,
                 penWidth: 5,
-                erasingWidth: 30
+                erasingWidth: 30,
+                mozoeNaghashi: 'موضوع نامشخص'
             }
         },
         props: {

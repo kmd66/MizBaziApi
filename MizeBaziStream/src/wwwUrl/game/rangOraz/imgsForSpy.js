@@ -1,6 +1,10 @@
 ﻿imgsForSpy.reset = function () {
 }
 
+imgsForSpy.getImgForSpy = function (model) {
+    const decompressed = new TextDecoder().decode(pako.inflate(model.data));
+    vm.$refs.childimgsForSpy.imgs.set(model.userName, decompressed);
+}
 imgsForSpy.init = function () {
     vm.changeState('imgsForSpy');
     const el = document.querySelector(`.awe57adaf div`);
@@ -27,6 +31,7 @@ imgsForSpy.Component = function (app) {
         template: '#imgsForSpy-template',
         data() {
             return {
+                imgs: new Map()
             }
         },
         props: {

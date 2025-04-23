@@ -19,6 +19,7 @@ main.listen = function () {
     globalModel.connection.on('addChaleshReceive', addChaleshReceive);
     globalModel.connection.on('setChaleshReceive', setChaleshReceive);
     globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
+    globalModel.connection.on('imgsRieceive', main.imgsRieceive);
 }
 function startStreamReceive(model) {
     main.stream = model;
@@ -29,7 +30,18 @@ function startStreamReceive(model) {
     }
     else{
         vm.$refs.childmain.iconClass = iconClass;
+        if (globalModel.room.door == 'معارفه') 
+            vm.$refs.childmain.iconClass.chalesh = 'icon-chalesh iconDisabled';
+        else
+            vm.$refs.childmain.iconClass.chalesh = 'icon-chalesh';
         vm.$refs.childitemclick.isAddTarget = false;
+    }
+
+    const user = vm.$refs.childmain.users.find(u => u.index == model.activeUser);
+    if (user) {
+        if (globalModel.naghashi.has(user.info.UserName)){
+            vm.$refs.childmain.mainImg = globalModel.naghashi.get(user.info.UserName);
+        }
     }
 }
 function endStreamReceive(model) {
@@ -40,6 +52,8 @@ function endStreamReceive(model) {
     const el = document.getElementsByClassName(`chaleshForItem2`);
     Array.from(el).map(x => x.remove());
     main.stream = null;
+    if (vm.$refs.childmain.mainImg)
+        vm.$refs.childmain.mainImg = null;
 }
 function addChaleshReceive(model) {
     const u = globalModel.users.find(x => x.id == model);
@@ -74,4 +88,16 @@ main.addTarget = function () {
         roomId: socketHandler.roomId,
         userKey: socketHandler.userKey,
     });
+}
+
+main.imgsRieceive = function (model) {
+    globalModel.naghashi.clear();
+    if (!model || !model.length || model.length == 0) return;
+    model.map((x) => {
+        const user = vm.$refs.childmain.users.find(u => u.id == x[0]);
+        if (user) {
+            const decompressed = new TextDecoder().decode(pako.inflate(x[1]));
+            globalModel.naghashi.set(user.info.UserName, decompressed)
+        }
+    })
 }

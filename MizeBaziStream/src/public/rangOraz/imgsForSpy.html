@@ -5,17 +5,10 @@
             <div style="width:0px"></div>
         </div>
 
-        <div>
-            <div>esm 1</div>
-            <div class="img"><img src="#" /></div>
+        <div v-for="[key, value] in imgs" class="ra">
+            <div>{{key}}</div>
+            <div class="img"><img :src="value" /></div>
         </div>
-        <div>
-            <div>esm 1</div>
-            <div class="img"><img src="#" /></div>
-        </div>
-        <div>
-            <div>esm 1</div>
-            <div class="img"><img src="#" /></div>
-        </div>
+
     </div>
 </template>

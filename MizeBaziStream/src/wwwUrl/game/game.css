@@ -19,7 +19,7 @@ body{
     height: 100vh;
 }
     .containerGame .mainTop {
-        height: 35px;
+        height: 50px;
         padding: 5px 14px;
         overflow: hidden;
         background: var(--BaseColor);
@@ -28,7 +28,7 @@ body{
     }
 
     .containerGame .main {
-        height: calc(100% - 93px);
+        height: calc(100% - 110px);
         overflow-y: auto;
         padding: 14px;
     }
@@ -334,3 +334,24 @@ body{
 .iconDisabled {
     color: #002e5b !important
 }
+.listMain {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 300px;
+    width: 300px;
+    background: var(--BaseColor);
+    padding: 5px 14px 25px 14px;
+    padding-bottom: 30px;
+    transform: translate(-50%, -50%);
+    z-index: 1004;
+    overflow: auto;
+    text-align: center;
+}
+.listMain .ra{
+    margin-top: 14px;
+}
+    .listMain .ra div{
+        padding: 7px;
+        border-bottom: 1px solid var(--BtnShadowColor);
+    }

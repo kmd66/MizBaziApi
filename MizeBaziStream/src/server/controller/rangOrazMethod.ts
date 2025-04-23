@@ -166,15 +166,15 @@ export function RangOrazMethod() {
                     handler.setChalesh(model)
             },
 
-            'sendImgForSpy': (socket: Socket, model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.sendImgForSpy(model)
-            },
             'sendImg': (socket: Socket, model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.sendImg(model)
+            },
+            'setMozoeNaghashi': (socket: Socket, model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.setMozoeNaghashi(model)
             },
         }
     };

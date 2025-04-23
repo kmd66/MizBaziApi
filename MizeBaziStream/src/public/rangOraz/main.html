@@ -4,7 +4,8 @@
         <div class="mainTop d-flex">
             <div class="mainTopPeriod">{{door}}</div>
             <div class="mainTopTitle" @click="appModel.state = 'help'">
-                <i :class="iconNaghsh"></i>
+                <div style="text-align: center;"><i :class="iconNaghsh"></i></div>
+                <div v-show="mozoeNaghashi">موضوع:{{mozoeNaghashi}}</div>
             </div>
             <div class="mainTopTime">{{mainTopTime}}</div>
         </div>
@@ -49,8 +50,7 @@
                     <div class="defensePosition"></div>
                 </div>
 
-                <div class="paintImg">
-                </div>
+                <div class="paintImg"><img v-if="mainImg" :src="mainImg" /></div>
             </div>
 
         </div>
@@ -72,5 +72,11 @@
     </div>
 
     <sticker-component></sticker-component>
-
+    <div v-if="mozoeNaghashiList != null" class="listMain re">
+        <div v-for="m in mozoeNaghashiList" class="ra">
+            <div @click="setMozoeNaghashi(m)">
+                {{m}}
+            </div>
+        </div>
+    </div>
 </template>

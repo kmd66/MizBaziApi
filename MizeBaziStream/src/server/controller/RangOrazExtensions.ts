@@ -116,12 +116,12 @@ class RangOrazProperty {
 
     public bazporsiUsers: number[] = [];
     protected bazporsiWait: any = {
-        bazporsiReceive:10, //10
-        start: 20, //20
+        bazporsiReceive:4, //10
+        start: 2, //20
         end: 0,
-        raigiriStart: 12, //12
+        raigiriStart: 3, //12
         raigiriEnd: 0,
-        raigiriResponse: 10, //10
+        raigiriResponse: 2, //10
     }
 
     public nobatType: NobatType = NobatType.undefined;
@@ -166,19 +166,19 @@ class RangOrazProperty {
             this.state = 'main';
         }
 
-        
-        this.wait = 2;//return;
+        //if (this.door == RangOrazDoor.d2) {this.wait = 200; return; }
+        this.wait = 2;return;
         switch (this.door) {
             case RangOrazDoor.d0:
-                this.wait = 12;//12
+                this.wait = 2;//12
                 return;
             case RangOrazDoor.d1:
             case RangOrazDoor.d2:
-                this.wait = 20; //20
+                this.wait = 10; //20
                 return;
             case RangOrazDoor.d3:
             case RangOrazDoor.d4:
-                this.wait = 90; //90
+                this.wait = 95; //95
                 return;
             default:
                 this.wait = this.chalengerTime? 20:30;
@@ -263,7 +263,7 @@ class BaseRangOrazReceive extends RangOrazProperty {
         };
         RangOrazControll.sendToMultipleSockets(this.roomId, 'hadseNaghshReceive', model);
     }
-    protected gameResponseReceive() {
+    protected gameResponseReceive(wait: number) {
         const users: any = [];
 
         const room = rangOrazDb().get(this.roomId);
@@ -271,6 +271,7 @@ class BaseRangOrazReceive extends RangOrazProperty {
             users.push({ id: id, type: type })
         });
         const model = {
+            wait: wait,
             winner: this.winner,
             users: users
         };
@@ -305,10 +306,11 @@ class BaseRangOrazReceive extends RangOrazProperty {
         const room = rangOrazDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.type == 2 && x.userInGameStatus == 1);
         if (!user) return;
-        SocketManager.sendToSocket('hubRangOraz', 'mozoeNaghashRieceive', user.connectionId, this.mozoeNaghashiList);
+        SocketManager.sendToSocket('hubRangOraz', 'mozoeNaghashListRieceive', user.connectionId, this.mozoeNaghashiList);
     }
+
     protected mozoeNaghashRieceive() {
-        if (this.mozoeNaghashi = '') this.mozoeNaghashi = this.mozoeNaghashiList[0];
+        if (this.mozoeNaghashi == '') this.mozoeNaghashi = this.mozoeNaghashiList[0];
         RangOrazControll.sendToMultipleSockets(this.roomId, 'mozoeNaghashRieceive', this.mozoeNaghashi);
     }
 
@@ -441,24 +443,13 @@ class BaseRangOrazSet extends BaseRangOrazReceive {
 
         const mozoe = this.mozoeNaghashiList.find(x => x == model.mozoe);
         if (!mozoe) return;
-
         this.mozoeNaghashi = mozoe;
 
         SocketManager.sendToSocket('hubRangOraz', 'setMozoeNaghashiReceive', user.connectionId, true);
     }
-
-    public sendImgForSpy(model: any) {
-        const room = rangOrazDb().get(model.roomId);
-        const user1 = room?.users.find((x: User) => x.type == 11 && x.userInGameStatus == 1);
-        const user2 = room?.users.find((x: User) => x.key == model.userKey && x.type != 1 && x.type != 11);
-        if (!user1 || !user2) return;
-
-        SocketManager.sendToSocket('hubRangOraz', 'getImgForSpy', user1.connectionId, {
-            id: user2.id,
-            data: model.data
-        });
-    }
+    
     public sendImg(model: any) {
+        if (this.door != RangOrazDoor.d3 && this.door != RangOrazDoor.d4) return;
         const room = rangOrazDb().get(model.roomId);
         const user = room?.users.find((x: User) => x.key == model.userKey && x.type != 1);
         if (!user) return;
@@ -466,6 +457,13 @@ class BaseRangOrazSet extends BaseRangOrazReceive {
             this.naghashi.delete(user.id);
         }
         this.naghashi.set(user.id, model.data);
+
+        const user2 = room?.users.find((x: User) => x.type == 11 && x.userInGameStatus == 1);
+        if (!user2) return;
+        SocketManager.sendToSocket('hubRangOraz', 'getImgForSpy', user2.connectionId, {
+            userName: user.info.UserName,
+            data: model.data
+        });
     }
 }
 
@@ -521,6 +519,11 @@ export class RangOrazHandler extends BaseRangOrazSet {
             await this.delay(200);
         }
 
+        if (this.door == RangOrazDoor.d3) {
+            this.mozoeNaghashRieceive();
+            await this.delay(200);
+        }
+
         if (this.door == RangOrazDoor.d5) {
             this.imgsRieceive();
             await this.delay(500);
@@ -566,11 +569,6 @@ export class RangOrazHandler extends BaseRangOrazSet {
             await this.delay(200);
         }
 
-        if (this.door == RangOrazDoor.d2) {
-            this.mozoeNaghashRieceive();
-            await this.delay(200);
-        }
-
         if ([RangOrazDoor.d0, RangOrazDoor.d2, RangOrazDoor.d3, RangOrazDoor.d4].indexOf(this.door!) != -1) {
             this.nextReset();
             return;
@@ -589,7 +587,6 @@ export class RangOrazHandler extends BaseRangOrazSet {
             this.main();
             return;
         }
-
 
         this.chalengerTime = false;
         if (this.chalenger > 0) {
@@ -827,7 +824,7 @@ export class RangOrazHandler extends BaseRangOrazSet {
         }
 
 
-        this.gameResponseReceive()
+        this.gameResponseReceive(90)
         await this.delay(90000);
 
         RangOrazControll.sendToMultipleSockets(this.roomId, 'endGameReceive', true);

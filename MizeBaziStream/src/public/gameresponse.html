@@ -1,6 +1,10 @@
 <template id="gameresponse-template">
     <div class="sdfe89r-main">
         <div>
+            <div class="progressbar awq78f7af">
+                <div style="width:0px"></div>
+            </div>
+
             <p v-show="winner">برنده بازی: <span :style="{ color: winnerColor }">{{winner}}</span></p>
 
             <hr v-show="winner" style="margin:14px" />
