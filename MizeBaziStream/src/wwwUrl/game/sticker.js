@@ -1,32 +1,38 @@
 ﻿sticker.reset = function () {
-    sticker.isAddSticker = false;
 }
-sticker.isAddSticker = true;
-sticker.addSticker = true;
-
-sticker.addSticker = async function (text, i) {
-    if (sticker.addSticker == false)
-        return;
-    sticker.addSticker = false;
+sticker.isAddSticker = false;
+sticker.addStickerReceive = async function (model) {
     try {
-        await addStickerVideo(text, i)
-        sticker.addSticker = true;
-
+        const u = globalModel.users.find(x => x.id == model.id);
+        await addStickerVideo(model.t, u.row)
     } catch (error) {
-        sticker.addSticker = true;
     }
 }
 
 sticker.handleUpdate = function (text) {
-    if (!sticker.isAddSticker)
-        return;
+    if (sticker.isAddSticker || !main.stream || !globalModel.user?.id) return;
+    if (main.stream.activeUser == globalModel.user.index) return;
 
-    sticker.addSticker(text, globalModel.user.row);
-    sticker.stickers = false;
+    sticker.isAddSticker = true;
+    globalModel.connection.emit('addSticker', {
+        t: text,
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
+    setTimeout(() => {
+        sticker.isAddSticker = false;
+    }, 2000);
 }
+
 sticker.toggleTab = function () {
     const el = document.querySelector('.stickerMain');
-    el.style.display = el.style.display == 'none' ? 'block' : 'none';
+    if (el.style.display == 'block') {
+        el.style.display = 'none';
+        return;
+    }
+    if (!main.stream || !globalModel.user?.id) return;
+    if (main.stream.activeUser == globalModel.user.index) return;
+    el.style.display = 'block';
 }
 
 sticker.Component = function (app) {
@@ -46,9 +52,9 @@ sticker.Component = function (app) {
         },
         methods: {
             click(i) {
+                sticker.toggleTab();
                 var text = this.texts[i];
                 sticker.handleUpdate(text);
-                sticker.toggleTab()
             },
         }
     });

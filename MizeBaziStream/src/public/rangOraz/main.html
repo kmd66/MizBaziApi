@@ -57,11 +57,11 @@
 
         <div class="mainBottom d-flex">
             <div>
-                <i class="icon-like" onclick="sticker.handleUpdate('l1')"></i>
-                <i class="icon-dislike" onclick="sticker.handleUpdate('l2')" style="margin-right: 12px;"></i>
+                <i :class="iconClass.like" onclick="sticker.handleUpdate('l1')"></i>
+                <i :class="iconClass.dislike" onclick="sticker.handleUpdate('l2')" style="margin-right: 12px;"></i>
             </div>
-            <i class="icon-smileys" onclick="sticker.toggleTab()"></i>
-            <i class="icon-chalesh" @click="addChalesh()"></i>
+            <i :class="iconClass.sticker" onclick="sticker.toggleTab()"></i>
+            <i :class="iconClass.chalesh" @click="addChalesh()"></i>
         </div>
     </div>
 

@@ -1,6 +1,5 @@
 ﻿
 itemclick.reset = function () {
-    vm.$refs.childitemclick.isAddTarget = false;
     removeItemIcon();
 }
 
@@ -54,9 +53,37 @@ function rangOrazClick(i) {
 
     return false;
 }
-itemclick.listen = function () {
+function addStickerReceive(model) {
 
+    const user = vm.$refs.childmain.users.find(x => x.id == model.id);
+    if (!user)
+        return;
+
+    const chaleshForItemEl = document.querySelector(`.targetForItem.el${user.row}`);
+    if (chaleshForItemEl)
+        return;
+
+    const selector = `.itemMain${user.row}`;
+    const itemMain = document.querySelector(selector);
+    const rectEl = itemMain.getBoundingClientRect();
+    const divEl = document.createElement('div');
+
+    let c = `targetForItem el${user.row}`;
+
+    c += user.row > 6 ? ' target2' : ' target1';
+    c += model.type == 0 ? ' targetColor1' : ' targetColor2';
+
+    divEl.className = c;
+    divEl.style.left = `${rectEl.left - 25}px`;
+    divEl.style.top = `${rectEl.top + 10}px`;
+    mainTemplate.appendChild(divEl);
+    setTimeout(() => {
+        divEl.remove()
+    }, 1400);
+}
+itemclick.listen = function () {
     if (globalModel.gameName == 'rangOraz') {
+        globalModel.connection.on('addTargetReceive', addStickerReceive);
         globalModel.connection.on('setBazporsiReceive', (model) => {
             removeItemIcon();
             if (model?.length > 0) {
@@ -73,31 +100,21 @@ itemclick.listen = function () {
         });
     }
 }
-function addTarget(i, type) {
+function addTarget(type) {
     if (!vm.$refs.childitemclick.isAddTarget)
         return;
 
-    const chaleshForItemEl = document.querySelector(`.targetForItem.el${i}`);
-    if (chaleshForItemEl)
+    const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
+    if (!user)
         return;
 
-    const selector = `.itemMain${i}`;
-    const itemMain = document.querySelector(selector);
-    const rectEl = itemMain.getBoundingClientRect();
-    const divEl = document.createElement('div');
+    globalModel.connection.emit('addTarget', {
+        userId: user.id,
+        type: type,
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
 
-    let c = `targetForItem el${i}`;
-
-    c += i > 6 ? ' target2' : ' target1';
-    c += type == 0 ? ' targetColor1' : ' targetColor2';
-
-    divEl.className = c;
-    divEl.style.left = `${rectEl.left - 25}px`;
-    divEl.style.top = `${rectEl.top + 10}px`;
-    mainTemplate.appendChild(divEl);
-    setTimeout(() => {
-        divEl.remove()
-    },1400);
 }
 
 itemclick.Component = function (app) {
@@ -129,7 +146,7 @@ itemclick.Component = function (app) {
                 }
             },
             target(type) {
-                addTarget(this.itemIndex, type)
+                addTarget(type)
             },
             info() {
                 this.userInfo = vm.$refs.childmain.users.find(x => x.row == rowNum);

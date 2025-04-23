@@ -111,6 +111,7 @@ class RangOrazProperty {
     protected timeoutId?: NodeJS.Timeout;
 
     protected chalenger: number = -1;
+    protected chalengerTime: boolean = false;
     protected chalengerList: number[] = [];
 
     public bazporsiUsers: number[] = [];
@@ -180,7 +181,7 @@ class RangOrazProperty {
                 this.wait = 90;
                 return;
             default:
-                this.wait = 30;
+                this.wait = this.chalengerTime? 20:30;
                 return ;
         }
     }
@@ -199,23 +200,22 @@ class BaseRangOrazReceive extends RangOrazProperty {
         super(roomId);
     }
 
-    public infoMainWaitReceive(roomId: string) {
-        const handler = RangOrazControll.getRangOrazHandler(roomId);
+    public infoMainWaitReceive() {
         const model = {
-            door: handler!.door,
-            progressTime: handler!.mainWait,
+            door: 'بارگزاری',
+            progressTime: this.mainWait,
             activeUser: -1,
         };
-        RangOrazControll.sendToMultipleSockets(roomId, 'infoMainReceive', model);
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'infoMainReceive', model);
     }
 
-    public infoMainReceive(roomId: string) {
+    public infoMainReceive() {
         const model = {
             door: this.door,
             progressTime: this.wait,
             activeUser: this.activeUser,
         };
-        RangOrazControll.sendToMultipleSockets(roomId, 'infoMainReceive', model);
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'infoMainReceive', model);
     }
 
     protected showOstadReceive() {
@@ -381,10 +381,10 @@ class BaseRangOrazSet extends BaseRangOrazReceive {
     }
 
     public addChalesh(model: any) {
-        if (!this.isStream || this.chalenger > 0 || this.door == RangOrazDoor.d1) return;
+        if (this.chalengerTime || !this.isStream || this.chalenger > 0 || this.door == RangOrazDoor.d1) return;
 
         const room = rangOrazDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser);
         if (!user) return;
         const index = this.chalengerList.findIndex(x => x == user.id);
         if (index > -1) return;
@@ -405,9 +405,13 @@ class BaseRangOrazSet extends BaseRangOrazReceive {
     public addTarget(model: any) {
         if (!this.isStream) return;
         const room = rangOrazDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
-        if (!user) return;
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'addTargetReceive', user.id);
+        const user1 = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
+        const user2 = room?.users.find((x: User) => x.id == model.userId && x.index != this.activeUser);
+        if (!user1 || !user2) return;
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'addTargetReceive', {
+            id: user2.id,
+            type:model.type
+        });
     }
     public setChalesh(model: any) {
         if (!this.isStream || this.chalenger > 0 || this.door == RangOrazDoor.d1) return;
@@ -519,9 +523,9 @@ export class RangOrazHandler extends BaseRangOrazSet {
             this.startStreamReceive();
         }
         else {
-            this.infoMainWaitReceive(this.roomId);
+            this.infoMainWaitReceive();
             await this.delay(this.mainWait * 1000);
-            this.infoMainReceive(this.roomId);
+            this.infoMainReceive();
         }
 
         this.timer();
@@ -537,7 +541,7 @@ export class RangOrazHandler extends BaseRangOrazSet {
         if (this.streamDoor && this.activeUser == -1) {
             this.timeoutId = setTimeout(() => {
                 this.next();
-            }, 5000);
+            }, 1400);
             return;
         }
 
@@ -576,9 +580,12 @@ export class RangOrazHandler extends BaseRangOrazSet {
             return;
         }
 
+
+        this.chalengerTime = false;
         if (this.chalenger > 0) {
             const chalengerUser = room.users.find((x: User) => x.id == this.chalenger && x.userInGameStatus == 1);
             if (chalengerUser) {
+                this.chalengerTime = true;
                 this.chalenger = 0;
                 this.activeUser = chalengerUser.index;
                 this.main();

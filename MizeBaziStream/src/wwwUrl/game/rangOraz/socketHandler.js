@@ -162,4 +162,5 @@ function socketCallBack() {
     vm.changeState('main'); // help imgsForSpy 'main''paint' gameresponse;
 
     itemclick.listen();
+    main.listen();
 }

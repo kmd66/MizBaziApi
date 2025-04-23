@@ -19,15 +19,13 @@ function addStickerVideo(text, i) {
             const itemMain = document.querySelector(selector);
 
             const video = checkEmoji(text, i);
-            itemMain.appendChild(video);
             await video.play();
 
             video.addEventListener('ended', () => {
-                setTimeout(() => {
-                    video.remove();
-                    resolve(true);
-                }, 500);
+                video.remove();
+                resolve(true);
             }, { once: true });
+            itemMain.appendChild(video);
 
         } catch (error) {
             resolve(true);
@@ -51,9 +49,6 @@ function checkEmoji(text, i) {
 }
 
 function addChalesh(i) {
-    if (!isAddChalesh)
-        return;
-
     const chaleshForItem2El = document.querySelector(`.chaleshForItem2`);
     if (chaleshForItem2El)
         return;
@@ -73,24 +68,25 @@ function addChalesh(i) {
 
     const iEl = document.createElement('i');
     iEl.className = 'icon-chalesh';
+    divEl.addEventListener('click', () => chaleshForItemClick(i));
     divEl.appendChild(iEl);
     mainTemplate.appendChild(divEl);
-
-    setTimeout(() => {
-        divEl.addEventListener('click', () => reserveChalesh(i));
-    }, 1000);
-
 }
-function reserveChalesh(i) {
-    const el = document.querySelector(`.chaleshForItem.el${i}`);
-    if (!el)
-        return;
-    el.classList.remove("chaleshForItem");
-    el.classList.add("chaleshForItem2");
-    removeChalesh();
+function chaleshForItemClick(i) {
+    if (!main.stream || !globalModel.user?.id) return;
+    if (main.stream.activeUser != globalModel.user.index) return;
+
+    const u = globalModel.users.find(x => x.row == i);
+    if (!u) return;
+
+    globalModel.connection.emit('setChalesh', {
+        userId: u.id,
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
+
 }
 function removeChalesh() {
-
     const el = document.getElementsByClassName(`chaleshForItem`);
     Array.from(el).map(x => x.remove());
 }

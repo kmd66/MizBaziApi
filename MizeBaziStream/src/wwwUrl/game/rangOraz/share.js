@@ -8,8 +8,8 @@ function reset() {
     itemclick.reset();
     sticker.reset();
     removeChalesh();
-    isAddChalesh = false;
     waitState.reset();
+    //isAddChalesh = false;
 }
 
 function infoMainReceive(room) {
@@ -21,7 +21,8 @@ function infoMainReceive(room) {
 
 }
 function taeinDoor(room) {
-    if (!globalModel.user?.type) return;
+    if (!room.door || room.door == 'بارگزاری' || !globalModel.user?.type) return;
+
     if (room.door == 'نقاشی' || room.door == 'نقاشی جاسوس') {
         if (globalModel.user.type == 1) {
             waitState.init();
@@ -55,6 +56,7 @@ function infoRoomReceive(model) {
     }
 
     model.users.map((x) => x.row = x.index + 1);
+    globalModel.users = model.users;
     globalModel.user = model.users.find(x => x.id == socketHandler.userId);
     vm.$refs.childmain.user = globalModel.user;
     vm.$refs.childmain.users = model.users;

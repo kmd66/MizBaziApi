@@ -1,4 +1,5 @@
-﻿main.reset = function (itemMainFix) {
+﻿import './mainExcess'
+main.reset = function (itemMainFix) {
     if (!itemMainFix) {
         const mainRightElements = document.querySelectorAll('.mainRight [class^="itemMain"]');
         Array.from(mainRightElements).forEach(el => {
@@ -113,6 +114,7 @@ main.Component = function (app) {
         template: '#main-template',
         data() {
             return {
+                iconClass: {},
                 mainTopTime: '- ----',
                 iconNaghsh:'icon-information4',
                 door: '-',
@@ -144,7 +146,7 @@ main.Component = function (app) {
                 }
             },
             addChalesh() {
-                addChalesh(tI);
+                main.addChalesh();
             },
             itemStatus(id) {
                 var item = this.usersStatus.find(x => x.id== id)
