@@ -122,6 +122,7 @@ main.Component = function (app) {
                 soundDivI: false,
                 soundDivSpan: false,
                 soundDivTime: false,
+                cancelBtn: false,
 
                 user: {},
                 users: [],
@@ -149,7 +150,7 @@ main.Component = function (app) {
                 main.addChalesh();
             },
             itemStatus(id) {
-                var item = this.usersStatus.find(x => x.id== id)
+                var item = this.usersStatus.find(x => x.id == id)
                 if (item) {
                     switch (item.userInGameStatus) {
                         case 1:
@@ -162,6 +163,12 @@ main.Component = function (app) {
                     }
                 }
                 return 'imgStatus icon-ofline';
+            },
+            setCancel() {
+                globalModel.connection.emit('setCancel', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
             }
         }
     });

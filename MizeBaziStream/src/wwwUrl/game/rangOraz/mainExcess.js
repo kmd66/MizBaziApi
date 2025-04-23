@@ -25,6 +25,7 @@ function startStreamReceive(model) {
     if (model.activeUser == globalModel.user.index){
         vm.$refs.childmain.iconClass = iconClassDisabled;
         vm.$refs.childitemclick.isAddTarget = true;
+        vm.$refs.childmain.cancelBtn = true;
     }
     else{
         vm.$refs.childmain.iconClass = iconClass;
@@ -34,6 +35,7 @@ function startStreamReceive(model) {
 function endStreamReceive(model) {
     vm.$refs.childmain.iconClass = iconClassDisabled;
     vm.$refs.childitemclick.isAddTarget = false;
+    vm.$refs.childmain.cancelBtn = false;
     removeChalesh()
     const el = document.getElementsByClassName(`chaleshForItem2`);
     Array.from(el).map(x => x.remove());

@@ -69,7 +69,7 @@ function start() {
         removeAllCanvasListeners(canvas);
     }
 
-    if (globalModel.user.type != 1 || globalModel.user.type != 11) {
+    if ([2, 21, 22].indexOf(globalModel.user.type) > -1) {
         paintState.sendImgTimer = setInterval(() => {
             const dataURL = canvas.toDataURL("image/jpeg", 0.005);
             const compressed = pako.deflate(dataURL);

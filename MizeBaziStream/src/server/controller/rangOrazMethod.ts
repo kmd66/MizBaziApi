@@ -58,7 +58,7 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
         hadseNaghsh: handler.hadseNaghsh,
         bazporsiUsers: handler.bazporsiUsers,
         mozoeNaghashi: handler.mozoeNaghashi,
-        naghashi: handler.naghashi
+        naghashi: Array.from(handler.naghashi.entries()) 
     };
     var _userInDb = userInDb();
     const users = _userInDb.getAll(roomId);

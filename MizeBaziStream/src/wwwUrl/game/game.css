@@ -60,7 +60,7 @@ body{
 
 .containerGame .mainBottom {
     height: 60px;
-    padding: 5px 10px;
+    padding: 12px 10px;
     overflow: hidden;
     background: var(--BaseColor);
     align-items: center;

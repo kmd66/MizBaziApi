@@ -91,7 +91,7 @@ class RangOrazProperty {
 
     public roomId!: string;
 
-    public wait: number = 10;
+    public wait: number = 12;
     public mainWait: number = 3;
     public door?: RangOrazDoor = RangOrazDoor.d0;
     public activeUser: number = -1;
@@ -103,7 +103,7 @@ class RangOrazProperty {
     public finish: boolean = false;
 
     protected mozoeNaghashiList: string[] = [];
-    public naghashi: any[] = [];
+    public naghashi: Map<number, any> = new Map();
     public mozoeNaghashi: string = '';
 
     protected raieGiriCount: Map<number, number> = new Map(); //[userId]
@@ -170,15 +170,15 @@ class RangOrazProperty {
         this.wait = 2;//return;
         switch (this.door) {
             case RangOrazDoor.d0:
-                this.wait = 5;
+                this.wait = 12;//12
                 return;
             case RangOrazDoor.d1:
             case RangOrazDoor.d2:
-                this.wait = 20;
+                this.wait = 20; //20
                 return;
             case RangOrazDoor.d3:
             case RangOrazDoor.d4:
-                this.wait = 90;
+                this.wait = 90; //90
                 return;
             default:
                 this.wait = this.chalengerTime? 20:30;
@@ -188,6 +188,7 @@ class RangOrazProperty {
 
     public setFinish() {
         this.finish = true;
+        this.naghashi.clear();
         this.raieGiriCount.clear();
         //clearTimeout(this.timeoutId);
         //rangOrazDb().delete(this.roomId);
@@ -299,6 +300,7 @@ class BaseRangOrazReceive extends RangOrazProperty {
         const model = {};
         RangOrazControll.sendToMultipleSockets(this.roomId, 'endStreamReceive', model);
     }
+
     protected mozoeNaghashListRieceive() {
         const room = rangOrazDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.type == 2 && x.userInGameStatus == 1);
@@ -308,6 +310,10 @@ class BaseRangOrazReceive extends RangOrazProperty {
     protected mozoeNaghashRieceive() {
         if (this.mozoeNaghashi = '') this.mozoeNaghashi = this.mozoeNaghashiList[0];
         RangOrazControll.sendToMultipleSockets(this.roomId, 'mozoeNaghashRieceive', this.mozoeNaghashi);
+    }
+
+    protected imgsRieceive() {
+        RangOrazControll.sendToMultipleSockets(this.roomId, 'imgsRieceive', Array.from(this.naghashi.entries()));
     }
 
 }
@@ -452,17 +458,14 @@ class BaseRangOrazSet extends BaseRangOrazReceive {
             data: model.data
         });
     }
-
     public sendImg(model: any) {
         const room = rangOrazDb().get(model.roomId);
-        const user1 = room?.users.find((x: User) => x.type == 11 && x.userInGameStatus == 1);
-        const user2 = room?.users.find((x: User) => x.key == model.userKey && x.type != 1 && x.type != 11);
-        if (!user1 || !user2) return;
-
-        SocketManager.sendToSocket('hubRangOraz', 'getImg', user1.connectionId, {
-            id: user2.id,
-            data: model.data
-        });
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.type != 1);
+        if (!user) return;
+        if (this.naghashi.has(user.id)) {
+            this.naghashi.delete(user.id);
+        }
+        this.naghashi.set(user.id, model.data);
     }
 }
 
@@ -472,9 +475,11 @@ export class RangOrazHandler extends BaseRangOrazSet {
     }
 
     public cancel(model: any) {
+        if (this.activeUser == -1)
+            return;
         const room = rangOrazDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.type == 2 && x.key == model.userKey);
-        if (user?.index != this.activeUser)
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
+        if (!user)
             return;
 
         if (this.timeoutId) {
@@ -514,6 +519,11 @@ export class RangOrazHandler extends BaseRangOrazSet {
         if (this.door == RangOrazDoor.d2) {
             this.mozoeNaghashListRieceive();
             await this.delay(200);
+        }
+
+        if (this.door == RangOrazDoor.d5) {
+            this.imgsRieceive();
+            await this.delay(500);
         }
 
         if (this.activeUser > -1) {
@@ -837,6 +847,16 @@ export class RangOrazHandler extends BaseRangOrazSet {
             return;
         }
         const user = unvotedUsers![Math.floor(Math.random() * unvotedUsers!.length)];
+        if (!user) {
+            const user2 = room?.users.find((user: User) => user.type == 2);
+            this.loserUser = {
+                id: user2!.id,
+                type: user2!.type
+            };
+            this.winner = winnerType.siah;
+            this.setFinish();
+            return;
+        }
 
         this.loserUser = {
             id: user.id,
