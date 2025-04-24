@@ -1,7 +1,7 @@
 ﻿import express from 'express';
 import * as fs from 'fs';
 import config from './handler/config';
-import work from './handler/work';
+import SFU from './handler/sfu';
 import api from './handler/api';
 import path from 'path';
 import { Server } from 'socket.io';
@@ -40,9 +40,7 @@ const io = new Server(httpsServer, {
 
 SocketInit(io, process.pid);
 
-//; (async () => {
-//    await work.init();
-//})()
+SFU.createWorker();
 
 const PORT = process.env.PORT || '3000';
 const ENV = process.env.NODE_ENV || 'production';

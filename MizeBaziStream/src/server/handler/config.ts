@@ -1,4 +1,5 @@
 import os from 'os';
+import { RtpCodecCapability } from 'mediasoup/node/lib/types';
 
 interface NetworkInterfaceInfo {
     address: string;
@@ -42,7 +43,7 @@ interface ConfigModel {
     sslCrt: string;
     sslKey: string;
     webRtcTransport_options: WebRtcTransportOptions;
-    mediaCodecs: MediaCodec[];
+    mediaCodecs: RtpCodecCapability[];
 }
 
 const ifaces = os.networkInterfaces();
@@ -65,20 +66,25 @@ const getLocalIp = (): string => {
     return localIp;
 };
 
-
-const mediaCodecs: MediaCodec[] = [
+const mediaCodecs: RtpCodecCapability[] = [
     {
         kind: 'audio',
         mimeType: 'audio/opus',
         clockRate: 48000,
-        channels: 2,
+        channels: 1,
+        parameters: {
+            'useinbandfec': 1,
+            'usedtx': 1,
+        },
     },
     {
         kind: 'video',
-        mimeType: 'video/VP8',
+        mimeType: 'video/H264',
         clockRate: 90000,
         parameters: {
-            'x-google-start-bitrate': 1000,
+            'packetization-mode': 1,
+            'level-asymmetry-allowed': 1,
+            'profile-level-id': '42e01f',
         },
     },
 ];

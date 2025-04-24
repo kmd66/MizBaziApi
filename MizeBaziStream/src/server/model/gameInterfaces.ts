@@ -70,6 +70,11 @@ export enum RangOrazDoor {
     d8 = 'دور 4',
     d9 = 'دور 5',
 }
+export enum SteamType {
+    undefined = 0,
+    audio = 1,
+    video = 2
+}
 
 export class GameTypeExtension{
     static count(type: GameType): number {

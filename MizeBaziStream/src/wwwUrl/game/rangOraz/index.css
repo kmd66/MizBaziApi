@@ -1,4 +1,12 @@
-﻿.fading-image {
+﻿.asdw90 {
+    justify-content: space-around !important;
+}
+.asdw90 video {
+    width: 50px;
+    height: 50px;
+    background: aliceblue;
+}
+.fading-image {
     background-image: url('/img/2.png');
 }
 .mainRight {

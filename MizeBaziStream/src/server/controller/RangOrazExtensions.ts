@@ -1,7 +1,8 @@
-﻿import { RangOrazDoor } from '../model/gameInterfaces';
+﻿import { RangOrazDoor, SteamType } from '../model/gameInterfaces';
 import { rangOrazDb } from './rangOrazDb';
 import { userInDb } from './userInDb';
 import SocketManager from '../handler/socket';
+import SFU from '../handler/sfu';
 import { User } from '../model/interfaces';
 
 enum NobatType {
@@ -88,6 +89,8 @@ class RangOrazProperty {
             'موضوع 10',
         ];
     }
+
+    public sfu = new SFU(SteamType.audio);
 
     public roomId!: string;
 
