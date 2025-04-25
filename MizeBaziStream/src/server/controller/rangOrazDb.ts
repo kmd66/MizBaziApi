@@ -2,7 +2,7 @@
 import { RoomRangOraz } from '../model/interfaces';
 import { GameType } from '../model/gameInterfaces';
 import { globalDb } from '../handler/globalDb';
-import { rangOrazStart, rangOrazStartAll } from './RangOrazExtensions';
+import { rangOrazStart, rangOrazStartAll } from './rangOrazExtensions';
 import Loki from 'lokijs';
 
 class RangOrazDb {

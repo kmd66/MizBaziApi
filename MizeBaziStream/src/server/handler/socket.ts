@@ -1,13 +1,13 @@
 ﻿import { Server, Namespace, Socket } from 'socket.io';
 import { RangOrazMethod } from '../controller/rangOrazMethod';
-import { pid } from 'process';
 
 type SocketHandler = (socket: Socket) => void;
-type CustomSocketHandler = (socket: Socket, ...args: any[]) => void;
+type CustomSocketHandler = (...args: any[]) => void;
 type NamespaceHandlers = {
     emit: Record<string, SocketHandler>;
     handler: Record<string, SocketHandler>;
     customHandler: Record<string, CustomSocketHandler>;
+    streamHandler: Record<string, CustomSocketHandler>;
 };
 class SocketManager {
     private io?: Server;
@@ -67,7 +67,12 @@ class SocketManager {
 
             // ثبت هندلرهای اختصاصی
             for (const [eventName, handler] of Object.entries(handlers.customHandler)) {
-                socket.on(eventName, (...args) => handler(socket, ...args));
+                socket.on(eventName, (...args) => handler(...args));
+            }
+
+            // ثبت هندلرهای استریم
+            for (const [eventName, handler] of Object.entries(handlers.streamHandler)) {
+                socket.on(eventName, (...args) => handler(...args));
             }
         });
     }

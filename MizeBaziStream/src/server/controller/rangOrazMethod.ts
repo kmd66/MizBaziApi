@@ -3,7 +3,7 @@ import { userInDb } from './userInDb';
 import SocketManager from '../handler/socket';
 import { userInGameStatusType } from '../model/gameInterfaces';
 import { User } from '../model/interfaces';
-import { RangOrazControll } from './RangOrazExtensions';
+import { RangOrazControll } from './rangOrazExtensions';
 import { rangOrazDb } from './rangOrazDb';
 
 function connectionReceive(roomId: string, userKey: string, connectionId: string): void {
@@ -115,66 +115,74 @@ export function RangOrazMethod() {
         },
 
         customHandler: {
-            'setBazporsi': (socket: Socket, model: any) => {
+            'setBazporsi': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setBazporsi(model)
             },
-            'setRaieGiriCount': (socket: Socket, model: any) => {
+            'setRaieGiriCount': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setRaieGiriCount(model)
             },
-            'setShowOstad': (socket: Socket, model: any) => {
+            'setShowOstad': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setShowOstad(model)
             },
-            'setHadseNaghsh': (socket: Socket, model: any) => {
+            'setHadseNaghsh': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setHadseNaghsh(model)
             },
-            'setMessage': (socket: Socket, model: any) => {
+            'setMessage': (model: any) => {
                 setMessage(model)
             },
 
-            'setCancel': (socket: Socket, model: any) => {
+            'setCancel': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.cancel(model)
             },
 
-            'addChalesh': (socket: Socket, model: any) => {
+            'addChalesh': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.addChalesh(model)
             },
-            'addSticker': (socket: Socket, model: any) => {
+            'addSticker': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.addSticker(model)
             },
-            'addTarget': (socket: Socket, model: any) => {
+            'addTarget': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.addTarget(model)
             },
-            'setChalesh': (socket: Socket, model: any) => {
+            'setChalesh': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setChalesh(model)
             },
 
-            'sendImg': (socket: Socket, model: any) => {
+            'sendImg': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.sendImg(model)
             },
-            'setMozoeNaghashi': (socket: Socket, model: any) => {
+            'setMozoeNaghashi': (model: any) => {
                 const handler = RangOrazControll.getRangOrazHandler(model.roomId)
                 if (handler)
                     handler.setMozoeNaghashi(model)
+            },
+        },
+
+        streamHandler: {
+            'consumerResume': async (model: any) => {
+                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
+                if (handler)
+                    handler.consumerResume(model)
             },
         }
     };

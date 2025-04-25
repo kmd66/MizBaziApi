@@ -58,18 +58,6 @@ export enum userInGameStatusType {
     ofline = 10,
     ekhraj = 11,
 }
-export enum RangOrazDoor {
-    d0 = 'در انتظار شروع',
-    d1 = 'معارفه',
-    d2 = 'تعیین موضوع',
-    d3 = 'نقاشی',
-    d4 = 'نقاشی جاسوس',
-    d5 = 'دور 1',
-    d6 = 'دور 2',
-    d7 = 'دور 3',
-    d8 = 'دور 4',
-    d9 = 'دور 5',
-}
 export enum SteamType {
     undefined = 0,
     audio = 1,
