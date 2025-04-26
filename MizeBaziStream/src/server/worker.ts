@@ -40,12 +40,15 @@ const io = new Server(httpsServer, {
 
 SocketInit(io, process.pid);
 
-SFU.createWorker();
+async function init() {
+    await SFU.createWorker();
+    const PORT = process.env.PORT || '3000';
+    const ENV = process.env.NODE_ENV || 'production';
+    globalDb(PORT);
 
-const PORT = process.env.PORT || '3000';
-const ENV = process.env.NODE_ENV || 'production';
-globalDb(PORT);
+    httpsServer.listen(PORT, () => {
+        console.log(`serverid: ${process.pid}  ${ENV} work in http://localhost:${PORT}`);
+    });
 
-httpsServer.listen(PORT, () => {
-    console.log(`serverid: ${process.pid}  ${ENV} work in http://localhost:${PORT}`);
-});
+}
+init();

@@ -1,5 +1,6 @@
 ﻿import io from 'socket.io-client'
-import './socketExcessHandle'
+import './socketExcessHandle';
+import './stream';
 
 function userStatusReceive(model) {
     vm.$refs.childmain.usersStatus = model;
@@ -59,6 +60,14 @@ function bazporsiReceive(model) {
     }
 }
 function defaeReceive(model) {
+    if (model.type == 1) {
+        if (vm.$refs.childdefae.users[model.userIndex]) 
+            vm.$refs.childdefae.users[model.userIndex].soundDivI = true;
+    } else if (model.type == 2) {
+        socketHandler.closelObj();
+        if (vm.$refs.childdefae.users[model.userIndex])
+            vm.$refs.childdefae.users[model.userIndex].soundDivI = false;
+    }
     vm.$refs.childdefae.door = 'دفاع';
     vm.$refs.childdefae.raigiriResponse = false;
     defae.raieGiriCount.clear();
@@ -175,4 +184,5 @@ function socketCallBack() {
 
     itemclick.listen();
     main.listen();
+    socketHandler.streamInit();
 }

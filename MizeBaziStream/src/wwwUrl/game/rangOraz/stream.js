@@ -1,10 +1,11 @@
 ﻿import * as mediasoupClient from "mediasoup-client";
+let remoteVideo, localVideo;
 socketHandler.streamInit = function () {
+    setVideoObj();
     globalModel.connection.on('consumeReceive', async ({ params }) => {
         if (params.error) {
             return
         }
-
         consumer = await consumerTransport.consume({
             id: params.id,
             producerId: params.producerId,
@@ -14,7 +15,18 @@ socketHandler.streamInit = function () {
         const { track } = consumer
 
         remoteVideo.srcObject = new MediaStream([track])
-        globalModel.connection.emit('consumerResume')
+        remoteVideo.muted = true;
+
+        remoteVideo.onloadedmetadata = () => {
+            remoteVideo.play().catch(e => {
+                console.warn('Play error:', e);
+            });
+        };
+
+        globalModel.connection.emit('consumerResume', {
+                roomId: socketHandler.roomId,
+                userKey: socketHandler.userKey,
+            });
     });
 
     globalModel.connection.on('getRtpCapabilitiesReceive', async (data) => {
@@ -22,29 +34,28 @@ socketHandler.streamInit = function () {
         await createDevice(localObj);
     });
 
-    globalModel.connection.on('getLocalStream', async (data) => {
-        socketHandler.closeObj();
+    globalModel.connection.on('startProduceStream', async (data) => {
+        socketHandler.closelObj();
         getLocalStream();
     });
 
-    globalModel.connection.on('getRemotStream', async (data) => {
-        socketHandler.closeObj();
+    globalModel.connection.on('startConsumerStream', async (data) => {
+        socketHandler.closelObj();
         getRtpCapabilities(false);
+    });
+    globalModel.connection.on('canselStream', async (data) => {
+        socketHandler.closelObj();
     });
 
 }
 
-socketHandler.closeObj = function () {
+function setVideoObj() {
+    localVideo = document.querySelector(`#localVideo`);
+    remoteVideo = document.querySelector(`#remoteVideo`);
+}
+socketHandler.closelObj = function () {
     remoteVideo.srcObject = null;
     localVideo.srcObject = null;
-    if (producer) {
-        producer.close();
-        producer = null;
-    }
-    if (producerTransport) {
-        producerTransport.close();
-        producerTransport = null;
-    }
     if (consumer) {
         consumer.close();
         consumer = null;
@@ -52,6 +63,14 @@ socketHandler.closeObj = function () {
     if (consumerTransport) {
         consumerTransport.close();
         consumerTransport = null;
+    }
+    if (producer) {
+        producer.close();
+        producer = null;
+    }
+    if (producerTransport) {
+        producerTransport.close();
+        producerTransport = null;
     }
 }
 
@@ -119,7 +138,10 @@ function getLocalStream() {
 
 async function getRtpCapabilities(local) {
     localObj = local;
-    globalModel.connection.emit('getRtpCapabilities')
+    globalModel.connection.emit('getRtpCapabilities', {
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
 }
 
 async function createDevice (local) {
@@ -140,8 +162,13 @@ async function createDevice (local) {
     }
 }
 
-function createSendTransport () {
-    globalModel.connection.emit('createWebRtcTransport', { sender: true }, ({ params }) => {
+function createSendTransport() {
+    const model = {
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+        sender: true
+    }
+    globalModel.connection.emit('createWebRtcTransport', model, ({ params }) => {
         if (params.error) {
             console.log(params.error)
             return
@@ -149,8 +176,10 @@ function createSendTransport () {
         producerTransport = device.createSendTransport(params)
         producerTransport.on('connect', async ({ dtlsParameters }, errback) => {
             try {
-                await globalModel.connection.emit('transport-connect', {
-                    dtlsParameters,
+                await globalModel.connection.emit('transportConnect', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                    dtlsParameters: dtlsParameters,
                 })
                 callback()
 
@@ -160,7 +189,9 @@ function createSendTransport () {
         })
         producerTransport.on('produce', async (parameters, callback, errback) => {
             try {
-                await globalModel.connection.emit('transport-produce', {
+                await globalModel.connection.emit('transportProduce', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
                     kind: parameters.kind,
                     rtpParameters: parameters.rtpParameters,
                     appData: parameters.appData,
@@ -178,18 +209,30 @@ function createSendTransport () {
 async function connectSendTransport () {
     producer = await producerTransport.produce(params)
 }
-async function createRecvTransport (){
-    await globalModel.connection.emit('createWebRtcTransport', { sender: false }, ({ params }) => {
+async function createRecvTransport() {
+    const model = {
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+        sender: false
+    }
+    await globalModel.connection.emit('createWebRtcTransport', model, ({ params }) => {
         if (params.error) {
             console.log(params.error)
             return
         }
         consumerTransport = device.createRecvTransport(params);
         globalModel.connection.emit('consume', { rtpCapabilities: device.rtpCapabilities });
+        globalModel.connection.emit('consume', {
+            roomId: socketHandler.roomId,
+            userKey: socketHandler.userKey,
+            rtpCapabilities: device.rtpCapabilities
+        });
         consumerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
             try {
-                await globalModel.connection.emit('transport-recv-connect', {
-                    dtlsParameters,
+                await globalModel.connection.emit('transportRecvConnect', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                    dtlsParameters: dtlsParameters,
                 })
 
                 callback()

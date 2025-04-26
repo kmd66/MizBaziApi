@@ -98,6 +98,19 @@ function setMessage(model: any) {
 }
 
 export function RangOrazMethod() {
+    const wrapHandler = (method: string) => (model: any) => {
+        const handler = RangOrazControll.getRangOrazHandler(model.roomId);
+        if (handler && typeof (handler as any)[method] === 'function') {
+            (handler as any)[method](model);
+        }
+    };
+    const wrapHandlerWithCallback = (method: string) => (model: any, callback: Function) => {
+        const handler = RangOrazControll.getRangOrazHandler(model.roomId);
+        if (handler && typeof (handler as any)[method] === 'function') {
+            (handler as any)[method](model, callback);
+        }
+    };
+
     return {
         emit: {
             'connectionReceive': (socket: Socket) => {
@@ -105,6 +118,9 @@ export function RangOrazMethod() {
                     socketId: socket.id
                 });
                 connectionReceive(socket.handshake.auth.roomId, socket.handshake.auth.userKey, socket.id);
+                const handler = RangOrazControll.getRangOrazHandler(socket.handshake.auth.roomId);
+                if (handler)
+                    handler.closeConsumer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
             },
         },
 
@@ -115,75 +131,31 @@ export function RangOrazMethod() {
         },
 
         customHandler: {
-            'setBazporsi': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.setBazporsi(model)
-            },
-            'setRaieGiriCount': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.setRaieGiriCount(model)
-            },
-            'setShowOstad': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.setShowOstad(model)
-            },
-            'setHadseNaghsh': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.setHadseNaghsh(model)
-            },
-            'setMessage': (model: any) => {
-                setMessage(model)
-            },
+            setBazporsi: wrapHandler('setBazporsi'),
+            setRaieGiriCount: wrapHandler('setRaieGiriCount'),
+            setShowOstad: wrapHandler('setShowOstad'),
+            setHadseNaghsh: wrapHandler('setHadseNaghsh'),
+            setCancel: wrapHandler('cancel'),
+            addChalesh: wrapHandler('addChalesh'),
+            addSticker: wrapHandler('addSticker'),
+            addTarget: wrapHandler('addTarget'),
+            setChalesh: wrapHandler('setChalesh'),
+            sendImg: wrapHandler('sendImg'),
+            setMozoeNaghashi: wrapHandler('setMozoeNaghashi'),
 
-            'setCancel': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.cancel(model)
-            },
-
-            'addChalesh': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.addChalesh(model)
-            },
-            'addSticker': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.addSticker(model)
-            },
-            'addTarget': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.addTarget(model)
-            },
-            'setChalesh': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.setChalesh(model)
-            },
-
-            'sendImg': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.sendImg(model)
-            },
-            'setMozoeNaghashi': (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.setMozoeNaghashi(model)
+            setMessage: (model: any) => {
+                setMessage(model);
             },
         },
 
         streamHandler: {
-            'consumerResume': async (model: any) => {
-                const handler = RangOrazControll.getRangOrazHandler(model.roomId)
-                if (handler)
-                    handler.consumerResume(model)
-            },
-        }
+            getRtpCapabilities: wrapHandler('getRtpCapabilities'),
+            createWebRtcTransport: wrapHandlerWithCallback('createWebRtcTransport'),
+            transportConnect: wrapHandler('transportConnect'),
+            transportProduce: wrapHandlerWithCallback('transportProduce'),
+            transportRecvConnect: wrapHandler('transportRecvConnect'),
+            consume: wrapHandler('consume'),
+            consumerResume: wrapHandler('consumerResume'),
+        },
     };
 }

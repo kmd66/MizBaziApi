@@ -69,6 +69,8 @@ export default class RangOrazHandler extends BaseRangOrazSet {
             await this.delay(100);
             this.getDefensePositionReceive();
             await this.delay(this.mainWait * 1000);
+            this.startProduceStream();
+            await this.delay(500);
             this.startStreamReceive();
         }
         else {
@@ -200,19 +202,23 @@ export default class RangOrazHandler extends BaseRangOrazSet {
         await this.delay(2000);
 
         //نفر 1
-        this.defaeReceive(receiveType.start, 0);
-        await this.delay(this.bazporsiWait.start *1000);
-        this.defaeReceive(receiveType.end, 0);
+        await this.defaeUser(0);
 
         await this.delay(2000);
-
         //نفر 2
-        this.defaeReceive(receiveType.start, 1);
-        await this.delay(this.bazporsiWait.start * 1000);
-        this.defaeReceive(receiveType.end, 1);
+        await this.defaeUser(1);
 
         this.raigiri();
     }
+
+    private async defaeUser(index: number): Promise<void> {
+        this.startProduceStreamById(this.bazporsiUsers[index]);
+        await this.delay(500);
+        this.defaeReceive(receiveType.start, index);
+        await this.delay(this.bazporsiWait.start * 1000);
+        this.defaeReceive(receiveType.end, index);
+    }
+
 
     private async raigiri() {
         if (this.finish)

@@ -14,6 +14,9 @@
             <div class="mainRight">
 
                 <div v-for="user in users" class="itemMain">
+                    <div class="soundDiv">
+                        <i v-show="user.soundDivI" class="icon-radar-14" ></i>
+                    </div>
                     <div class="sitNumber">{{user.row}}</div>
                     <div :class="'itemDefae'+user.row" @click="click(user.id)">
                         <div class="itemImg">
@@ -39,7 +42,7 @@
                 </div>
 
                 <div class="defaeMsg" v-show="raigiri">
-                    <p style="color: aquamarine;">یک نفر را برای خروج از بازی باید انتخاب شود. درصورت عدم انتخاب, سیستم بصورت تصادفی یک نفر بجای شما انتخاب خواهد کرد</p>
+                    <p style="color: aquamarine;">یک نفر برای خروج از بازی باید انتخاب شود. درصورت عدم انتخاب, سیستم بصورت تصادفی یک نفر را انتخاب خواهد کرد</p>
                 </div>
                 <div class="defaeMsg" v-show="loseUser != null">
                     <!--<p style="color: aquamarine;"><span style="color:red">{{loseUser?.info.UserName}}</span> با رایگیری خارخ شد</p>-->

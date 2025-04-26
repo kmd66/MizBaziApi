@@ -12,8 +12,8 @@ class SFU {
     public router: Router | null = null;
     public producerTransport: WebRtcTransport | null = null;
     public producer: Producer | null = null;
-    public consumerTransport: Map<string, WebRtcTransport> = new Map();
-    public consumer: Map<string, Consumer> = new Map();
+    public consumerTransport: Map<number, WebRtcTransport> = new Map();
+    public consumer: Map<number, Consumer> = new Map();
 
     constructor(steamType: SteamType) {
         this.steamType = steamType;
@@ -44,8 +44,35 @@ class SFU {
         }
     }
 
-    async close(): Promise<void> {
+    async clear(): Promise<void> {
+        try {
+            if (this.producer) {
+                await this.producer.close();
+                this.producer = null;
+            }
+            if (this.producerTransport) {
+                await this.producerTransport.close();
+                this.producerTransport = null;
+            }
+        } catch (err) {
+        }
         await this.stopProducer();
+
+        for (const [userId, consumer] of this.consumer.entries()) {
+            try {
+                await consumer.close();
+            } catch (err) {
+            }
+        }
+        this.consumer.clear();
+        for (const [userId, transport] of this.consumerTransport.entries()) {
+            try {
+                await transport.close();
+            } catch (err) {
+            }
+        }
+        this.consumerTransport.clear();
+
         this.router = null;
     }
 
@@ -60,7 +87,7 @@ class SFU {
         }
     }
 
-    async closeConsumer(userId: string): Promise<void> {
+    async closeConsumer(userId: number): Promise<void> {
         if (this.consumer.has(userId)) {
             await this.consumer.get(userId)!.close();
             this.consumer.delete(userId);
@@ -68,6 +95,15 @@ class SFU {
         if (this.consumerTransport.has(userId)) {
             await this.consumerTransport.get(userId)!.close();
             this.consumerTransport.delete(userId);
+        }
+    }
+
+    async closeAllConsumer(): Promise<void> {
+        for (const [userId, consumer] of this.consumer.entries()) {
+            try {
+                await consumer.close();
+            } catch (err) {
+            }
         }
     }
 
@@ -93,7 +129,7 @@ class SFU {
         this.router = await SFU.worker.createRouter({ mediaCodecs });
     }
 
-    async createWebRtcTransport(userId: string, sender: boolean): Promise<any> {
+    async createWebRtcTransport(userId: number, sender: boolean): Promise<any> {
         try {
             const transport = await this.router!.createWebRtcTransport(config.webRtcTransport_options);
 
@@ -119,7 +155,7 @@ class SFU {
                 },
             };
         } catch (error) {
-            console.error(error);
+            console.log('createWebRtcTransport' + error);
             return {
                 params: {
                     error,
@@ -128,25 +164,27 @@ class SFU {
         }
     }
 
-    async createProducer(kind: 'audio' | 'video', rtpParameters: RtpParameters): Promise<any> {
+    async createProducer(model: any): Promise<boolean> {
         try {
             this.producer = await this.producerTransport!.produce({
-                kind,
-                rtpParameters,
+                kind: model.kind,
+                rtpParameters: model.rtpParameters,
             });
 
             this.producer.on('transportclose', () => {
-                console.log('transport for this producer closed');
-                this.producer!.close();
+                this.producer?.close();
+                this.closeAllConsumer();
+                //model.allCancelStream();
             });
+            return true;
 
         } catch (error) {
-            console.error(error);
-            return { error };
+            console.log('createProducer' + error);
+            return false;
         }
     }
 
-    async createConsumer(userId: string, rtpCapabilities: RtpCapabilities): Promise<any> {
+    async createConsumer(userId: number, rtpCapabilities: RtpCapabilities): Promise<any> {
         try {
             if (this.router!.canConsume({
                 producerId: this.producer!.id,
@@ -162,7 +200,7 @@ class SFU {
                 });
 
                 consumer.on('transportclose', () => {
-                    console.log('transport close from consumer');
+                    //console.log('transport close from consumer');
                 });
 
                 consumer.on('producerclose', () => {
@@ -179,6 +217,7 @@ class SFU {
                 };
             }
         } catch (error) {
+            console.log('createConsumer' + error);
             return { error };
         }
     }

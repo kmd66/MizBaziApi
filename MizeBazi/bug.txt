@@ -26,3 +26,11 @@ dotnet ef database update --context FlwContexts
  چند نخی در nodjs
 
  دیتای موضوع نقاشی
+
+
+ InAppWebView(
+  initialSettings: InAppWebViewSettings(
+    mediaPlaybackRequiresUserGesture: false,
+    allowsInlineMediaPlayback: true,
+  ),
+)

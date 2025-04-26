@@ -1,10 +1,14 @@
 ﻿.asdw90 {
+    position: fixed;
+    top: 80px;
+    z-index: 100;
+    left: 0;
+    width: 200px;
     justify-content: space-around !important;
 }
 .asdw90 video {
     width: 50px;
     height: 50px;
-    background: aliceblue;
 }
 .fading-image {
     background-image: url('/img/2.png');

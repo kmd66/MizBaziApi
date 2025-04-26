@@ -44,7 +44,12 @@ export class RangOrazControll {
         const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
         const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
         if (connectionIds.length > 0)
-        SocketManager.sendToMultipleSockets('hubRangOraz', name, connectionIds, model)
+            SocketManager.sendToMultipleSockets('hubRangOraz', name, connectionIds, model)
+    }
+
+    public static sendToConnectionListId(ConnectionListId: any[],  name: string, model: any) {
+        if (ConnectionListId && ConnectionListId.length > 0)
+            SocketManager.sendToMultipleSockets('hubRangOraz', name, ConnectionListId!, model)
     }
 }
 

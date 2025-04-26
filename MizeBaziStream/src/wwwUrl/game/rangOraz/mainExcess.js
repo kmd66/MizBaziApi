@@ -22,6 +22,7 @@ main.listen = function () {
     globalModel.connection.on('imgsRieceive', main.imgsRieceive);
 }
 function startStreamReceive(model) {
+    vm.$refs.childmain.soundDivI = true;
     main.stream = model;
     if (model.activeUser == globalModel.user.index){
         vm.$refs.childmain.iconClass = iconClassDisabled;
@@ -45,6 +46,8 @@ function startStreamReceive(model) {
     }
 }
 function endStreamReceive(model) {
+    vm.$refs.childmain.soundDivI = false;
+    socketHandler.closelObj();
     vm.$refs.childmain.iconClass = iconClassDisabled;
     vm.$refs.childitemclick.isAddTarget = false;
     vm.$refs.childmain.cancelBtn = false;

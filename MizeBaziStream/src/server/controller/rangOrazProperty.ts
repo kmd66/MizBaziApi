@@ -78,12 +78,12 @@ export class RangOrazProperty {
 
     public bazporsiUsers: number[] = [];
     protected bazporsiWait: any = {
-        bazporsiReceive:4, //10
-        start: 2, //20
+        bazporsiReceive:10, //10
+        start: 20, //20
         end: 0,
-        raigiriStart: 3, //12
+        raigiriStart: 12, //12
         raigiriEnd: 0,
-        raigiriResponse: 2, //10
+        raigiriResponse: 10, //10
     }
 
     public nobatType: NobatType = NobatType.undefined;
@@ -129,14 +129,13 @@ export class RangOrazProperty {
         }
 
         //if (this.door == RangOrazDoor.d2) {this.wait = 200; return; }
-        this.wait = 2;return;
         switch (this.door) {
             case RangOrazDoor.d0:
-                this.wait = 2;//12
+                this.wait = 12;//12
                 return;
             case RangOrazDoor.d1:
             case RangOrazDoor.d2:
-                this.wait = 10; //20
+                this.wait = 20; //20
                 return;
             case RangOrazDoor.d3:
             case RangOrazDoor.d4:
