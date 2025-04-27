@@ -1,6 +1,6 @@
 ﻿import { rangOrazDb } from './rangOrazDb';
-import SocketManager from '../handler/socket';
-import { User } from '../model/interfaces';
+import SocketManager from '../../handler/socket';
+import { User } from '../../model/interfaces';
 import { RangOrazDoor } from './rangOrazProperty';
 import BaseRangOrazReceive from './rangOrazReceive';
 import { RangOrazControll } from './rangOrazExtensions';

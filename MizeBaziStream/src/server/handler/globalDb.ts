@@ -1,5 +1,8 @@
 ﻿import { GameType } from '../model/gameInterfaces';
-import { rangOrazDb } from '../controller/rangOrazDb';
+import { rangOrazDb } from '../controller/rangOraz/rangOrazDb';
+import { afsonDb } from '../controller/afsonVajeh/afsonDb';
+import { khandeDb } from '../controller/nabardKhande/khandeDb';
+import { mafiaDb } from '../controller/mafia/mafiaDb';
 
 export class GlobalsDb {
     public port: string;
@@ -22,6 +25,12 @@ export class GlobalsDb {
     public getDb(type: GameType): any {
         if (type == GameType.rangOraz)
             return rangOrazDb();
+        if (type == GameType.afsonVajeh)
+            return afsonDb();
+        if (type == GameType.mafia)
+            return mafiaDb();
+        if (type == GameType.nabardKhande)
+            return khandeDb();
 
         return null;
     }

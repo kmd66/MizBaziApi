@@ -1,7 +1,7 @@
 ﻿import { rangOrazDb } from './rangOrazDb';
-import { userInDb } from './userInDb';
-import SocketManager from '../handler/socket';
-import { User } from '../model/interfaces';
+import { userInDb } from '../userInDb';
+import SocketManager from '../../handler/socket';
+import { User } from '../../model/interfaces';
 import RangOrazHandler from './rangOrazHandler';
 
 export class RangOrazControll {

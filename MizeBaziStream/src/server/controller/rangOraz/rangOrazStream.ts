@@ -1,9 +1,9 @@
-﻿import { SteamType, userInGameStatusType } from '../model/gameInterfaces';
+﻿import { SteamType, userInGameStatusType } from '../../model/gameInterfaces';
 import { rangOrazDb } from './rangOrazDb';
-import SFU from '../handler/sfu';
-import { User } from '../model/interfaces';
-import SocketManager from '../handler/socket';
-import { RangOrazProperty, NobatType, receiveType, winnerType, RangOrazDoor } from './rangOrazProperty';
+import SFU from '../../handler/sfu';
+import { User } from '../../model/interfaces';
+import SocketManager from '../../handler/socket';
+import { RangOrazProperty } from './rangOrazProperty';
 import { RangOrazControll } from './rangOrazExtensions';
 
 export default class BaseRangOrazStream extends RangOrazProperty {

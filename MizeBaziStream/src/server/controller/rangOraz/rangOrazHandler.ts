@@ -1,5 +1,5 @@
 ﻿import { rangOrazDb } from './rangOrazDb';
-import { User } from '../model/interfaces';
+import { User } from '../../model/interfaces';
 import { NobatType, receiveType, winnerType, RangOrazDoor } from './rangOrazProperty';
 import BaseRangOrazSet from './rangOrazSet';
 import { RangOrazControll } from './rangOrazExtensions';

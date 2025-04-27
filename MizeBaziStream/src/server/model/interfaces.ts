@@ -64,5 +64,11 @@ export interface RoomUsers {
     createdAt?: Date; // تاریخ و زمان ایجاد رکورد
 
 }
-export interface RoomRangOraz extends RoomUsers{
+export interface RoomRangOraz extends RoomUsers {
+}
+export interface RoomAfson extends RoomUsers {
+}
+export interface RoomKhande extends RoomUsers {
+}
+export interface RoomMafia extends RoomUsers {
 }

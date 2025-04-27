@@ -1,5 +1,5 @@
 ﻿import { Server, Namespace, Socket } from 'socket.io';
-import { RangOrazMethod } from '../controller/rangOrazMethod';
+import { RangOrazMethod } from '../controller/rangOraz/rangOrazMethod';
 
 type SocketHandler = (socket: Socket) => void;
 type CustomSocketHandler = (...args: any[]) => void;

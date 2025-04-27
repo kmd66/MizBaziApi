@@ -1,33 +1,33 @@
 ﻿import { v4 as uuidv4 } from 'uuid';
-import { RoomRangOraz } from '../model/interfaces';
-import { GameType } from '../model/gameInterfaces';
-import { globalDb } from '../handler/globalDb';
-import { rangOrazStart, rangOrazStartAll } from './rangOrazExtensions';
+import { RoomKhande } from '../../model/interfaces';
+import { GameType } from '../../model/gameInterfaces';
+import { globalDb } from '../../handler/globalDb';
+import { khandeStart, khandeStartAll } from './extensions';
 import Loki from 'lokijs';
 
-class RangOrazDb {
-    private static _instance: RangOrazDb
+class KhandeDb {
+    private static _instance: KhandeDb
     public db: Loki;
-    public rooms: Loki.Collection<RoomRangOraz>;
+    public rooms: Loki.Collection<RoomKhande>;
 
     private constructor() {
         let port = globalDb().port;
         //اصلاح
         // حذف ذخیره خودکار 
-        this.db = new Loki(`RangOrazDb${port}.db`, {
+        this.db = new Loki(`KhandeDb${port}.db`, {
             autoload: true,
             autoloadCallback: this.initializeDatabase.bind(this),
             autosave: true,
             autosaveInterval: 1000
         });
-        this.rooms = this.db.addCollection<RoomRangOraz>('rooms', {});
+        this.rooms = this.db.addCollection<RoomKhande>('rooms', {});
     }
 
     private initializeDatabase(): void {
         this.rooms.clear();
         var c = this.db.getCollection('rooms');
         if (c) {
-            this.rooms = this.db.addCollection<RoomRangOraz>('rooms', {});
+            this.rooms = this.db.addCollection<RoomKhande>('rooms', {});
         }
         else {
             this.rooms = c;
@@ -35,30 +35,30 @@ class RangOrazDb {
 
         const ids = this.rooms.find().map(doc => doc.id);
         //اصلاح . حذف 
-        globalDb().addAll(ids, GameType.rangOraz);
-        rangOrazStartAll(ids);
+        globalDb().addAll(ids, GameType.nabardKhande);
+        khandeStartAll(ids);
     }
 
-    public static Instance(): RangOrazDb {
-        if (!RangOrazDb._instance) {
-            RangOrazDb._instance = new RangOrazDb();
+    public static Instance(): KhandeDb {
+        if (!KhandeDb._instance) {
+            KhandeDb._instance = new KhandeDb();
         }
-        return RangOrazDb._instance
+        return KhandeDb._instance
     }
 
-    public add(room: Omit<RoomRangOraz, 'id' | 'createdAt'>): RoomRangOraz {
+    public add(room: Omit<RoomKhande, 'id' | 'createdAt'>): RoomKhande {
         const newRoom = {
             ...room,
             id: uuidv4(),
             createdAt: new Date(),
         };
-        globalDb().add(newRoom.id, GameType.rangOraz);
+        globalDb().add(newRoom.id, GameType.nabardKhande);
         this.rooms.insert(newRoom);
-        rangOrazStart(newRoom.id);
+        khandeStart(newRoom.id);
         return newRoom
     }
 
-    public get(id: string): RoomRangOraz | null {
+    public get(id: string): RoomKhande | null {
         return this.rooms.findOne({ id });
     }
 
@@ -66,7 +66,7 @@ class RangOrazDb {
         return this.rooms.count();
     }
 
-    public update(id: string, updatedRoom: RoomRangOraz): boolean {
+    public update(id: string, updatedRoom: RoomKhande): boolean {
         const room = this.rooms.findOne({ id });
         if (!room) return false;
 
@@ -91,4 +91,4 @@ class RangOrazDb {
     }
 }
 
-export const rangOrazDb = RangOrazDb.Instance;
+export const khandeDb = KhandeDb.Instance;
