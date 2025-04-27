@@ -7,6 +7,9 @@ import RangOrazHandler from './rangOrazHandler';
 export class RangOrazControll {
 
     public static getRangOrazHandler(roomId: string): RangOrazHandler | undefined {
+        if (!RangOrazTimer.instance) {
+            RangOrazTimer.instance = new RangOrazTimer();
+        }
         return RangOrazTimer.instance.controllers.get(roomId);
     }
 
