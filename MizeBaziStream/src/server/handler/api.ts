@@ -71,6 +71,25 @@ class PageRoot {
         res.send(renderedHtml);
     }
 
+    public async afsonVajeh(req: Request, res: Response) {
+        const indexFile = path.join(__dirname, '../../public/afsonVajeh/index.html');
+        const indexTemp = fs.readFileSync(indexFile, 'utf8');
+        const bodyFile = path.join(__dirname, '../../public/afsonVajeh/body.html');
+        const bodyTemp = fs.readFileSync(bodyFile, 'utf8');
+
+        const mainFile = path.join(__dirname, '../../public/afsonVajeh/main.html');
+        const mainTemp = fs.readFileSync(mainFile, 'utf8');
+
+        const renderedHtml = ejs.render(indexTemp, {
+            fileBaseUsrl: this._fileBaseUrl,
+            body: bodyTemp,
+            title: 'افسون واژه',
+
+            main: mainTemp
+        });
+        res.send(renderedHtml);
+    }
+
     public async mafia(req: Request, res: Response) {
         const filePathindex = path.join(__dirname, '../../public/mafia/index.html');
         const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
@@ -82,21 +101,6 @@ class PageRoot {
             fileBaseUsrl: this._fileBaseUrl,
             body: bodyPartial,
             title: 'مافیا',
-        });
-        res.send(renderedHtml);
-    }
-
-    public async afsonVajeh(req: Request, res: Response) {
-        const filePathindex = path.join(__dirname, '../../public/afsonVajeh/index.html');
-        const mainTemplate = fs.readFileSync(filePathindex, 'utf8');
-
-        const filePathBody = path.join(__dirname, '../../public/afsonVajeh/body.html');
-        const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
-
-        const renderedHtml = ejs.render(mainTemplate, {
-            fileBaseUsrl: this._fileBaseUrl,
-            body: bodyPartial,
-            title: 'افسون واژه',
         });
         res.send(renderedHtml);
     }

@@ -1,21 +1,20 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><%= title %> - MizeBaziApi</title>
     <script src="<%= fileBaseUsrl %>/lib/jalaali.min.js"></script>
-    <link rel="stylesheet" href="<%= fileBaseUsrl %>/css/site.css" />
-
-    <link rel="stylesheet" href="<%= fileBaseUsrl %>/game/nabardKhande/index.css" />
+    <script src="<%= fileBaseUsrl %>/lib/sData.js"></script>
+    <script src="<%= fileBaseUsrl %>/game/game.js" cache="inPage"></script>
+    <link rel="stylesheet" href="<%= fileBaseUsrl %>/css/font.css" cache="inPage" />
+    <link rel="stylesheet" href="<%= fileBaseUsrl %>/css/site.css" cache="inPage" />
+    <link rel="stylesheet" href="<%= fileBaseUsrl %>/game/game.css" cache="inPage" />
+    <link rel="stylesheet" href="<%= fileBaseUsrl %>/game/nabardKhande/index.css" cache="inPage" />
 </head>
 <body>
-    <div class="fading-image"></div>
     <%- body %>
-    <div id="errorBox"></div>
-    <script src="<%= fileBaseUsrl %>/lib/vue.min.js"></script>
-    <script src="<%= fileBaseUsrl %>/lib/jquery.min.js"></script>
-    <script src="<%= fileBaseUsrl %>/js/site.js"></script>
-
-    <script src="<%= fileBaseUsrl %>/game/nabardKhande/index.js"></script>
+    <script src="<%= fileBaseUsrl %>/lib/vue.prod.min.js"></script>
+    <script src="<%= fileBaseUsrl %>/game/nabardKhande.min.js"></script>
 </body>
 </html>

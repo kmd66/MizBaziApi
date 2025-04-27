@@ -1,5 +1,8 @@
 ﻿import { Server, Namespace, Socket } from 'socket.io';
 import { RangOrazMethod } from '../controller/rangOraz/rangOrazMethod';
+import { AfsonMethod } from '../controller/afsonVajeh/method';
+import { KandeMethod } from '../controller/nabardKhande/method';
+import { MafiaMethod } from '../controller/mafia/method';
 
 type SocketHandler = (socket: Socket) => void;
 type CustomSocketHandler = (...args: any[]) => void;
@@ -36,6 +39,18 @@ class SocketManager {
         if (!this.namespaces.has('hubRangOraz')) {
             this.handlers.set('hubRangOraz', RangOrazMethod());
             this.setupNamespace(this.getNamespace('hubRangOraz'));
+        }
+        if (!this.namespaces.has('hubAfsonVajeh')) {
+            this.handlers.set('hubAfsonVajeh', AfsonMethod());
+            this.setupNamespace(this.getNamespace('hubAfsonVajeh'));
+        }
+        if (!this.namespaces.has('hubMafia')) {
+            this.handlers.set('hubMafia', MafiaMethod());
+            this.setupNamespace(this.getNamespace('hubMafia'));
+        }
+        if (!this.namespaces.has('hubNabardKhande')) {
+            this.handlers.set('hubNabardKhande', KandeMethod());
+            this.setupNamespace(this.getNamespace('hubNabardKhande'));
         }
     }
 

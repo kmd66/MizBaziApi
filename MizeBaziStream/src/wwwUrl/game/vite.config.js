@@ -4,9 +4,9 @@
         emptyOutDir: false,
         rollupOptions: {
             treeshake: false,
-            input: './rangOraz/index.js',
+            input: './afsonVajeh/index.js',
             output: {
-                entryFileNames: 'rangOraz.min.js',
+                entryFileNames: 'afsonVajeh.min.js',
                 format: 'es'
             }
         }
