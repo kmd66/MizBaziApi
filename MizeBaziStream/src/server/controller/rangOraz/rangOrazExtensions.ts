@@ -3,6 +3,7 @@ import { userInDb } from '../userInDb';
 import SocketManager from '../../handler/socket';
 import { User } from '../../model/interfaces';
 import RangOrazHandler from './rangOrazHandler';
+import { GameControll } from '../globalMethod';
 
 export class RangOrazControll {
 
@@ -25,29 +26,12 @@ export class RangOrazControll {
         }));
     }
 
-    public static userStatus(model?: any[]): any {
-        if (!model)
-            return model;
-        return model.map(({ id, userInGameStatus }) => ({
-            id, userInGameStatus,
-        }));
-    }
-
     public static statusReceive(roomId: string): boolean {
-        const _userInDb = userInDb();
-        const users = _userInDb.getAll(roomId);
-        if (users) {
-            RangOrazControll.sendToMultipleSockets(roomId, 'userStatusReceive', RangOrazControll.userStatus(users));
-            return true;
-        }
-        return false;
+        return GameControll.statusReceive('hubRangOraz', roomId);
     }
 
     public static sendToMultipleSockets(roomId: string, name: string, model: any) {
-        const userConnectionId: User[] | undefined = userInDb().getUselFaal(roomId);
-        const connectionIds = userConnectionId?.map(user => user.connectionId) || [];
-        if (connectionIds.length > 0)
-            SocketManager.sendToMultipleSockets('hubRangOraz', name, connectionIds, model)
+        return GameControll.sendToMultipleSockets('hubRangOraz', roomId, name, model);
     }
 
     public static sendToConnectionListId(ConnectionListId: any[],  name: string, model: any) {

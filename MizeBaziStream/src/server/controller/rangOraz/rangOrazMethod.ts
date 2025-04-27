@@ -1,5 +1,6 @@
 ﻿import { Socket } from 'socket.io';
 import { userInDb } from '../userInDb';
+import { GameControll } from '../globalMethod';
 import SocketManager from '../../handler/socket';
 import { userInGameStatusType } from '../../model/gameInterfaces';
 import { User } from '../../model/interfaces';
@@ -67,8 +68,8 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
 
     const model = {
         room: modelRoom,
-        users: RangOrazControll.SafeUsers(userType, handler!.isShowOstad, users),
-        status: RangOrazControll.userStatus(users)
+        users: GameControll.SafeUsers(userType, handler!.isShowOstad, users),
+        status: GameControll.userStatus(users)
     }
 
     SocketManager.sendToSocket(
