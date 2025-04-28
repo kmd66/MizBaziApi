@@ -3,9 +3,7 @@ import { userInDb } from '../userInDb';
 import { GameControll } from '../globalMethod';
 import SocketManager from '../../handler/socket';
 import { userInGameStatusType } from '../../model/gameInterfaces';
-import { User } from '../../model/interfaces';
 import { RangOrazControll } from './rangOrazExtensions';
-import { rangOrazDb } from './rangOrazDb';
 
 function connectionReceive(roomId: string, userKey: string, connectionId: string): void {
     var _userInDb = userInDb();
@@ -30,23 +28,9 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
 
     SocketManager.disconnectSocket('hubRangOraz', connectionId, 'home');
 }
-function disconnect(roomId: string, connectionId: string): boolean {
-    var _userInDb = userInDb();
-    const user = _userInDb.getByConnectionId(roomId, connectionId);
-    if (user) {
-        if (user.userInGameStatus == 2)
-            return true;
-
-        user.userInGameStatus = userInGameStatusType.ofline;
-        _userInDb.update(roomId, user);
-        RangOrazControll.statusReceive(roomId);
-        return true;
-    }
-    return false;
-}
 function infoRoomReceive(roomId: string, userType: number, connectionId: string): boolean {
 
-    const handler = RangOrazControll.getRangOrazHandler(roomId);
+    const handler = RangOrazControll.getHandler(roomId);
     if (!handler)
         return false;
     const modelRoom = {
@@ -68,7 +52,7 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
 
     const model = {
         room: modelRoom,
-        users: GameControll.SafeUsers(userType, handler!.isShowOstad, users),
+        users: RangOrazControll.SafeUsers(userType, handler!.isShowOstad, users),
         status: GameControll.userStatus(users)
     }
 
@@ -78,35 +62,15 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
     );
     return true;
 }
-function setMessage(model: any) {
-    if (!model.message || model.message == '') return;
-    const room = rangOrazDb().get(model.roomId);
-    if (!room) return;
-    const user = room?.users.find((x: User) => x.key == model.userKey);
-    if (!user) return;
-    var users = room?.users.filter((user: User) => user.userInGameStatus != userInGameStatusType.ofline && user.userInGameStatus != userInGameStatusType.ekhraj);
-    if (!users) return;
-
-    if (model.message.length > 50)
-        model.message = model.message.slice(0, 50)
-
-    const message = {
-        msg: model.message,
-        userId: user.id
-    };
-    const connectionIds = users?.map(user => user.connectionId) || [];
-    SocketManager.sendToMultipleSockets('hubRangOraz', 'getMessage', connectionIds, message)
-}
-
 export function RangOrazMethod() {
     const wrapHandler = (method: string) => (model: any) => {
-        const handler = RangOrazControll.getRangOrazHandler(model.roomId);
+        const handler = RangOrazControll.getHandler(model.roomId);
         if (handler && typeof (handler as any)[method] === 'function') {
             (handler as any)[method](model);
         }
     };
     const wrapHandlerWithCallback = (method: string) => (model: any, callback: Function) => {
-        const handler = RangOrazControll.getRangOrazHandler(model.roomId);
+        const handler = RangOrazControll.getHandler(model.roomId);
         if (handler && typeof (handler as any)[method] === 'function') {
             (handler as any)[method](model, callback);
         }
@@ -119,7 +83,7 @@ export function RangOrazMethod() {
                     socketId: socket.id
                 });
                 connectionReceive(socket.handshake.auth.roomId, socket.handshake.auth.userKey, socket.id);
-                const handler = RangOrazControll.getRangOrazHandler(socket.handshake.auth.roomId);
+                const handler = RangOrazControll.getHandler(socket.handshake.auth.roomId);
                 if (handler)
                     handler.closeConsumer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
             },
@@ -127,7 +91,7 @@ export function RangOrazMethod() {
 
         handler: {
             'disconnect': (socket: Socket) => {
-                disconnect(socket.handshake.auth.roomId, socket.id)
+                GameControll.disconnect('hubRangOraz', socket.handshake.auth.roomId, socket.id)
             },
         },
 
@@ -145,7 +109,7 @@ export function RangOrazMethod() {
             setMozoeNaghashi: wrapHandler('setMozoeNaghashi'),
 
             setMessage: (model: any) => {
-                setMessage(model);
+                GameControll.setMessage('hubRangOraz', model);
             },
         },
 

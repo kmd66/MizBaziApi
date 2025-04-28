@@ -1,12 +1,12 @@
 ﻿import { SteamType, userInGameStatusType } from '../../model/gameInterfaces';
-import { rangOrazDb } from './rangOrazDb';
+import { afsonDb } from './afsonDb';
 import SFU from '../../handler/sfu';
 import { User } from '../../model/interfaces';
 import SocketManager from '../../handler/socket';
-import { RangOrazProperty } from './rangOrazProperty';
-import { RangOrazControll, rangInstance } from './rangOrazExtensions';
+import { Property } from './property';
+import { AfsonControll } from './extensions';
 
-export default class BaseRangOrazStream extends RangOrazProperty {
+export default class Stream extends Property {
     constructor(roomId: string) {
         super(roomId);
         this.sfu.addRouter();
@@ -15,7 +15,7 @@ export default class BaseRangOrazStream extends RangOrazProperty {
     public sfu = new SFU(SteamType.audio);
 
     protected getUser(model: any): User | undefined {
-        const room = rangOrazDb().get(model.roomId);
+        const room = afsonDb().get(model.roomId);
         return room?.users.find((x: User) => x.key === model.userKey);
     }
 
@@ -59,8 +59,6 @@ export default class BaseRangOrazStream extends RangOrazProperty {
             kind: model.kind,
             rtpParameters: model.rtpParameters
         }
-        //userId: user.id,
-        //allCancelStream: this.allCancelStream
         const b = await this.sfu.createProducer(createProducerModel);
         if (b) {
             this.startConsumerStream(user.id);
@@ -95,7 +93,7 @@ export default class BaseRangOrazStream extends RangOrazProperty {
 
 
     protected async startProduceStream() {
-        const room = rangOrazDb().get(this.roomId);
+        const room = afsonDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.index == this.activeUser);
         if (!user) return;
 
@@ -103,7 +101,7 @@ export default class BaseRangOrazStream extends RangOrazProperty {
     }
 
     protected async startProduceStreamById(id: number) {
-        const room = rangOrazDb().get(this.roomId);
+        const room = afsonDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.id == id);
         if (!user) return;
 
@@ -111,7 +109,7 @@ export default class BaseRangOrazStream extends RangOrazProperty {
     }
 
     protected async startConsumerStream(userId: number) {
-        const room = rangOrazDb().get(this.roomId);
+        const room = afsonDb().get(this.roomId);
         if (!room || !room?.users) return;
 
         const users = room.users.filter((user: User) =>
@@ -122,21 +120,20 @@ export default class BaseRangOrazStream extends RangOrazProperty {
 
         const connectionIds = users?.map(user => user.connectionId);
 
-        RangOrazControll.sendToConnectionListId(connectionIds, 'startConsumerStream', true);
+        AfsonControll.sendToConnectionListId(connectionIds, 'startConsumerStream', true);
     }
 
     protected async allCancelStream() {
-        RangOrazControll.sendToMultipleSockets(this.roomId, 'canselStream', true);
+        AfsonControll.sendToMultipleSockets(this.roomId, 'canselStream', true);
     }
 
 
     public setFinish() {
         this.finish = true;
-        this.naghashi.clear();
         this.raieGiriCount.clear();
         this.sfu.clear();
-        clearTimeout(this.timeoutId);
-        rangOrazDb().delete(this.roomId);
-        rangInstance.stop(this.roomId);
+        //clearTimeout(this.timeoutId);
+        //rangOrazDb().delete(this.roomId);
+        //RangOrazTimer.instance.stop(this.roomId);
     }
 }

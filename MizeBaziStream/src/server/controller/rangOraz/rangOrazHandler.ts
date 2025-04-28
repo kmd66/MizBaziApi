@@ -1,6 +1,7 @@
 ﻿import { rangOrazDb } from './rangOrazDb';
 import { User } from '../../model/interfaces';
-import { NobatType, receiveType, winnerType, RangOrazDoor } from './rangOrazProperty';
+import { NobatType, RangOrazDoor } from './rangOrazProperty';
+import { winnerType, receiveType } from '../../model/gameInterfaces';
 import BaseRangOrazSet from './rangOrazSet';
 import { RangOrazControll } from './rangOrazExtensions';
 export default class RangOrazHandler extends BaseRangOrazSet {
@@ -370,7 +371,7 @@ export default class RangOrazHandler extends BaseRangOrazSet {
         await this.delay(90000);
 
         RangOrazControll.sendToMultipleSockets(this.roomId, 'endGameReceive', true);
-        await this.delay(500);
+        await this.delay(1000);
 
         this.setFinish();
     }

@@ -1,7 +1,7 @@
 ﻿import { rangOrazDb } from './rangOrazDb';
 import SocketManager from '../../handler/socket';
 import { User } from '../../model/interfaces';
-import { receiveType } from './rangOrazProperty';
+import { receiveType } from '../../model/gameInterfaces';
 import BaseRangOrazStream from './rangOrazStream';
 import { RangOrazControll } from './rangOrazExtensions';
 

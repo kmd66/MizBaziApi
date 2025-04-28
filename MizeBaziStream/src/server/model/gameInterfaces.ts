@@ -1,4 +1,17 @@
-﻿export enum GameType {
+﻿
+export enum receiveType {
+    undefined = 0,
+    start = 1,
+    end = 2,
+    wait = 10,
+    response = 20,
+}
+export enum winnerType {
+    undefined = 0,
+    sefid = 1,
+    siah = 2,
+}
+export enum GameType {
     nabardKhande = 25,
     rangOraz = 45,
     afsonVajeh = 68,

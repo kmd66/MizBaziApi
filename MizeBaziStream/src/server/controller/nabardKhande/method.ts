@@ -1,4 +1,5 @@
 ﻿import { Socket } from 'socket.io';
+import { GameControll } from '../globalMethod';
 
 export function KandeMethod() {
     const wrapHandler = (method: string) => (model: any) => {
@@ -21,6 +22,9 @@ export function KandeMethod() {
         },
 
         customHandler: {
+            setMessage: (model: any) => {
+                GameControll.setMessage('hubRangOraz', model);
+            },
         },
 
         streamHandler: {

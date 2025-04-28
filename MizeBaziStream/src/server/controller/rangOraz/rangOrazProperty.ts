@@ -1,4 +1,6 @@
-﻿export enum RangOrazDoor {
+﻿
+import { winnerType } from '../../model/gameInterfaces';
+export enum RangOrazDoor {
     d0 = 'در انتظار شروع',
     d1 = 'معارفه',
     d2 = 'تعیین موضوع',
@@ -21,19 +23,6 @@ export enum NobatType {
 
     hadseNaghsh = 15, //'حدس نقش',
 }
-export enum receiveType {
-    undefined = 0,
-    start = 1,
-    end = 2,
-    wait = 10,
-    response = 20,
-}
-export enum winnerType {
-    undefined = 0,
-    sefid = 1,
-    siah = 2,
-}
-
 export class RangOrazProperty {
     constructor(roomId: string) {
         this.roomId = roomId;

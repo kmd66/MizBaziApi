@@ -7,7 +7,7 @@ import { GameControll } from '../globalMethod';
 
 export class RangOrazControll {
 
-    public static getRangOrazHandler(roomId: string): RangOrazHandler | undefined {
+    public static getHandler(roomId: string): RangOrazHandler | undefined {
         if (!RangOrazTimer.instance) {
             RangOrazTimer.instance = new RangOrazTimer();
         }
@@ -44,8 +44,6 @@ class RangOrazTimer {
     public static instance: RangOrazTimer;
     public timers: Map<string, NodeJS.Timeout> = new Map();
     public controllers: Map<string, RangOrazHandler> = new Map();
-    private disconnectTime: number = 14000;
-    private disconnectAge: number = 20;
     private isDisconnectByRoomId: string = 'false';
 
     public static Start(roomId: string) {
@@ -94,7 +92,7 @@ class RangOrazTimer {
 
         const intervalId = setInterval(() => {
             this.disconnectHandler(roomId);
-        }, this.disconnectTime);
+        }, GameControll.disconnectTime);
 
         this.timers.set(name, intervalId);
     }
@@ -108,7 +106,7 @@ class RangOrazTimer {
         const users = room?.users.filter(user => user.userInGameStatus == 10) || [];
         users.map((x) => {
             x.oflineSecond++;
-            if (x.oflineSecond >= this.disconnectAge) {
+            if (x.oflineSecond >= GameControll.disconnectAge) {
                 x.userInGameStatus = 11;
                 this.isDisconnectByRoomId = roomId;
             }
@@ -158,5 +156,6 @@ class RangOrazTimer {
 
 }
 
+export const rangInstance = RangOrazTimer.instance;
 export const rangOrazStart = RangOrazTimer.Start;
 export const rangOrazStartAll = RangOrazTimer.StartAll;

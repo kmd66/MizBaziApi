@@ -125,6 +125,48 @@ class SocketManager {
             });
         }
     }
+    public async sendToMultipleSockets2(namespaceName: string, eventName: string, connectionIds: string[], message: any,
+        options?: { safeMode?: boolean; batchSize?: number }): Promise<void> {
+        //SocketManager.sendToMultipleSockets('myNamespace', 'newMessage', ['id1', 'id2', 'id3'], { text: 'hello' }, { safeMode: true, batchSize: 50 });
+        if (!eventName || !connectionIds || connectionIds.length === 0) return;
+
+        const namespace = this.getNamespace(namespaceName);
+        const safeMode = options?.safeMode ?? false;
+        const batchSize = options?.batchSize ?? 100; // پیشفرض ۱۰۰تا ۱۰۰تا در حالت safe
+
+        if (!safeMode) {
+            // حالت عادی، سریع، بدون صف بندی
+            connectionIds.forEach(connectionId => {
+                if (!connectionId) return;
+                const socket = namespace.sockets.get(connectionId);
+                if (socket && socket.connected) {
+                    socket.emit(eventName, message);
+                }
+            });
+        } else {
+            // حالت ایمن، با صف بندی و کنترل شده
+            for (let i = 0; i < connectionIds.length; i += batchSize) {
+                const batch = connectionIds.slice(i, i + batchSize);
+
+                await Promise.all(batch.map(async (connectionId) => {
+                    if (!connectionId) return;
+                    const socket = namespace.sockets.get(connectionId);
+                    if (socket && socket.connected) {
+                        return new Promise<void>((resolve) => {
+                            socket.emit(eventName, message, () => {
+                                resolve();
+                            });
+                        });
+                    }
+                }));
+                
+                await this.sleep(10);
+            }
+        }
+    }
+    private sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
 }
 export default SocketManager.Instance();
