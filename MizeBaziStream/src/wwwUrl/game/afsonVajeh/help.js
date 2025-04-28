@@ -17,6 +17,7 @@ const RANGORAZ_COMMENT2 = `<p>نقش استاد برای بازپرس مشخص �
 
 const RANGORAZ_COMMENT3 = `<p>نقاش موضوع اعلامی از طرف استاد را طراحی میکند</p>
 <p>در صورت خروج نقاش از بازی بوسیله رای‌گیری, در صورت حدس درست نقش جاسوس تیم نقاش‌ها برنده بازی هستند</p>`;
+
 const RANGORAZ_COMMENT4 = `
 <p>موضوع نقاشی تنها در دور دفاع از طرح برای جاسوس مشخص میشود.</p>
 <p>در صورت خروج جاسوس از بازی بوسله رای‌گیری, در صورت حدس درست نقش استاد , جاسوس برنده بازی خواهد بود</p>`;
@@ -27,31 +28,29 @@ const HELP_RANGORAZ_COMMENT = [
         "type": '0',
         "title": 'راهنما',
         "icon": 'icon-information4',
+        color: '#7499ac',
         "comment": RANGORAZ_COMMENT0
     },
     {
         "type": '1',
-        "title": 'بازپرس',
-        "icon": 'icon-policeHat',
+        "title": 'گروه آبی',
+        "icon": 'icon-group',
+        color: '#30ccff',
         "comment": RANGORAZ_COMMENT1
     },
     {
-        "type": '2',
-        "title": 'استاد',
-        "icon": 'icon-mortarboardHat',
+        "type": '11',
+        "title": 'گروه قرمز',
+        "icon": 'icon-group',
+        color: '#f35a9f',
         "comment": RANGORAZ_COMMENT2
     },
     {
-        "type": '22',
-        "title": 'نقاش',
-        "icon": 'icon-artistHat',
+        "type": '21',
+        "title": 'بی‌طرف‌ها',
+        "icon": 'icon-users',
+        color: '#82f35a',
         "comment": RANGORAZ_COMMENT3
-    },
-    {
-        "type": '11',
-        "title": 'جاسوس',
-        "icon": 'icon-spy',
-        "comment": RANGORAZ_COMMENT4
     }
 ]
 
@@ -78,15 +77,32 @@ function showCard() {
     }, 2000)
 }
 help.find = function (type) {
-    return vm.$refs.childhelp.helpComment.find(h => h.type == (type == 21 ? 22 : type));
+    let t = 21;
+    if (type < 20)
+        t = 11
+    if (type < 10)
+        t = 1;
+    return HELP_RANGORAZ_COMMENT.find(h => h.type == t);
 }
 help.usersReceive = function (type) {
     const helpItem = help.find(type);
     vm.$refs.childhelp.selectItem = helpItem;
     vm.$refs.childhelp.selectType = helpItem.type;
-    showCard()
-    return helpItem.icon;
+    const naghsh = {
+        icon: helpItem.icon,
+        color: helpItem.color
+    }
 
+    if (type < 10)
+        naghsh.title = type == 1 ? 'سر گروه آبی' : 'عضو گروه آبی';
+    else if (type < 20)
+        naghsh.title = type == 11 ? 'سر گروه قرمز' : 'عضو گروه قرمز';
+    else
+        naghsh.title = 'بی‌طرف';
+
+    vm.$refs.childhelp.myItem = naghsh;
+    showCard()
+    return naghsh;
 }
 
 help.Component = function (app) {
@@ -95,6 +111,7 @@ help.Component = function (app) {
         data() {
             return {
                 helpComment: HELP_RANGORAZ_COMMENT,
+                myItem: {},
                 selectItem: {},
                 selectType: 0,
                 isShowCard: false,

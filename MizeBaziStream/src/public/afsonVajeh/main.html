@@ -1,3 +1,77 @@
 <template id="main-template">
-    <div>dd</div>
+    <div class="mainTemplate">
+        <div class="mainTop d-flex">
+            <div class="mainTopPeriod">{{door}}</div>
+            <div class="mainTopTitle" @click="appModel.state = 'help'">
+                <div style="text-align: center;" ><i :style="{ color: naghsh?.color }" :class="naghsh?.icon"></i></div>
+                <div :style="{ color: naghsh?.color }">{{naghsh?.title}}</div>
+            </div>
+            <div class="mainTopTime">{{mainTopTime}}</div>
+        </div>
+
+        <div class="progressbar aw213sdaf">
+            <div :style="{ width: progressbarWidth }"></div>
+        </div>
+
+        <div class="main">
+            <div class="mainItem d-flex">
+                <div class="mainRight">
+                    <div v-for="user in users.slice(0, 4)" class="itemMain">
+                        <div class="rtl">
+                            <div class="sitNumber">{{ user.row }}</div>
+                        </div>
+                        <div :class="'itemMain' + user.row" @click="itemMainClick(user.row)">
+                            <div class="itemImg">
+                                <img :src="user.info.Img + '90.jpg'" />
+                                <div :class="itemStatus(user)"></div>
+                            </div>
+                            <div class="itemName">{{ user.info.FirstName }}</div>
+                            <div class="userName">{{ user.info.UserName }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mainLeft">
+                    <div v-for="user in users.slice(4)" class="itemMain">
+                        <div class="ltr">
+                            <div class="sitNumber">{{ user.row }}</div>
+                        </div>
+                        <div :class="'itemMain' + user.row" @click="itemMainClick(user.row)">
+                            <div class="itemImg">
+                                <img :src="user.info.Img + '90.jpg'" />
+                                <div :class="itemStatus(user)"></div>
+                            </div>
+                            <div class="itemName">{{ user.info.FirstName }}</div>
+                            <div class="userName">{{ user.info.UserName }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mainBottom">
+            <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
+                <i class="icon-chevron-square-right"></i>
+                <span style="margin-right: 12px;">بعدی</span>
+            </div>
+            <div v-if="!cancelBtn" class="d-flex">
+                <div>
+                    <i :class="iconClass.like" onclick="sticker.handleUpdate('l1')"></i>
+                    <i :class="iconClass.dislike" onclick="sticker.handleUpdate('l2')" style="margin-right: 12px;"></i>
+                </div>
+                <i :class="iconClass.sticker" onclick="sticker.toggleTab()"></i>
+                <i :class="iconClass.chalesh" @click="addChalesh()"></i>
+            </div>
+        </div>
+    </div>
+
+    <sticker-component></sticker-component>
+    <div v-if="mozoeNaghashiList != null" class="listMain re">
+        <div v-for="m in mozoeNaghashiList" class="ra">
+            <div @click="setMozoeNaghashi(m)">
+                {{m}}
+            </div>
+        </div>
+    </div>
+
 </template>

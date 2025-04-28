@@ -133,7 +133,7 @@ export default class Stream extends Property {
         this.raieGiriCount.clear();
         this.sfu.clear();
         //clearTimeout(this.timeoutId);
-        //rangOrazDb().delete(this.roomId);
-        //RangOrazTimer.instance.stop(this.roomId);
+        //afsonDb().delete(this.roomId);
+        //afsinTimer.instance.stop(this.roomId);
     }
 }

@@ -34,6 +34,7 @@ const app = Vue.createApp({
     }
 })
 main.Component(app);
+help.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

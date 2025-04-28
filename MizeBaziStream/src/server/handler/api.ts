@@ -79,13 +79,16 @@ class PageRoot {
 
         const mainFile = path.join(__dirname, '../../public/afsonVajeh/main.html');
         const mainTemp = fs.readFileSync(mainFile, 'utf8');
+        const helpFile = path.join(__dirname, '../../public/afsonVajeh/help.html');
+        const helpTemp = fs.readFileSync(helpFile, 'utf8');
 
         const renderedHtml = ejs.render(indexTemp, {
             fileBaseUsrl: this._fileBaseUrl,
             body: bodyTemp,
             title: 'افسون واژه',
 
-            main: mainTemp
+            main: mainTemp,
+            help: helpTemp
         });
         res.send(renderedHtml);
     }

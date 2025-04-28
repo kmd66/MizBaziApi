@@ -38,39 +38,6 @@
     justify-content: center;
     text-align: center;
 }
-.itemMain {
-    width: 80px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.6rem;
-    z-index: 1001;
-    height: 20%;
-}
-.itemImg {
-    height: 60px;
-    width: 60px;
-    margin: auto;
-    overflow: hidden;
-    background-color: #243b55bf;
-    box-shadow: 0 5px 12px 2px #4b4b4b80;
-    border: 1px solid rgba(255, 255, 255, .15);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-.sitNumber {
-    font-size: 0.7rem;
-    background: red;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 50%;
-    margin: 0 10px;
-}
 .itemMain6 {
     margin: 0 auto;
     height: 120px;
@@ -115,7 +82,7 @@
     padding: 0;
 }
 .helpMain .item i {
-    font-size: 2rem;
+    /*font-size: 2rem;*/
 }
 .helpMain .item span {
     font-size: 0.7rem;
@@ -133,10 +100,10 @@
 .helpIcon, .helpTitle {
     text-align: center;
 }
-.helpIcon i{
-    font-size: 8rem;
-    line-height: 8rem;
-}
+    .helpIcon i {
+        font-size: 4rem;
+        line-height: 4rem;
+    }
 .helpTitle {
     font-size: 1.5rem;
     font-weight: bold;

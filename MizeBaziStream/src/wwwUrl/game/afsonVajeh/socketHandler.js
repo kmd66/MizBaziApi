@@ -22,10 +22,14 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('disconnect', () => {
         console.log(`---a---disconnect :`);
     });
+
+    globalModel.connection.on('infoRoomReceive', globalModel.infoRoomReceive);
+    globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
     
 
 }
 function socketCallBack() {
     vm.appModel.loding = false;
     vm.changeState('main');
+    main.init();
 }

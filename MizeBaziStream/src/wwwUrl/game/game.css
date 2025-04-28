@@ -2,6 +2,12 @@
     --NaghshSefidColor: #83ff00;
     --NaghshSiahColor: #f35a9f;
 }
+.rtl {
+    direction: rtl
+}
+.ltr {
+    direction: ltr
+}
 .modalBady {
     z-index:1003
 }
@@ -212,8 +218,9 @@ body{
     box-shadow: 0px 0px 20px 2px #ffe100;
 }
     .naghshCard .helpIcon i {
-        font-size: 5rem;
-        line-height: 5rem;
+        font-size: 4rem;
+        line-height: 4rem;
+        margin-top:12px
     }
 @keyframes zoom {
     0%, 100% {
@@ -355,3 +362,42 @@ body{
         padding: 7px;
         border-bottom: 1px solid var(--BtnShadowColor);
     }
+    
+.itemMain {
+    width: 80px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.6rem;
+    z-index: 1001;
+    height: 20%;
+}
+    .itemMain .itemName, .itemMain .userName {
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+.itemImg {
+    height: 60px;
+    width: 60px;
+    margin: auto;
+    overflow: hidden;
+    background-color: #243b55bf;
+    box-shadow: 0 5px 12px 2px #4b4b4b80;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.sitNumber {
+    font-size: 0.7rem;
+    background: red;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
