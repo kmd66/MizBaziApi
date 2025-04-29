@@ -49,7 +49,7 @@ function checkEmoji(text, i) {
     return video;
 }
 
-function addChalesh(i) {
+function chaleshReceive(i) {
     const chaleshForItem2El = document.querySelector(`.chaleshForItem2`);
     if (chaleshForItem2El)
         return;

@@ -60,7 +60,7 @@ function endStreamReceive(model) {
 }
 function addChaleshReceive(model) {
     const u = globalModel.users.find(x => x.id == model);
-    addChalesh(u.row)
+    chaleshReceive(u.row)
 }
 
 function setChaleshReceive(model) {

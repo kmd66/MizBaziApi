@@ -123,7 +123,13 @@ main.Component = function (app) {
                 });
             },
             addChalesh() {
-                main.getDefensePosition();
+                if (!main.stream || !globalModel.user?.id) return;
+                if (main.stream.activeUser == globalModel.user.index) return;
+
+                globalModel.connection.emit('addChalesh', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
             }
         }
     });

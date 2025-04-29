@@ -21,4 +21,27 @@ export default class Set extends Receive {
         });
     }
 
+    public addChalesh(model: any) {
+        if (this.chalengerTime || !this.isStream || this.chalenger > 0 || this.door < 2) return;
+
+        const room = afsonDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser);
+        if (!user) return;
+        const index = this.chalengerList.findIndex(x => x == user.id);
+        if (index > -1) return;
+        AfsonControll.sendToMultipleSockets(this.roomId, 'addChaleshReceive', user.id);
+
+    }
+    public setChalesh(model: any) {
+        if (!this.isStream || this.chalenger > 0 || this.door < 2) return;
+
+        const room = afsonDb().get(this.roomId);
+        const user1 = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
+        const user2 = room?.users.find((x: User) => x.id == model.userId);
+
+        if (!user1 || !user2) return;
+        this.chalengerList.push(model.userId);
+        this.chalenger = model.userId;
+        AfsonControll.sendToMultipleSockets(this.roomId, 'setChaleshReceive', model.userId);
+    }
 }

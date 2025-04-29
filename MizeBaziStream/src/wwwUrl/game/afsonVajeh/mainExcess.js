@@ -26,9 +26,8 @@ main.init = function () {
     globalModel.connection.on('startStreamReceive', startStreamReceive);
     globalModel.connection.on('endStreamReceive', endStreamReceive);
 
-    //globalModel.connection.on('addChaleshReceive', addChaleshReceive);
-    //globalModel.connection.on('setChaleshReceive', setChaleshReceive);
-    //globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
+    globalModel.connection.on('addChaleshReceive', addChaleshReceive);
+    globalModel.connection.on('setChaleshReceive', setChaleshReceive);
 }
 main.setUsers = function () {
     globalModel.user = globalModel.users.find(x => x.id == socketHandler.userId);
@@ -80,4 +79,19 @@ function endStreamReceive(model) {
     const el = document.getElementsByClassName(`chaleshForItem2`);
     Array.from(el).map(x => x.remove());
     main.stream = null;
+}
+
+function addChaleshReceive(model) {
+    const u = globalModel.users.find(x => x.id == model);
+    chaleshReceive(u.row)
+}
+
+function setChaleshReceive(model) {
+    const u = globalModel.users.find(x => x.id == model);
+    const el = document.querySelector(`.chaleshForItem.el${u.row}`);
+    if (!el)
+        return;
+    el.classList.remove("chaleshForItem");
+    el.classList.add("chaleshForItem2");
+    removeChalesh();
 }

@@ -98,6 +98,8 @@ export function AfsonMethod() {
             },
             setCancel: wrapHandler('cancel'),
             addSticker: wrapHandler('addSticker'),
+            addChalesh: wrapHandler('addChalesh'),
+            setChalesh: wrapHandler('setChalesh'),
         },
 
         streamHandler: {
