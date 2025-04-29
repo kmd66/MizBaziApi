@@ -583,20 +583,23 @@
   content: "\e920";
 }
 .icon-chevron-square-down:before {
-  content: "\e921";
+    content: "\e949";
 }
 .icon-chevron-square-left:before {
-  content: "\e922";
+    content: "\e94a";
 }
 .icon-chevron-square-right:before {
-  content: "\e923";
+    content: "\e948";
 }
 .icon-chevron-square-up:before {
-  content: "\e924";
+    content: "\e94b";
 }
 .icon-chevron-up:before {
   content: "\e925";
 }
 .icon-dislike:before {
   content: "\e926";
+}
+.icon-handshake:before {
+  content: "\e921";
 }
