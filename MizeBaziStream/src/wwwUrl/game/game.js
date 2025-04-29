@@ -66,6 +66,13 @@ function chaleshReceive(i) {
     divEl.className = `chaleshForItem el${i}`;
     divEl.style.left = `${rectEl.left - 20}px`;
     divEl.style.top = `${rectEl.top}px`;
+    if (i < publicUserRow + 1) {
+        divEl.style.left = `${rectEl.left - 20}px`;
+    }
+    else {
+        divEl.style.left = `${rectEl.right - 12}px`;
+        divEl.style.transform = 'rotateY(180deg)';
+    }
 
     const iEl = document.createElement('i');
     iEl.className = 'icon-chalesh';

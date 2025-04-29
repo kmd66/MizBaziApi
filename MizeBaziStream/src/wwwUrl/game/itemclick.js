@@ -70,20 +70,28 @@ function addTargetReceive(model) {
 
     let c = `targetForItem el${user.row}`;
 
-    c += user.row > 6 ? ' target2' : ' target1';
-    c += model.type == 0 ? ' targetColor1' : ' targetColor2';
+    if (user.row < publicUserRow + 1) {
+        c += ' target1';
+        divEl.style.left = `${rectEl.left - 25}px`;
+    }
+    else {
+        c += ' target2';
+        divEl.style.left = `${rectEl.right}px`;
+    }
 
-    divEl.className = c;
-    divEl.style.left = `${rectEl.left - 25}px`;
     divEl.style.top = `${rectEl.top + 10}px`;
+    c += model.type == 0 ? ' targetColor1' : ' targetColor2';
+    divEl.className = c;
     mainTemplate.appendChild(divEl);
     setTimeout(() => {
         divEl.remove()
     }, 1400);
 }
 itemclick.listen = function () {
-    if (globalModel.gameName == 'rangOraz') {
+    if (globalModel.gameName != 'nabardKhande') {
         globalModel.connection.on('addTargetReceive', addTargetReceive);
+    }
+    if (globalModel.gameName == 'rangOraz') {
         globalModel.connection.on('setBazporsiReceive', (model) => {
             removeItemIcon();
             if (model?.length > 0) {

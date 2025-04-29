@@ -8,7 +8,9 @@
             <div class="mainTemplate" v-show="appModel.state == 'main'">
                 <main-component ref="childmain" :app-model="appModel"></main-component>
             </div>
+
             <help-component ref="childhelp" :app-model="appModel"></help-component>
+            <itemclick-component ref="childitemclick"></itemclick-component>
 
         </div>
     </div>

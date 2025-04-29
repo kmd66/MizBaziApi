@@ -44,4 +44,15 @@ export default class Set extends Receive {
         this.chalenger = model.userId;
         AfsonControll.sendToMultipleSockets(this.roomId, 'setChaleshReceive', model.userId);
     }
+    public addTarget(model: any) {
+        if (!this.isStream) return;
+        const room = afsonDb().get(this.roomId);
+        const user1 = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
+        const user2 = room?.users.find((x: User) => x.id == model.userId && x.index != this.activeUser);
+        if (!user1 || !user2) return;
+        AfsonControll.sendToMultipleSockets(this.roomId, 'addTargetReceive', {
+            id: user2.id,
+            type: model.type
+        });
+    }
 }

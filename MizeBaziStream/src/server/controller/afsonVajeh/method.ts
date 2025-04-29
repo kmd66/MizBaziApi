@@ -100,6 +100,7 @@ export function AfsonMethod() {
             addSticker: wrapHandler('addSticker'),
             addChalesh: wrapHandler('addChalesh'),
             setChalesh: wrapHandler('setChalesh'),
+            addTarget: wrapHandler('addTarget'),
         },
 
         streamHandler: {

@@ -82,7 +82,9 @@ class PageRoot {
         const helpFile = path.join(__dirname, '../../public/afsonVajeh/help.html');
         const helpTemp = fs.readFileSync(helpFile, 'utf8');
         const stickerFile = path.join(__dirname, '../../public/sticker.html');
-        const stickerTemp= fs.readFileSync(stickerFile, 'utf8');
+        const stickerTemp = fs.readFileSync(stickerFile, 'utf8');
+        const itemclickFile = path.join(__dirname, '../../public/itemclick.html');
+        const itemclickTemp= fs.readFileSync(itemclickFile, 'utf8');
 
         const renderedHtml = ejs.render(indexTemp, {
             fileBaseUsrl: this._fileBaseUrl,
@@ -91,7 +93,8 @@ class PageRoot {
 
             main: mainTemp,
             help: helpTemp,
-            sticker: stickerTemp
+            sticker: stickerTemp,
+            itemclick: itemclickTemp
         });
         res.send(renderedHtml);
     }

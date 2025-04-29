@@ -34,4 +34,5 @@ function socketCallBack() {
     vm.appModel.loding = false;
     vm.changeState('main');
     main.init();
+    itemclick.listen();
 }

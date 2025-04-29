@@ -58,3 +58,6 @@
 .helpMain p {
     line-height: 2.2rem;
 }
+.modalTargetItem1, .targetColor1 {
+    color: rgb(48, 204, 255);
+}

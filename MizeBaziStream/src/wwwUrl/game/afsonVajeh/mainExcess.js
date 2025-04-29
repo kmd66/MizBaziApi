@@ -54,7 +54,7 @@ function startStreamReceive(model) {
     main.stream = model;
     if (model.activeUser == globalModel.user.index) {
         vm.$refs.childmain.iconClass = iconClassDisabled;
-        //vm.$refs.childitemclick.isAddTarget = true;
+        vm.$refs.childitemclick.isAddTarget = true;
         vm.$refs.childmain.cancelBtn = true;
     }
     else {
@@ -63,7 +63,7 @@ function startStreamReceive(model) {
             vm.$refs.childmain.iconClass.chalesh = 'icon-chalesh iconDisabled';
         else
             vm.$refs.childmain.iconClass.chalesh = 'icon-chalesh';
-        //vm.$refs.childitemclick.isAddTarget = false;
+        vm.$refs.childitemclick.isAddTarget = false;
     }
 
     const user = vm.$refs.childmain.users.find(u => u.index == model.activeUser);
@@ -73,7 +73,7 @@ function endStreamReceive(model) {
     vm.$refs.childmain.soundDivI = false;
     //socketHandler.closelObj();
     vm.$refs.childmain.iconClass = iconClassDisabled;
-    //vm.$refs.childitemclick.isAddTarget = false;
+    vm.$refs.childitemclick.isAddTarget = false;
     vm.$refs.childmain.cancelBtn = false;
     removeChalesh()
     const el = document.getElementsByClassName(`chaleshForItem2`);
