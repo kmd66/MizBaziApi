@@ -33,6 +33,11 @@ export default class AfsonHandler extends Set {
     //-----------main
 
     public async main() {
+
+        if (this.door > 8) {
+            this.setFinish();
+        }
+
         if (this.finish)
             return;
 
@@ -70,15 +75,10 @@ export default class AfsonHandler extends Set {
     }
 
     public async next() {
+
         if (this.activeUser > -1) {
             this.endStreamReceive();
             await this.delay(200);
-        }
-
-        if (this.door > 10) {
-            this.setFinish();
-            this.main();
-            return;
         }
 
         if (this.activeUser == -1) {
@@ -86,7 +86,6 @@ export default class AfsonHandler extends Set {
             this.door++;
             this.infoMainReceive();
             await this.delay(this.mainWait * 1000);
-        } else {
         }
         this.setNobatIndex();
     }

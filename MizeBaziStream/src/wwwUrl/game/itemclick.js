@@ -12,6 +12,7 @@ function removeItemIcon() {
 
 let rowNum = -1;
 function itemMainClick(i) {
+    vm.$refs.childitemclick.afson = null;
     rowNum = i;
     vm.$refs.childitemclick.isMy = false;
     if (i == globalModel.user.row)
@@ -19,11 +20,17 @@ function itemMainClick(i) {
 
     if (globalModel.gameName == 'rangOraz') {
         let b = rangOrazClick(i);
-        if (b) 
+        if (b)
             return;
     }
+    if (globalModel.gameName == 'afsonVajeh') {
+        afsonVajehClick(i);
+    }
 
-    vm.$refs.childitemclick.click(i);
+    if (globalModel.gameName == 'rangOraz')
+        vm.$refs.childitemclick.rangOrazClick(i);
+    if (globalModel.gameName == 'afsonVajeh')
+        vm.$refs.childitemclick.modal = true;
 }
 
 function rangOrazClick(i) {
@@ -53,6 +60,11 @@ function rangOrazClick(i) {
 
     return false;
 }
+
+function afsonVajehClick(i) {
+    vm.$refs.childitemclick.afson = globalModel.groupItem;
+}
+
 function addTargetReceive(model) {
 
     const user = vm.$refs.childmain.users.find(x => x.id == model.id);
@@ -138,13 +150,15 @@ itemclick.Component = function (app) {
 
                 isAddTarget: false,
                 isMy: false,
-                isShowOstad: false
+                isShowOstad: false,
+
+                afson:null
             }
         },
         props: {
         },
         methods: {
-            click(i) {
+            rangOrazClick(i) {
                 this.itemIndex = i;
                 if (this.isAddTarget || (this.isShowOstad && this.isMy)) {
                     this.modal = true;

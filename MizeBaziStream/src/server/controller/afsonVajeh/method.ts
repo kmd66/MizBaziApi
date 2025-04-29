@@ -21,7 +21,7 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
         if (userConnectionId) {
             SocketManager.disconnectSocket('hubAfsonVajeh', userConnectionId, 'home');
         }
-        infoRoomReceive(roomId, user.type, connectionId);
+        infoRoomReceive(roomId, userKey, user.type, connectionId);
 
         AfsonControll.statusReceive(roomId);
         return;
@@ -29,7 +29,7 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
 
     SocketManager.disconnectSocket('hubAfsonVajeh', connectionId, 'home');
 }
-function infoRoomReceive(roomId: string, userType: number, connectionId: string): boolean {
+function infoRoomReceive(roomId: string, userKey: string, userType: number, connectionId: string): boolean {
 
     const handler = AfsonControll.getHandler(roomId);
     if (!handler)
@@ -49,7 +49,8 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
     const model = {
         room: modelRoom,
         users: AfsonControll.SafeUsers(userType, users),
-        status: GameControll.userStatus(users)
+        status: GameControll.userStatus(users),
+        groupItem: handler.groupItem(userKey)
     }
 
     SocketManager.sendToSocket(

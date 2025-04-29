@@ -1,7 +1,10 @@
-﻿import { winnerType } from '../../model/gameInterfaces';
+﻿import { User } from '../../model/interfaces';
+import { afsonDb } from './afsonDb';
+import { winnerType } from '../../model/gameInterfaces';
 export class Property {
     constructor(roomId: string) {
         this.roomId = roomId;
+        this.addGroups(roomId);
     }
 
     public door: number = 0;
@@ -32,6 +35,9 @@ export class Property {
     public loserUser: any = {};
 
     protected isStream: boolean = false;
+
+    public groups: any[] = [];
+
     protected get streamDoor(): boolean {
         return true;
     }
@@ -53,4 +59,37 @@ export class Property {
         else
             this.wait = 12;
     }
+
+    private addGroups(roomId: string): void {
+        const secrets: string[] = ['رمز1', 'رمز2']
+        const room = afsonDb().get(roomId);
+
+        room?.users.map((x: User) => {
+            const model = {
+                key: x.key,
+                type: 'neutral',
+                gun: false,
+                talk: true,
+                secret: ''
+            };
+
+            if ([1, 2, 3].indexOf(x.type) > -1) {
+                model.type = 'blue';
+                model.gun = true;
+                model.secret = secrets[0];
+            }
+            else if ([11, 12, 13].indexOf(x.type) > -1) {
+                model.type = 'red';
+                model.gun = true;
+                model.secret = secrets[1];
+            }
+
+            this.groups.push(model);
+        });
+    }
+
+    public groupItem(key: string): any {
+        return  this.groups.find(x => x.key == key);
+    }
 }
+

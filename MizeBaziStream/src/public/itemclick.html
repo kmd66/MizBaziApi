@@ -3,7 +3,7 @@
         <div class="modalBady">
 
             <div>
-                <div class="modalTarget d-flex">
+                <div class="modalTarget d-flex" style="margin-top:0">
                     <div class="icon icon-information4" @click="info()"></div>
                     <div v-show="isShowOstad && isMy" class="icon icon-medal4" @click="showOstad()"></div>
                 </div>
@@ -13,6 +13,13 @@
                 <div class="modalTarget d-flex">
                     <div class="icon target1 modalTargetItem1" @click="target(0)"></div>
                     <div class="icon target2 modalTargetItem2" @click="target(1)"></div>
+                </div>
+            </div>
+
+            <div v-show="afson != null && !isMy && (afson.gun || afson.talk)" >
+                <div class="modalTarget d-flex">
+                    <div v-show="afson.gun" class="icon icon-gun" style="color: #ff9797; " @click="target(0)"></div>
+                    <div v-show="afson.talk" class="icon icon-handshake" style="color: #97ffc1; " @click="target(1)"></div>
                 </div>
             </div>
 
