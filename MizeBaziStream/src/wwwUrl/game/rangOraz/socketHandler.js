@@ -1,6 +1,6 @@
 ﻿import io from 'socket.io-client'
 import './socketExcessHandle';
-import './stream';
+import '../stream';
 
 function userStatusReceive(model) {
     vm.$refs.childmain.usersStatus = model;

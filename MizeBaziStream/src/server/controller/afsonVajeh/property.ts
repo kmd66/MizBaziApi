@@ -46,6 +46,12 @@ export class Property {
 
     protected setState() {
         this.state = 'main';
-        this.wait = 12;//12
+        if (this.chalengerTime)
+            this.wait = 20;
+        else if (this.activeUser)
+            this.wait = 30;
+        else
+            this.wait = 12;
+        this.wait = 5;
     }
 }

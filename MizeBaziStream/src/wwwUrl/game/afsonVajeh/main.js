@@ -7,13 +7,23 @@ main.reset = function (itemMainFix) {
             el.style.position = 'unset';
         });
     }
+
+    vm.$refs.childmain.soundDivI = false;
+    vm.$refs.childmain.soundDivSpan = false;
+    vm.$refs.childmain.msg = {};
+
+    resetTimer();
 }
-itemI = 0;
+function resetTimer() {
+    if (main.topTimeProgressTimer)
+        clearTimeout(main.topTimeProgressTimer);
+    main.topTimeProgressTimer = null;
+    main.topTimeProgressAnimation?.cancel();
+    main.topTimeProgressAnimation = null;
+    vm.$refs.childmain.mainTopTime = '- ----';
+    vm.$refs.childmain.progressbarWidth = "0px";
+}
 main.getDefensePosition = function (duration) {
-    itemI++;
-    if (itemI > 8)
-        itemI = 1;
-    globalModel.activeUser = { row: itemI }
 
     main.reset();
     const el = document.querySelector(`.mainTemplate .itemMain${globalModel.activeUser.row}`);
@@ -34,6 +44,33 @@ main.getDefensePosition = function (duration) {
 
     animation.onfinish = () => {
     };
+}
+main.topTimeProgress = function (i) {
+    if (i == -100) {
+        i = globalModel.room.wait;
+        const progressbar = document.querySelector('.aw213sdaf div');
+        //const percentage = (100 * i) / total;
+        progressbar.style.width = `100%`;
+        main.topTimeProgressAnimation = progressbar.animate([
+            { width: `100%` },
+            { width: `0%` }
+        ], {
+            duration: globalModel.room.wait * 1000,
+            easing: 'linear',
+            fill: 'forwards'
+        });
+    }
+
+    if (i == 0) {
+        main.reset(true);
+        return;
+    }
+    const newTime = i - 1;
+    vm.$refs.childmain.mainTopTime = `${i} ثانیه`;
+    main.topTimeProgressTimer = setTimeout(() => {
+        main.startStrimInt--;
+        main.topTimeProgress(newTime);
+    }, 1000);
 }
 
 main.Component = function (app) {

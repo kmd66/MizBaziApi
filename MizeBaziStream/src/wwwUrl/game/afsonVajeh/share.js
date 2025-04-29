@@ -1,6 +1,7 @@
 ﻿
 globalModel = {};
 function reset() {
+    main.reset();
 }
 function initShare() {
 
@@ -32,6 +33,8 @@ globalModel.infoRoomReceive = function (model) {
 
     model.users.map((x) => x.row = x.index + 1);
     globalModel.users = model.users;
+    vm.$refs.childmain.door = `دور ${room.door}`;
+    main.topTimeProgress(-100);
     globalModel.userStatusReceive(model.status)
 
 }
@@ -45,5 +48,14 @@ globalModel.userStatusReceive = function (model) {
         }
     })
     main.setUsers();
+}
+globalModel.infoMainReceive = function (room) {
+    reset();
+    globalModel.room = room;
+    main.topTimeProgress(-100);
+    vm.$refs.childmain.door = `دور ${room.door}`;
+    if (room.door == 10) {
+
+    }
 
 }

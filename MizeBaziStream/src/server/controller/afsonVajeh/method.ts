@@ -36,10 +36,10 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
         return false;
     const modelRoom = {
         door: handler.door,
-        progressTime: handler.wait,
         activeUser: handler.activeUser,
         state: handler.state,
         loserUser: handler.loserUser,
+        wait: handler.wait
     };
     var _userInDb = userInDb();
     const users = _userInDb.getAll(roomId);
