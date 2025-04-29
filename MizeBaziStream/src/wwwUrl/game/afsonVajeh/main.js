@@ -116,6 +116,12 @@ main.Component = function (app) {
                 }
                 return 'imgStatus icon-ofline';
             },
+            setCancel() {
+                globalModel.connection.emit('setCancel', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
             addChalesh() {
                 main.getDefensePosition();
             }

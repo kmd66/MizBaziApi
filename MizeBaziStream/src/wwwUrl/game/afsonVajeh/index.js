@@ -2,7 +2,7 @@
 import './socketHandler'
 import './main'
 import './help'
-//import '../sticker'
+import '../sticker'
 //import '../itemclick'
 //import '../gameresponse'
 
@@ -35,6 +35,7 @@ const app = Vue.createApp({
 })
 main.Component(app);
 help.Component(app);
+sticker.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

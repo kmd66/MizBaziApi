@@ -9,4 +9,16 @@ export default class Set extends Receive {
         super(roomId);
     }
 
+    public addSticker(model: any) {
+        if (!this.isStream) return;
+
+        const room = afsonDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser);
+        if (!user) return;
+        AfsonControll.sendToMultipleSockets(this.roomId, 'addStickerReceive', {
+            id: user.id,
+            t: model.t
+        });
+    }
+
 }

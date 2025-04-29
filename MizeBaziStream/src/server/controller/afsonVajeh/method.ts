@@ -61,8 +61,16 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
 
 export function AfsonMethod() {
     const wrapHandler = (method: string) => (model: any) => {
+        const handler = AfsonControll.getHandler(model.roomId);
+        if (handler && typeof (handler as any)[method] === 'function') {
+            (handler as any)[method](model);
+        }
     };
     const wrapHandlerWithCallback = (method: string) => (model: any, callback: Function) => {
+        const handler = AfsonControll.getHandler(model.roomId);
+        if (handler && typeof (handler as any)[method] === 'function') {
+            (handler as any)[method](model, callback);
+        }
     };
 
     return {
@@ -88,6 +96,8 @@ export function AfsonMethod() {
             setMessage: (model: any) => {
                 GameControll.setMessage('hubAfsonVajeh', model);
             },
+            setCancel: wrapHandler('cancel'),
+            addSticker: wrapHandler('addSticker'),
         },
 
         streamHandler: {

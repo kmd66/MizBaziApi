@@ -36,7 +36,6 @@ export default class AfsonHandler extends Set {
         if (this.finish)
             return;
 
-
         if (this.door == 0) {
             await this.delay(this.wait * 1000);
         }

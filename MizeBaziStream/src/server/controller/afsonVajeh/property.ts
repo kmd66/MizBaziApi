@@ -52,6 +52,5 @@ export class Property {
             this.wait = 30;
         else
             this.wait = 12;
-        this.wait = 5;
     }
 }

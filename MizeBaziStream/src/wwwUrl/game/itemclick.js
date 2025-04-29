@@ -53,7 +53,7 @@ function rangOrazClick(i) {
 
     return false;
 }
-function addStickerReceive(model) {
+function addTargetReceive(model) {
 
     const user = vm.$refs.childmain.users.find(x => x.id == model.id);
     if (!user)
@@ -83,7 +83,7 @@ function addStickerReceive(model) {
 }
 itemclick.listen = function () {
     if (globalModel.gameName == 'rangOraz') {
-        globalModel.connection.on('addTargetReceive', addStickerReceive);
+        globalModel.connection.on('addTargetReceive', addTargetReceive);
         globalModel.connection.on('setBazporsiReceive', (model) => {
             removeItemIcon();
             if (model?.length > 0) {

@@ -81,6 +81,8 @@ class PageRoot {
         const mainTemp = fs.readFileSync(mainFile, 'utf8');
         const helpFile = path.join(__dirname, '../../public/afsonVajeh/help.html');
         const helpTemp = fs.readFileSync(helpFile, 'utf8');
+        const stickerFile = path.join(__dirname, '../../public/sticker.html');
+        const stickerTemp= fs.readFileSync(stickerFile, 'utf8');
 
         const renderedHtml = ejs.render(indexTemp, {
             fileBaseUsrl: this._fileBaseUrl,
@@ -88,7 +90,8 @@ class PageRoot {
             title: 'افسون واژه',
 
             main: mainTemp,
-            help: helpTemp
+            help: helpTemp,
+            sticker: stickerTemp
         });
         res.send(renderedHtml);
     }
