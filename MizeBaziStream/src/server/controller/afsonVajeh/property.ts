@@ -1,6 +1,8 @@
 ﻿import { User } from '../../model/interfaces';
 import { afsonDb } from './afsonDb';
 import { winnerType } from '../../model/gameInterfaces';
+import * as fs from 'fs';
+
 export class Property {
     constructor(roomId: string) {
         this.roomId = roomId;
@@ -61,7 +63,7 @@ export class Property {
     }
 
     private addGroups(roomId: string): void {
-        const secrets: string[] = ['رمز1', 'رمز2']
+        const secrets: string[] = this.readFile();
         const room = afsonDb().get(roomId);
 
         room?.users.map((x: User) => {
@@ -86,6 +88,30 @@ export class Property {
 
             this.groups.push(model);
         });
+    }
+
+    private readFile(): string[] {
+        function getRandomItems(arr: string[]): string[] {
+            const result: string[] = [];
+            const clonedArr = [...arr];
+
+            const randomIndex = Math.floor(Math.random() * clonedArr.length);
+            result.push(clonedArr[randomIndex]);
+            clonedArr.splice(randomIndex, 1);
+
+            const randomNumber = Math.floor(Math.random() * 12) + 1;
+            let randomIndex2 = randomIndex + randomNumber
+            if (randomIndex2 > clonedArr.length - 2)
+                randomIndex2 = randomNumber - 1;
+            result.push(clonedArr[randomIndex2]);
+            return result;
+        }
+
+        const rawData = fs.readFileSync('data/kalameRamz.json', 'utf8');
+        const data = JSON.parse(rawData);
+
+        const randomItems = getRandomItems(data);
+        return randomItems;
     }
 
     public groupItem(key: string): any {

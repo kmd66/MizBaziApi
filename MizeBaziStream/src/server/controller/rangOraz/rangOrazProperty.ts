@@ -1,5 +1,7 @@
 ﻿
 import { winnerType } from '../../model/gameInterfaces';
+import * as fs from 'fs';
+
 export enum RangOrazDoor {
     d0 = 'در انتظار شروع',
     d1 = 'معارفه',
@@ -26,18 +28,29 @@ export enum NobatType {
 export class RangOrazProperty {
     constructor(roomId: string) {
         this.roomId = roomId;
-        this.mozoeNaghashiList = [
-            'موضوع 1',
-            'موضوع 2',
-            'موضوع 3',
-            'موضوع 4',
-            'موضوع 5',
-            'موضوع 6',
-            'موضوع 7',
-            'موضوع 8',
-            'موضوع 9',
-            'موضوع 10',
-        ];
+        this.mozoeNaghashiList = this.readFile();
+    }
+
+
+    private readFile(): string[] {
+        function getRandomItems(arr: string[], count: number): string[] {
+            const result: string[] = [];
+            const clonedArr = [...arr];
+
+            for (let i = 0; i < count; i++) {
+                const randomIndex = Math.floor(Math.random() * clonedArr.length);
+                result.push(clonedArr[randomIndex]);
+                clonedArr.splice(randomIndex, 1);
+            }
+
+            return result;
+        }
+
+        const rawData = fs.readFileSync('data/mozoeNaghashi.json', 'utf8');
+        const data = JSON.parse(rawData);
+
+        const randomItems = getRandomItems(data, 10);
+        return randomItems;
     }
 
     public roomId!: string;
