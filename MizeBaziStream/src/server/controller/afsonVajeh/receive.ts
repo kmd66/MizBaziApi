@@ -27,6 +27,7 @@ export default class Receive extends Stream {
     }
     protected startStreamReceive() {
         this.isStream = true;
+        this.isUserAction = false;
         const model = {
             activeUser: this.activeUser,
             wait: this.wait

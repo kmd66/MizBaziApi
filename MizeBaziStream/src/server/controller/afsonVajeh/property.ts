@@ -37,6 +37,7 @@ export class Property {
     public loserUser: any = {};
 
     protected isStream: boolean = false;
+    protected isUserAction: boolean = false;
 
     public groups: any[] = [];
 

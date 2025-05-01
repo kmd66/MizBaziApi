@@ -1,4 +1,5 @@
-﻿import io from 'socket.io-client'
+﻿import io from 'socket.io-client';
+import './socketExcessHandle';
 //import './stream';
 
 socketHandler.initSoket = function () {
@@ -27,6 +28,10 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
     globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
     globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
+
+    globalModel.connection.on('addTalkReceive1', socketHandler.addTalkReceive1);
+    globalModel.connection.on('addTalkReceive2', socketHandler.addTalkReceive2);
+    globalModel.connection.on('addGunReceive', socketHandler.addGunReceive);
 
 }
 function socketCallBack() {

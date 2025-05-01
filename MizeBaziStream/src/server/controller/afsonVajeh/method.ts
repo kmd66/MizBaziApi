@@ -102,6 +102,9 @@ export function AfsonMethod() {
             addChalesh: wrapHandler('addChalesh'),
             setChalesh: wrapHandler('setChalesh'),
             addTarget: wrapHandler('addTarget'),
+
+            addTalk: wrapHandler('addTalk'),
+            addGun: wrapHandler('addGun'),
         },
 
         streamHandler: {

@@ -12,7 +12,6 @@ function removeItemIcon() {
 
 let rowNum = -1;
 function itemMainClick(i) {
-    vm.$refs.childitemclick.afson = null;
     rowNum = i;
     vm.$refs.childitemclick.isMy = false;
     if (i == globalModel.user.row)
@@ -62,7 +61,12 @@ function rangOrazClick(i) {
 }
 
 function afsonVajehClick(i) {
-    vm.$refs.childitemclick.afson = globalModel.groupItem;
+
+    if (main.stream != null && main.stream.activeUser == globalModel.user.index) {
+        vm.$refs.childitemclick.afson = { ...globalModel.groupItem };
+    }
+    else
+        vm.$refs.childitemclick.afson = null; 
 }
 
 function addTargetReceive(model) {
@@ -100,6 +104,7 @@ function addTargetReceive(model) {
     }, 1400);
 }
 itemclick.listen = function () {
+    vm.$refs.childitemclick.gameName = globalModel.gameName;
     if (globalModel.gameName != 'nabardKhande') {
         globalModel.connection.on('addTargetReceive', addTargetReceive);
     }
@@ -144,6 +149,7 @@ itemclick.Component = function (app) {
         template: '#itemclick-template',
         data() {
             return {
+                gameName:'',
                 itemIndex:-1,
                 modal:false,
                 userInfo: null,
@@ -174,12 +180,28 @@ itemclick.Component = function (app) {
                 this.userInfo = vm.$refs.childmain.users.find(x => x.row == rowNum);
             },
             showOstad() {
-                if (globalModel.gameName == 'rangOraz' && this.showOstad) {
-                    globalModel.connection.emit('setShowOstad', {
-                        roomId: socketHandler.roomId,
-                        userKey: socketHandler.userKey,
-                    });
-                }
+                globalModel.connection.emit('setShowOstad', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+            addGun() {
+                this.modal = false;
+                const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
+                globalModel.connection.emit('addGun', {
+                    userId: user.id,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+            addTalk() {
+                this.modal = false;
+                const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
+                globalModel.connection.emit('addTalk', {
+                    userId: user.id,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
             }
         }
     });

@@ -32,21 +32,21 @@ const HELP_RANGORAZ_COMMENT = [
         "comment": RANGORAZ_COMMENT0
     },
     {
-        "type": '1',
+        "type": 'blue',
         "title": 'گروه آبی',
         "icon": 'icon-group',
         color: '#30ccff',
         "comment": RANGORAZ_COMMENT1
     },
     {
-        "type": '11',
+        "type": 'red',
         "title": 'گروه قرمز',
         "icon": 'icon-group',
         color: '#f35a9f',
         "comment": RANGORAZ_COMMENT2
     },
     {
-        "type": '21',
+        "type": 'neutral',
         "title": 'بی‌طرف‌ها',
         "icon": 'icon-users',
         color: '#82f35a',
@@ -65,7 +65,7 @@ help.find = function (type) {
     return HELP_RANGORAZ_COMMENT.find(h => h.type == t);
 }
 help.usersReceive = function (type) {
-    const helpItem = help.find(type);
+    const helpItem = HELP_RANGORAZ_COMMENT.find(h => h.type == globalModel.groupItem.type);
     vm.$refs.childhelp.selectItem = helpItem;
     vm.$refs.childhelp.selectType = helpItem.type;
     const naghsh = {
@@ -73,9 +73,9 @@ help.usersReceive = function (type) {
         color: helpItem.color
     }
 
-    if (type < 10)
+    if (globalModel.groupItem.type == 'blue') 
         naghsh.title = type == 1 ? 'سر گروه آبی' : 'عضو گروه آبی';
-    else if (type < 20)
+    else if (globalModel.groupItem.type == 'red')
         naghsh.title = type == 11 ? 'سر گروه قرمز' : 'عضو گروه قرمز';
     else
         naghsh.title = 'بی‌طرف';
