@@ -55,27 +55,7 @@ const HELP_RANGORAZ_COMMENT = [
 ]
 
 let isShowCard = false;
-function showCard() {
-    if (isShowCard) return;
-    isShowCard = true;
-    vm.$refs.childhelp.isShowCard = true;
 
-    const el = document.querySelector(`.naghshCard`);
-    el.top = `50%`;
-    setTimeout(() => {
-        const animation = el.animate([
-            { top: `50%`, transform: "translate(-50%, -50%) scale(1)" },
-            { top: `14px`, transform: "translate(-50%, -50%) scale(0.1)" }
-        ], {
-            duration: 400,
-            easing: 'ease-in-out',
-        });
-
-        animation.onfinish = () => {
-            vm.$refs.childhelp.isShowCard = false;
-        };
-    }, 2000)
-}
 help.find = function (type) {
     let t = 21;
     if (type < 20)
@@ -101,7 +81,7 @@ help.usersReceive = function (type) {
         naghsh.title = 'بی‌طرف';
 
     vm.$refs.childhelp.myItem = naghsh;
-    showCard()
+    vm.$refs.childhelp.myItem.secret = globalModel.groupItem.secret;
     return naghsh;
 }
 
@@ -114,7 +94,7 @@ help.Component = function (app) {
                 myItem: {},
                 selectItem: {},
                 selectType: 0,
-                isShowCard: false,
+                isShowCard: true,
             }
         },
         props: {

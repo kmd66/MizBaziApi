@@ -16,10 +16,10 @@
                 </div>
             </div>
 
-            <div v-show="afson != null && !isMy && (afson.gun || afson.talk)" >
+            <div v-show="afson != null && !isMy && (afson?.gun || afson?.talk)" >
                 <div class="modalTarget d-flex">
-                    <div v-show="afson.gun" class="icon icon-gun" style="color: #ff9797; " @click="target(0)"></div>
-                    <div v-show="afson.talk" class="icon icon-handshake" style="color: #97ffc1; " @click="target(1)"></div>
+                    <div v-show="afson?.gun" class="icon icon-gun" style="color: #ff9797; " @click="target(0)"></div>
+                    <div v-show="afson?.talk" class="icon icon-handshake" style="color: #97ffc1; " @click="target(1)"></div>
                 </div>
             </div>
 

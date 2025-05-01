@@ -20,9 +20,16 @@
         </div>
     </div>
    
-    <div class="naghshCard" v-show="isShowCard">
-        <div class="helpTitle" style=" color: var(--LinkColor);">نقش شما</div>
+    <div class="modalBady" v-show="isShowCard" style="text-align:center">
+        <div class="helpTitle" style=" color: var(--LinkColor); margin-top: 14px;">نقش شما</div>
         <div class="helpIcon"><i :style="{ color: myItem?.color }" :class="myItem.icon"></i></div>
         <div class="helpTitle" :style="{ color: myItem?.color }">{{myItem.title}}</div>
+
+        <div v-show="myItem.secret != ''">
+            <div class="helpTitle" style=" color: var(--LinkColor); margin-top: 1rem;">رمز گروه</div>
+            <div class="helpTitle" :style="{ color: myItem?.color }">{{myItem.secret}}</div>
+        </div>
+
+        <button class="btn btn-yellow" style="margin-top: 1.5rem;" @click="isShowCard = false">متوجه شدم</button>
     </div>
 </template>
