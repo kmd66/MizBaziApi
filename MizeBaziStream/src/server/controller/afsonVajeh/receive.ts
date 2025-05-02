@@ -27,7 +27,6 @@ export default class Receive extends Stream {
     }
     protected startStreamReceive() {
         this.isStream = true;
-        this.isUserAction = false;
         const model = {
             activeUser: this.activeUser,
             wait: this.wait
@@ -38,6 +37,21 @@ export default class Receive extends Stream {
         this.isStream = false;
         const model = {};
         AfsonControll.sendToMultipleSockets(this.roomId, 'endStreamReceive', model);
+    }
+
+    protected gameResponseReceive(wait: number) {
+        const users: any = [];
+
+        const room = afsonDb().get(this.roomId);
+        room?.users.map(({ id, type }) => {
+            users.push({ id: id, type: type })
+        });
+        const model = {
+            wait: wait,
+            winner: this.winner,
+            users: users
+        };
+        AfsonControll.sendToMultipleSockets(this.roomId, 'gameResponseReceive', model);
     }
 
 }

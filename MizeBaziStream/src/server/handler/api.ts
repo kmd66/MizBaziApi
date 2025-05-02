@@ -84,7 +84,10 @@ class PageRoot {
         const stickerFile = path.join(__dirname, '../../public/sticker.html');
         const stickerTemp = fs.readFileSync(stickerFile, 'utf8');
         const itemclickFile = path.join(__dirname, '../../public/itemclick.html');
-        const itemclickTemp= fs.readFileSync(itemclickFile, 'utf8');
+        const itemclickTemp = fs.readFileSync(itemclickFile, 'utf8');
+
+        const gameresponseFile = path.join(__dirname, '../../public/gameresponse.html');
+        const gameresponseTemp = fs.readFileSync(gameresponseFile, 'utf8');
 
         const renderedHtml = ejs.render(indexTemp, {
             fileBaseUsrl: this._fileBaseUrl,
@@ -94,7 +97,8 @@ class PageRoot {
             main: mainTemp,
             help: helpTemp,
             sticker: stickerTemp,
-            itemclick: itemclickTemp
+            itemclick: itemclickTemp,
+            gameresponse: gameresponseTemp
         });
         res.send(renderedHtml);
     }

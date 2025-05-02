@@ -57,11 +57,11 @@ const HELP_RANGORAZ_COMMENT = [
 let isShowCard = false;
 
 help.find = function (type) {
-    let t = 21;
+    let t = 'neutral';
     if (type < 20)
-        t = 11
+        t = 'red'
     if (type < 10)
-        t = 1;
+        t = 'blue';
     return HELP_RANGORAZ_COMMENT.find(h => h.type == t);
 }
 help.usersReceive = function (type) {

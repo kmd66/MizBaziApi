@@ -38,7 +38,6 @@ function infoRoomReceive(roomId: string, userKey: string, userType: number, conn
         door: handler.door,
         activeUser: handler.activeUser,
         state: handler.state,
-        loserUser: handler.loserUser,
         wait: handler.wait
     };
     var _userInDb = userInDb();
@@ -81,9 +80,9 @@ export function AfsonMethod() {
                     socketId: socket.id
                 });
                 connectionReceive(socket.handshake.auth.roomId, socket.handshake.auth.userKey, socket.id);
-                //const handler = AfsonControll.getHandler(socket.handshake.auth.roomId);
-                //if (handler)
-                //    handler.closeConsumer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
+                const handler = AfsonControll.getHandler(socket.handshake.auth.roomId);
+                if (handler)
+                    handler.closeConsumer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
             },
         },
 
@@ -108,6 +107,13 @@ export function AfsonMethod() {
         },
 
         streamHandler: {
+            getRtpCapabilities: wrapHandler('getRtpCapabilities'),
+            createWebRtcTransport: wrapHandlerWithCallback('createWebRtcTransport'),
+            transportConnect: wrapHandler('transportConnect'),
+            transportProduce: wrapHandlerWithCallback('transportProduce'),
+            transportRecvConnect: wrapHandler('transportRecvConnect'),
+            consume: wrapHandler('consume'),
+            consumerResume: wrapHandler('consumerResume'),
         },
     };
 }

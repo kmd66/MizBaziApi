@@ -20,8 +20,7 @@ function initShare() {
     socketHandler = {};
     main = {};
     help = {};
-
-
+    gameresponse = {};
 }
 
 initShare();

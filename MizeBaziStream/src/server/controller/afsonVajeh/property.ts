@@ -13,6 +13,8 @@ export class Property {
 
     public roomId!: string;
 
+    public isAddDisconnec: boolean = false;
+
     public wait: number = 12;
     public mainWait: number = 3;
     public activeUser: number = -1;
@@ -21,8 +23,6 @@ export class Property {
     public state: string = 'main';
 
     public finish: boolean = false;
-
-    protected raieGiriCount: Map<number, number> = new Map();
 
     protected timeoutId?: NodeJS.Timeout;
 
@@ -33,8 +33,6 @@ export class Property {
     protected nobatIndex: number = -1;
 
     protected winner: winnerType = winnerType.undefined;
-
-    public loserUser: any = {};
 
     protected isStream: boolean = false;
     protected isUserAction: boolean = false;

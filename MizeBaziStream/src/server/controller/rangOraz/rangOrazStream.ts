@@ -137,6 +137,6 @@ export default class BaseRangOrazStream extends RangOrazProperty {
         this.sfu.clear();
         clearTimeout(this.timeoutId);
         rangOrazDb().delete(this.roomId);
-        rangInstance.stop(this.roomId);
+        rangInstance().stop(this.roomId);
     }
 }

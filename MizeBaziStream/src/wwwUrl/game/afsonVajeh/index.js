@@ -4,7 +4,7 @@ import './main'
 import './help'
 import '../sticker'
 import '../itemclick'
-//import '../gameresponse'
+import '../gameresponse'
 
 const app = Vue.createApp({
     data() {
@@ -26,8 +26,9 @@ const app = Vue.createApp({
 
             switch (state) {
                 case 'main':
-                    vm.$refs.childmain.init();
-                    break;
+                    vm.$refs.childmain.init(); break;
+                case 'gameresponse':
+                    vm.$refs.childGameresponse.init(); break;
             }
             this.appModel.state = state;
         }
@@ -37,6 +38,7 @@ main.Component(app);
 help.Component(app);
 sticker.Component(app);
 itemclick.Component(app);
+gameresponse.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

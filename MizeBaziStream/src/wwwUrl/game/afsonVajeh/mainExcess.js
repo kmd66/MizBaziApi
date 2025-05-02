@@ -71,7 +71,7 @@ function startStreamReceive(model) {
 function endStreamReceive(model) {
     main.reset();
     vm.$refs.childmain.soundDivI = false;
-    //socketHandler.closelObj();
+    socketHandler.closelObj();
     vm.$refs.childmain.iconClass = iconClassDisabled;
     vm.$refs.childitemclick.isAddTarget = false;
     vm.$refs.childmain.cancelBtn = false;

@@ -43,6 +43,13 @@ class AfsonTimer {
     public controllers: Map<string, AfsonHandler> = new Map();
     private isDisconnectByRoomId: string = 'false';
 
+    public static getInstance() {
+        if (!AfsonTimer.instance) {
+            AfsonTimer.instance = new AfsonTimer();
+        }
+        return AfsonTimer.instance;
+    }
+
     public static Start(roomId: string) {
         if (!AfsonTimer.instance) {
             AfsonTimer.instance = new AfsonTimer();
@@ -76,14 +83,56 @@ class AfsonTimer {
     }
 
     private stopController(name: string) {
+        const controller = this.controllers.get(name);
+        if (controller) {
+            controller.finish = true;
+            this.controllers.delete(name);
+        }
     }
 
     private timerForDisconnect(roomId: string) {
+        const name = `${roomId}timerForDisconnect`;
+        this.stopTimer(name);
+
+        const intervalId = setInterval(() => {
+            this.disconnectHandler(roomId);
+        }, GameControll.disconnectTime);
+
+        this.timers.set(name, intervalId);
     }
 
     private disconnectHandler(roomId: string) {
+        const room = afsonDb().get(roomId);
+        if (!room) {
+            this.stop(roomId);
+            return;
+        }
+        const users = room?.users.filter(user => user.userInGameStatus == 10) || [];
+        users.map((x) => {
+            x.oflineSecond++;
+            if (x.oflineSecond >= GameControll.disconnectAge) {
+                x.userInGameStatus = 11;
+                this.isDisconnectByRoomId = roomId;
+            }
+            userInDb().update(roomId, x);
+
+            if (x.userInGameStatus == 11) {
+                AfsonControll.statusReceive(roomId);
+            }
+        });
+
+        this.disconnectCheckGame();
     }
     private disconnectCheckGame() {
+        if (this.isDisconnectByRoomId == 'false')
+            return;
+            
+        const controller = this.controllers.get(this.isDisconnectByRoomId);
+        if (!controller) {
+            this.stop(this.isDisconnectByRoomId);
+            return;
+        }
+        controller.isAddDisconnec = true;
     }
 
     private gameHandler(roomId: string) {
@@ -95,5 +144,6 @@ class AfsonTimer {
 
 }
 
+export const afsonInstance = AfsonTimer.getInstance;
 export const afsonStart = AfsonTimer.Start;
 export const afsonStartAll = AfsonTimer.StartAll;

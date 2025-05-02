@@ -19,7 +19,8 @@
                 <div>
                     {{user.title}}
                 </div>
-                <i :class="user.icon"></i>
+                <i v-if="user.color" :style="{ color: user.color }" :class="user.icon"></i>
+                <i v-if="!user.color" :class="user.icon"></i>
             </div>
 
             <hr v-show="isSendMessage" style="margin:14px" />

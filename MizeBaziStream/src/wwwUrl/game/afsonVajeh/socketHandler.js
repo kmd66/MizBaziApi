@@ -1,6 +1,6 @@
 ﻿import io from 'socket.io-client';
 import './socketExcessHandle';
-//import './stream';
+import '../stream';
 
 socketHandler.initSoket = function () {
     let params = new URLSearchParams(document.location.search);
@@ -33,6 +33,10 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('addTalkReceive2', socketHandler.addTalkReceive2);
     globalModel.connection.on('addGunReceive', socketHandler.addGunReceive);
 
+    globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
+    globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
+    globalModel.connection.on('getMessage', gameresponse.getMessage);
+
 }
 function socketCallBack() {
     publicUserRow = 4;
@@ -40,4 +44,5 @@ function socketCallBack() {
     vm.changeState('main');
     main.init();
     itemclick.listen();
+    socketHandler.streamInit();
 }

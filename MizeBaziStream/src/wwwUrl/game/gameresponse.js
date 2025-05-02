@@ -26,6 +26,17 @@ function setWinner(w) {
     }
     if (w == 2)
         vm.$refs.childGameresponse.winnerColor = 'var(--NaghshSiahColor)';
+
+    if (globalModel.gameName == 'afsonVajeh') {
+        if (w == 1) {
+            vm.$refs.childGameresponse.winner = 'گروه آبی';
+            vm.$refs.childGameresponse.winnerColor = '#30ccff';
+        }
+        else {
+            vm.$refs.childGameresponse.winner = 'گروه قرمز';
+            vm.$refs.childGameresponse.winnerColor = '#f35a9f';
+        }
+    }
 }
 
 gameresponse.getMessage = function (model) {
@@ -80,6 +91,7 @@ gameresponse.Component = function (app) {
                             userName: user.info.UserName,
                             icon: helpItem?.icon,
                             title: helpItem?.title,
+                            color: helpItem?.color ? helpItem?.color : undefined
                         })
                         if ((index + 1) == globalModel.gameResponse.users.length)
                             this.isSendMessage = true;

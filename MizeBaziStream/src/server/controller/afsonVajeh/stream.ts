@@ -4,7 +4,7 @@ import SFU from '../../handler/sfu';
 import { User } from '../../model/interfaces';
 import SocketManager from '../../handler/socket';
 import { Property } from './property';
-import { AfsonControll } from './extensions';
+import { AfsonControll, afsonInstance } from './extensions';
 
 export default class Stream extends Property {
     constructor(roomId: string) {
@@ -31,7 +31,7 @@ export default class Stream extends Property {
         if (!user) return;
 
         const rtpCapabilities = this.sfu.router?.rtpCapabilities;
-        SocketManager.sendToSocket('hubRangOraz', 'getRtpCapabilitiesReceive', user.connectionId, { rtpCapabilities });
+        SocketManager.sendToSocket('hubAfsonVajeh', 'getRtpCapabilitiesReceive', user.connectionId, { rtpCapabilities });
     }
 
     public async createWebRtcTransport(model: any, callback: any) {
@@ -81,7 +81,7 @@ export default class Stream extends Property {
         if (!user) return;
 
         const params = await this.sfu.createConsumer(user.id, model.rtpCapabilities)
-        SocketManager.sendToSocket('hubRangOraz', 'consumeReceive', user.connectionId, { params });
+        SocketManager.sendToSocket('hubAfsonVajeh', 'consumeReceive', user.connectionId, { params });
     }
 
     public async consumerResume(model: any) {
@@ -97,7 +97,7 @@ export default class Stream extends Property {
         const user = room?.users.find((x: User) => x.index == this.activeUser);
         if (!user) return;
 
-        SocketManager.sendToSocket('hubRangOraz', 'startProduceStream', user.connectionId, true);
+        SocketManager.sendToSocket('hubAfsonVajeh', 'startProduceStream', user.connectionId, true);
     }
 
     protected async startProduceStreamById(id: number) {
@@ -105,7 +105,7 @@ export default class Stream extends Property {
         const user = room?.users.find((x: User) => x.id == id);
         if (!user) return;
 
-        SocketManager.sendToSocket('hubRangOraz', 'startProduceStream', user.connectionId, true);
+        SocketManager.sendToSocket('hubAfsonVajeh', 'startProduceStream', user.connectionId, true);
     }
 
     protected async startConsumerStream(userId: number) {
@@ -127,13 +127,12 @@ export default class Stream extends Property {
         AfsonControll.sendToMultipleSockets(this.roomId, 'canselStream', true);
     }
 
-
     public setFinish() {
         this.finish = true;
-        this.raieGiriCount.clear();
         this.sfu.clear();
-        //clearTimeout(this.timeoutId);
-        //afsonDb().delete(this.roomId);
-        //afsinTimer.instance.stop(this.roomId);
+        clearTimeout(this.timeoutId);
+        afsonDb().delete(this.roomId);
+        console.log(this.roomId)
+        afsonInstance().stop(this.roomId);
     }
 }

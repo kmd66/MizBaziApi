@@ -1,6 +1,8 @@
 ﻿import { afsonDb } from './afsonDb';
 import  Set from './set';
 import { User } from '../../model/interfaces';
+import { winnerType } from '../../model/gameInterfaces';
+import { AfsonControll } from './extensions';
 
 export default class AfsonHandler extends Set {
 
@@ -33,13 +35,13 @@ export default class AfsonHandler extends Set {
     //-----------main
 
     public async main() {
-
-        if (this.door > 8) {
-            this.setFinish();
-        }
-
         if (this.finish)
             return;
+
+        if (this.isUserAction || this.isAddDisconnec || this.door > 8) {
+            this.checkLoser();
+            return;
+        }
 
         if (this.door == 0) {
             await this.delay(this.wait * 1000);
@@ -124,5 +126,55 @@ export default class AfsonHandler extends Set {
 
         this.activeUser = room.users[this.nobatIndex].index;
         this.main();
+    }
+
+
+    public checkLoser() {
+        this.isUserAction = false;
+        this.isAddDisconnec = false;
+        let blue: number = 0;
+        let red: number = 0;
+
+        const room = afsonDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+        room.users.map((x) => {
+            if ([1, 10].indexOf(x.userInGameStatus) > -1) {
+                const item = this.groupItem(x.key!);
+                if (item.type == 'blue')
+                    blue++;
+                if (item.type == 'red')
+                    red++;
+            }
+        });
+
+        if (red == 0 || blue == 0 || this.door > 8) this.endGame(blue, red);
+        else this.main();
+
+    }
+
+
+    public async endGame(blue: number, red: number) {
+        this.state = 'gameresponse';
+
+        if (blue > red) {
+            this.winner = winnerType.sefid;
+        }
+        else if (blue < red) {
+            this.winner = winnerType.siah;
+        }
+        else {
+            this.winner = Math.random() < 0.5 ? winnerType.sefid : winnerType.siah;
+        }
+
+        this.gameResponseReceive(90)
+        await this.delay(90000);
+
+        AfsonControll.sendToMultipleSockets(this.roomId, 'endGameReceive', true);
+        await this.delay(1000);
+
+        this.setFinish();
     }
 } 

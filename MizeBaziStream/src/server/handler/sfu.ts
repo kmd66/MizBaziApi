@@ -1,5 +1,5 @@
 ﻿import * as mediasoup from 'mediasoup';
-import { Worker, Router, WebRtcTransport, Producer, Consumer, RtpCapabilities, RtpParameters, RtpCodecCapability, MediaKind } from 'mediasoup/node/lib/types';
+import { Worker, Router, WebRtcTransport, Producer, Consumer, RtpCapabilities, RtpCodecCapability, MediaKind } from 'mediasoup/node/lib/types';
 import { SteamType } from '../model/gameInterfaces';
 import config from './config';
 

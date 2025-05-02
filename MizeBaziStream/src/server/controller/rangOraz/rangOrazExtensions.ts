@@ -46,6 +46,13 @@ class RangOrazTimer {
     public controllers: Map<string, RangOrazHandler> = new Map();
     private isDisconnectByRoomId: string = 'false';
 
+    public static getInstance() {
+        if (!RangOrazTimer.instance) {
+            RangOrazTimer.instance = new RangOrazTimer();
+        }
+        return RangOrazTimer.instance;
+    }
+
     public static Start(roomId: string) {
         if (!RangOrazTimer.instance) {
             RangOrazTimer.instance = new RangOrazTimer();
@@ -156,6 +163,6 @@ class RangOrazTimer {
 
 }
 
-export const rangInstance = RangOrazTimer.instance;
+export const rangInstance = RangOrazTimer.getInstance;
 export const rangOrazStart = RangOrazTimer.Start;
 export const rangOrazStartAll = RangOrazTimer.StartAll;

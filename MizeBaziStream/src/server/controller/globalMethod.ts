@@ -35,7 +35,8 @@ export class GameControll {
 
     public static setMessage(nameSpace: string, model: any) {
         if (!model.message || model.message == '') return;
-        const room = globalDb().getDbByid(model.roomId);
+        const db = globalDb().getDbByid(model.roomId);
+        const room = db.get(model.roomId);
         if (!room) return;
         const user = room?.users.find((x: User) => x.key == model.userKey);
         if (!user) return;
