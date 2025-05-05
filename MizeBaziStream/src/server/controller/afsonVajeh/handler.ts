@@ -140,9 +140,13 @@ export default class AfsonHandler extends Set {
             this.setFinish();
             return;
         }
+        let checkAction = false;
         room.users.map((x) => {
             if ([1, 10].indexOf(x.userInGameStatus) > -1) {
                 const item = this.groupItem(x.key!);
+                if (item.gun || item.talk)
+                    checkAction = true;
+
                 if (item.type == 'blue')
                     blue++;
                 if (item.type == 'red')
@@ -150,11 +154,9 @@ export default class AfsonHandler extends Set {
             }
         });
 
-        if (red == 0 || blue == 0 || this.door > 8) this.endGame(blue, red);
+        if (red == 0 || blue == 0 || this.door > 8 || !checkAction) this.endGame(blue, red);
         else this.main();
-
     }
-
 
     public async endGame(blue: number, red: number) {
         this.state = 'gameresponse';
