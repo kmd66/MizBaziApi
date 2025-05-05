@@ -18,6 +18,9 @@
     color: var(--TextColor2);
 }
 
+.icon-mask:before {
+    content: "\e922";
+}
 .icon-judge:before {
   content: "\e945";
 }

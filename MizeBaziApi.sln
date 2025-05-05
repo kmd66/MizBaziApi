@@ -5,27 +5,6 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MizeBazi", "MizeBazi\MizeBazi.csproj", "{12BDD234-37CF-458D-A963-B3E7C2CA4563}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "src", "MizeBaziStream\src\", "{A5AFB153-9455-4142-8AB7-27C010B5D954}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_2629"
-		Debug.AspNetCompiler.PhysicalPath = "MizeBaziStream\src\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_2629\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_2629"
-		Release.AspNetCompiler.PhysicalPath = "MizeBaziStream\src\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_2629\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "2629"
-		SlnRelativePath = "MizeBaziStream\src\"
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,10 +15,6 @@ Global
 		{12BDD234-37CF-458D-A963-B3E7C2CA4563}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12BDD234-37CF-458D-A963-B3E7C2CA4563}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12BDD234-37CF-458D-A963-B3E7C2CA4563}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5AFB153-9455-4142-8AB7-27C010B5D954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5AFB153-9455-4142-8AB7-27C010B5D954}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5AFB153-9455-4142-8AB7-27C010B5D954}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5AFB153-9455-4142-8AB7-27C010B5D954}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
