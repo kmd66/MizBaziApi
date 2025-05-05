@@ -15,7 +15,7 @@ export default class Set extends Receive {
         if (!this.isStream) return;
 
         const room = afsonDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser && x.userInGameStatus == 1);
         if (!user) return;
         AfsonControll.sendToMultipleSockets(this.roomId, 'addStickerReceive', {
             id: user.id,
@@ -27,7 +27,7 @@ export default class Set extends Receive {
         if (this.chalengerTime || !this.isStream || this.chalenger > 0 || this.door < 2) return;
 
         const room = afsonDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser && x.userInGameStatus == 1);
         if (!user) return;
         const index = this.chalengerList.findIndex(x => x == user.id);
         if (index > -1) return;
@@ -39,7 +39,7 @@ export default class Set extends Receive {
 
         const room = afsonDb().get(this.roomId);
         const user1 = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser);
-        const user2 = room?.users.find((x: User) => x.id == model.userId);
+        const user2 = room?.users.find((x: User) => x.id == model.userId && x.userInGameStatus == 1);
 
         if (!user1 || !user2) return;
         this.chalengerList.push(model.userId);
