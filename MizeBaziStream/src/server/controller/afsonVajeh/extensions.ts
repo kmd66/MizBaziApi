@@ -1,7 +1,6 @@
 ﻿import { afsonDb } from './afsonDb';
 import { userInDb } from '../userInDb';
 import SocketManager from '../../handler/socket';
-import { User } from '../../model/interfaces';
 import AfsonHandler from './handler';
 import { GameControll } from '../globalMethod';
 export class AfsonControll {
@@ -133,6 +132,7 @@ class AfsonTimer {
             return;
         }
         controller.isAddDisconnec = true;
+        this.isDisconnectByRoomId = 'false';
     }
 
     private gameHandler(roomId: string) {

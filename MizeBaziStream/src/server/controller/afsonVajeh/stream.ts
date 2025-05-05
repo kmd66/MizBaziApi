@@ -132,7 +132,6 @@ export default class Stream extends Property {
         this.sfu.clear();
         clearTimeout(this.timeoutId);
         afsonDb().delete(this.roomId);
-        console.log(this.roomId)
         afsonInstance().stop(this.roomId);
     }
 }
