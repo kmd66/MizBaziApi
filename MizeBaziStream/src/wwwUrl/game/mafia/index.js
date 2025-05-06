@@ -1,7 +1,7 @@
 ﻿import './share'
 import './socketHandler'
 import './main'
-//import './help'
+import './help'
 //import '../sticker'
 //import '../itemclick'
 //import '../gameresponse'
@@ -11,7 +11,8 @@ const app = Vue.createApp({
         return {
             appModel: {
                 state: '_state',
-                loding: true
+                loding: true,
+                nightMode: false
             },
         }
     },
@@ -35,7 +36,7 @@ const app = Vue.createApp({
     }
 })
 main.Component(app);
-//help.Component(app);
+help.Component(app);
 //sticker.Component(app);
 //itemclick.Component(app);
 //gameresponse.Component(app);

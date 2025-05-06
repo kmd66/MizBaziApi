@@ -32,7 +32,7 @@ globalModel.infoRoomReceive = function (model) {
     globalModel.users = model.users;
     globalModel.room = model.room;
     globalModel.groupItem = model.groupItem;
-    vm.$refs.childmain.door = `دور ${model.room.door}`;
+    vm.$refs.childmain.door = model.room.door;
     main.topTimeProgress(-100);
     globalModel.userStatusReceive(model.status)
 

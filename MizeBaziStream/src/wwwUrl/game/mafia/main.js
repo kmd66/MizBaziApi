@@ -102,20 +102,6 @@ main.Component = function (app) {
         methods: {
             init() {
             },
-            itemStatus(item) {
-                if (item) {
-                    switch (item.userInGameStatus) {
-                        case 1:
-                            return 'a6s5d4q';
-                        case 10:
-                            return 'imgStatus icon-ofline';
-                        case 2:
-                        case 11:
-                            return 'imgStatus icon-death';
-                    }
-                }
-                return 'imgStatus icon-ofline';
-            },
             setCancel() {
                 globalModel.connection.emit('setCancel', {
                     roomId: socketHandler.roomId,
@@ -131,6 +117,41 @@ main.Component = function (app) {
                     userKey: socketHandler.userKey,
                 });
             }
+        }
+    });
+
+    app.component('mainitem-component', {
+        template: '#mainitem-template',
+        data() {
+            return {
+            }
+        },
+        props: {
+            left: Boolean,
+            users: {
+                type: Array,
+            },
+            appModel: {
+                type: Object,
+                required: true,
+                default: () => ({})
+            },
+        },
+        methods: {
+            itemStatus(item) {
+                if (item) {
+                    switch (item.userInGameStatus) {
+                        case 1:
+                            return this.appModel.nightMode ? 'imgStatus icon-mask':'a6s5d4q';
+                        case 10:
+                            return 'imgStatus icon-ofline';
+                        case 2:
+                        case 11:
+                            return 'imgStatus icon-death';
+                    }
+                }
+                return 'imgStatus icon-ofline';
+            },
         }
     });
 }

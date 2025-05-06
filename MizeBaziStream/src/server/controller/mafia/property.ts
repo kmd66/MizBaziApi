@@ -75,7 +75,7 @@ export class Property {
                 model.type = 'mafia';
                 model.hadseNaghsh = true;
             }
-            else if ([9, 6].indexOf(x.type) > -1) {
+            else if ([9, 7, 6].indexOf(x.type) > -1) {
                 model.shot = true;
             }
 

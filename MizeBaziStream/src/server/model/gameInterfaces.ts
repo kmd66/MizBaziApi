@@ -61,7 +61,7 @@ export enum mafiaRole {
 
     raees = 21, //'رییس مافیا',
     kharabkar = 22, //'خرابکار',
-    saregh = 23, //'سارق',
+    taghier = 23, //'تغییردهنده',
 }
 
 export enum userInGameStatusType {

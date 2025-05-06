@@ -1,0 +1,29 @@
+<template id="help-template">
+    <div class="helpMain" v-show="appModel.state == 'help'">
+        <div class="main">
+            <div class="helpIcon"><i :class="selectItem.icon"></i></div>
+            <div class="helpTitle">{{selectItem.title}}</div>
+            <div style="margin-top: 14px;" v-html="selectItem.comment"></div>
+        </div>
+        <div class="mainBottom">
+            <div>
+                <div v-for="item in helpComment" class="item"
+                     @click="changeSelectType(item)"
+                     :style="{ backgroundColor: selectType == item.type ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
+                    <div :class="item.icon"></div>
+                    <div>{{item.title}}</div>
+                </div>
+                <div class="item" @click="appModel.state = 'main'">
+                    <div class="icon-chevron-left"></div>
+                    <div>بازگشت</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="naghshCard" v-show="isShowCard">
+        <div class="helpTitle" style=" color: var(--LinkColor);">نقش شما</div>
+        <div class="helpIcon"><i :class="selectItem.icon"></i></div>
+        <div class="helpTitle" style="margin-top:12px">{{selectItem.title}}</div>
+    </div>
+</template>

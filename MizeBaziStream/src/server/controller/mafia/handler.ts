@@ -35,7 +35,7 @@ export default class mafiaHandler extends Set {
     //-----------main
 
     public async main() {
-        if (this.finish || 1=1)
+        if (this.finish || 1==1)
             return;
 
         if (this.isUserAction || this.isAddDisconnec || this.door > 10) {

@@ -110,10 +110,18 @@ class PageRoot {
         const filePathBody = path.join(__dirname, '../../public/mafia/body.html');
         const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
 
+        const mainFile = path.join(__dirname, '../../public/mafia/main.html');
+        const mainTemp = fs.readFileSync(mainFile, 'utf8');
+        const helpFile = path.join(__dirname, '../../public/mafia/help.html');
+        const helpTemp = fs.readFileSync(helpFile, 'utf8');
+
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
             body: bodyPartial,
             title: 'مافیا',
+
+            main: mainTemp,
+            help: helpTemp,
         });
         res.send(renderedHtml);
     }

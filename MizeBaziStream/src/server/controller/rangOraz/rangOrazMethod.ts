@@ -12,7 +12,7 @@ function connectionReceive(roomId: string, userKey: string, connectionId: string
         const userConnectionId = user.connectionId;
 
         user.connectionId = connectionId;
-        if (user.userInGameStatus != userInGameStatusType.koshte) {
+        if (user.userInGameStatus == userInGameStatusType.ofline) {
             user.userInGameStatus = userInGameStatusType.faal;
             user.lastConnectAt = new Date();
             _userInDb.update(roomId, user);

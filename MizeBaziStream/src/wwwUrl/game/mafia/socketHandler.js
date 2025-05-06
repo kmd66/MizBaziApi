@@ -24,8 +24,8 @@ socketHandler.initSoket = function () {
         console.log(`---a---disconnect :`);
     });
 
-    //globalModel.connection.on('infoRoomReceive', globalModel.infoRoomReceive);
-    //globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
+    globalModel.connection.on('infoRoomReceive', globalModel.infoRoomReceive);
+    globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
     //globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
     //globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
 
