@@ -29,6 +29,13 @@
     height: 80px;
     padding: 0;
 }
+.soundDiv {
+    position: fixed;
+    text-align: center;
+}
+.soundDiv i {
+    color: rgb(255 0 0);
+}
 .helpMain .item {
     height: 100%;
     display: flex;

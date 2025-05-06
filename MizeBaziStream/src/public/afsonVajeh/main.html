@@ -3,7 +3,7 @@
         <div class="mainTop d-flex">
             <div class="mainTopPeriod">{{door}}</div>
             <div class="mainTopTitle" @click="appModel.state = 'help'">
-                <div style="text-align: center;" ><i :style="{ color: naghsh?.color }" :class="naghsh?.icon"></i></div>
+                <div style="text-align: center;"><i :style="{ color: naghsh?.color }" :class="naghsh?.icon"></i></div>
                 <div :style="{ color: naghsh?.color }">{{naghsh?.title}}</div>
             </div>
             <div class="mainTopTime">{{mainTopTime}}</div>
@@ -49,6 +49,9 @@
 
         </div>
 
+        <div class="soundDiv">
+            <i class="icon-radar-14" :style="{ display: soundDivI == true ? 'inline-block':'none'}"></i>
+        </div>
         <div class="mainBottom">
             <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
                 <i class="icon-chevron-square-right"></i>
@@ -66,12 +69,4 @@
     </div>
 
     <sticker-component></sticker-component>
-    <div v-if="mozoeNaghashiList != null" class="listMain re">
-        <div v-for="m in mozoeNaghashiList" class="ra">
-            <div @click="setMozoeNaghashi(m)">
-                {{m}}
-            </div>
-        </div>
-    </div>
-
 </template>

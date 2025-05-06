@@ -12,6 +12,13 @@
     font-size: 2rem;
     color: #999999;
 }
+.soundDiv {
+    position: fixed;
+    text-align: center;
+}
+.soundDiv i {
+    color: rgb(255 0 0);
+}
 .containerGame .Night .mainTop {
     background: rgb(0 13 31);
 }

@@ -14,6 +14,14 @@ main.reset = function (itemMainFix) {
 
     resetTimer();
 }
+isSetSoundDiv = false;
+function setSoundDiv() {
+    if (isSetSoundDiv) return;
+    const el = document.querySelector(`.soundDiv`);
+    el.style.width = '80px';
+    el.style.top = `${(screen.height / 4) - 25}px`;
+    el.style.left = `${(screen.width / 2) - 40}px`;
+}
 function resetTimer() {
     if (main.topTimeProgressTimer)
         clearTimeout(main.topTimeProgressTimer);
@@ -41,6 +49,7 @@ main.getDefensePosition = function (duration) {
         easing: 'ease-in-out',
         fill: 'forwards'
     });
+    setSoundDiv();
 
     animation.onfinish = () => {
     };

@@ -23,6 +23,14 @@ function resetTimer() {
     vm.$refs.childmain.mainTopTime = '- ----';
     vm.$refs.childmain.progressbarWidth = "0px";
 }
+isSetSoundDiv = false;
+function setSoundDiv() {
+    if (isSetSoundDiv) return;
+    const el = document.querySelector(`.soundDiv`);
+    el.style.width = '80px';
+    el.style.top = `${(screen.height / 4) - 25}px`;
+    el.style.left = `${(screen.width / 2) - 40}px`;
+}
 main.getDefensePosition = function (duration) {
 
     main.reset();
@@ -41,7 +49,7 @@ main.getDefensePosition = function (duration) {
         easing: 'ease-in-out',
         fill: 'forwards'
     });
-
+    setSoundDiv();
     animation.onfinish = () => {
     };
 }

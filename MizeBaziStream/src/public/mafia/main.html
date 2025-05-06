@@ -38,12 +38,15 @@
             <div class="mainItem d-flex">
                 <mainitem-component v-if="users.length > 0" :app-model="appModel"
                                     :users="users.slice(0, 5)"
-                                    :left="false" ></mainitem-component>
+                                    :left="false"></mainitem-component>
                 <mainitem-component v-if="users.length > 0" :app-model="appModel"
                                     :users="users.slice(5)"
-                                    :left="true" ></mainitem-component>
+                                    :left="true"></mainitem-component>
             </div>
 
+            <div class="soundDiv">
+                <i class="icon-radar-14" :style="{ display: soundDivI == true ? 'inline-block':'none'}"></i>
+            </div>
         </div>
 
         <div class="mainBottom">
