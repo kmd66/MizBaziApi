@@ -34,7 +34,9 @@ globalModel.infoRoomReceive = function (model) {
     globalModel.groupItem = model.groupItem;
     vm.$refs.childmain.door = model.room.door;
     main.topTimeProgress(-100);
-    globalModel.userStatusReceive(model.status)
+    globalModel.userStatusReceive(model.status);
+
+    setNightMode(model.room.doorType);
 
 }
 globalModel.userStatusReceive = function (model) {
@@ -53,8 +55,16 @@ globalModel.infoMainReceive = function (room) {
     globalModel.room = room;
     main.topTimeProgress(-100);
     vm.$refs.childmain.door = `دور ${room.door}`;
-    if (room.door == 10) {
 
+    setNightMode(room.doorType);
+}
+function setNightMode(doorType) {
+    if (doorType == 3) {
+        if (!vm.appModel.nightMode)
+            vm.appModel.nightMode = true;
     }
-
+    else {
+        if (vm.appModel.nightMode)
+            vm.appModel.nightMode = false;
+    }
 }

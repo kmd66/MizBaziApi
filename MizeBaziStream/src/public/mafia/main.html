@@ -56,7 +56,7 @@
             </div>
             <div v-if="!cancelBtn" class="d-flex">
                 <div>
-                    <i :class="iconClass.like" @click="appModel.nightMode = !appModel.nightMode"></i>
+                    <i :class="iconClass.like"  onclick="sticker.handleUpdate('l1')"></i>
                     <i :class="iconClass.dislike" onclick="sticker.handleUpdate('l2')" style="margin-right: 12px;"></i>
                 </div>
                 <i :class="iconClass.sticker" onclick="sticker.toggleTab()"></i>

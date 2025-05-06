@@ -10,6 +10,7 @@ export default class Receive extends Stream {
     public infoMainReceive(wait: number | null = null) {
         const model = {
             door: this.door,
+            doorType: this.doorType,
             wait: wait ? wait : this.mainWait,
         };
         MafiaControll.sendToMultipleSockets(this.roomId, 'infoMainReceive', model);

@@ -22,9 +22,9 @@ main.init = function () {
     vm.$refs.childmain.naghsh = naghsh;
     vm.$refs.childmain.iconClass = iconClassDisabled;
 
-    //globalModel.connection.on('getDefensePositionReceive', getDefensePositionReceive);
-    //globalModel.connection.on('startStreamReceive', startStreamReceive);
-    //globalModel.connection.on('endStreamReceive', endStreamReceive);
+    globalModel.connection.on('getDefensePositionReceive', getDefensePositionReceive);
+    globalModel.connection.on('startStreamReceive', startStreamReceive);
+    globalModel.connection.on('endStreamReceive', endStreamReceive);
 
     //globalModel.connection.on('addChaleshReceive', addChaleshReceive);
     //globalModel.connection.on('setChaleshReceive', setChaleshReceive);

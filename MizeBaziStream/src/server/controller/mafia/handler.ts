@@ -35,7 +35,7 @@ export default class mafiaHandler extends Set {
     //-----------main
 
     public async main() {
-        if (this.finish || 1==1)
+        if (this.finish)
             return;
 
         if (this.isUserAction || this.isAddDisconnec || this.door > 10) {
@@ -49,22 +49,20 @@ export default class mafiaHandler extends Set {
 
         this.setState();
 
-        if (this.activeUser > -1) {
-            await this.delay(100);
-            this.getDefensePositionReceive();
-            await this.delay(this.mainWait * 1000);
-            this.startProduceStream();
-            await this.delay(500);
-            this.startStreamReceive();
+        if (this.activeUser > -1) 
             this.timer();
-        }
         else
             this.next();
 
     }
-    
 
-    private timer() {
+    private async timer() {
+        await this.delay(100);
+        this.getDefensePositionReceive();
+        await this.delay(this.mainWait * 1000);
+        this.startProduceStream();
+        await this.delay(500);
+        this.startStreamReceive();
 
         if (this.timeoutId) {
             clearTimeout(this.timeoutId);
@@ -77,7 +75,6 @@ export default class mafiaHandler extends Set {
     }
 
     public async next() {
-
         if (this.activeUser > -1) {
             this.endStreamReceive();
             await this.delay(200);

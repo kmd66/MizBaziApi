@@ -9,6 +9,7 @@ export class Property {
     }
 
     public door: number = 0;
+    public doorType: number = 1; // 1 roz // 2 ray // 3 shab
 
     public roomId!: string;
 
