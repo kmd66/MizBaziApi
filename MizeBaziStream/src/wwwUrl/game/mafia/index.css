@@ -75,3 +75,8 @@
 .raygiriIcon.icon-hand {
     color: #00ff5d;
 }
+.imgStatus.icon-mafia1, .imgStatus.icon-mafia2, .imgStatus.icon-mafia3 {
+    line-height: 2rem;
+    font-size: 2rem;
+    color: var(--NaghshSiahColor);
+}

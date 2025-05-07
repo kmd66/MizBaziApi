@@ -163,7 +163,12 @@ main.Component = function (app) {
                 if (item) {
                     switch (item.userInGameStatus) {
                         case 1:
-                            return this.appModel.nightMode ? 'imgStatus icon-mask':'a6s5d4q';
+                            if (this.appModel.nightMode) {
+                                const user = globalModel.users.find(x => x.id == item.id);
+                                return user.nightIcon;
+                            }
+
+                            return 'a6s5d4q';
                         case 10:
                             return 'imgStatus icon-ofline';
                         case 2:

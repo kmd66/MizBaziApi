@@ -29,7 +29,15 @@ globalModel.infoRoomReceive = function (model) {
         vm.changeState(model.room.state);
     }
 
-    model.users.map((x) => x.row = x.index + 1);
+    model.users.map((x) => {
+        if (x.type && x.type > 20) {
+            x.nightIcon = 'imgStatus ' +help.find(x.type).icon;
+        } else {
+            x.nightIcon = 'imgStatus icon-mask';
+        }
+
+        x.row = x.index + 1;
+    });
     globalModel.users = model.users;
     globalModel.room = model.room;
     globalModel.groupItem = model.groupItem;
