@@ -18,7 +18,8 @@ export class MafiaControll {
             return model;
         return model.map(({ id, index, info, type }) => ({
             id, index, info,
-            ...(userType == type && { type: type })
+            ...(userType == type && { type: type }),
+            ...(userType > 20 && type > 20 && { type: type })
         }));
     }
 

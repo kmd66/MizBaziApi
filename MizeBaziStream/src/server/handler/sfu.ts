@@ -172,7 +172,7 @@ class SFU {
             });
 
             this.producer.on('transportclose', () => {
-                this.producer?.close();
+                this.stopProducer();
                 this.closeAllConsumer();
                 //model.allCancelStream();
             });
@@ -186,7 +186,7 @@ class SFU {
 
     async createConsumer(userId: number, rtpCapabilities: RtpCapabilities): Promise<any> {
         try {
-            if (this.router!.canConsume({
+            if (this.producer && this.router!.canConsume({
                 producerId: this.producer!.id,
                 rtpCapabilities,
             })) {

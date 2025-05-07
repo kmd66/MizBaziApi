@@ -88,7 +88,13 @@ export default class Stream extends Property {
         const user = this.getUser(model);
         if (!user) return;
 
-        await this.sfu.consumer.get(user.id)?.resume()
+        try {
+            if (!this.sfu.consumer.get(user.id)?.closed) {
+                await this.sfu.consumer.get(user.id)?.resume()
+            }
+        } catch (err) {
+            console.error('Failed to resume consumer', err);
+        }
     }
 
 
