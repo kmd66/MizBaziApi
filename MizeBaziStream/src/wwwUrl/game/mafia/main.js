@@ -94,6 +94,8 @@ main.Component = function (app) {
                 soundDivI: false,
                 cancelBtn: false,
 
+                raye: false,
+
                 user: {},
                 users: [],
 
@@ -121,6 +123,17 @@ main.Component = function (app) {
                 if (main.stream.activeUser == globalModel.user.index) return;
 
                 globalModel.connection.emit('addChalesh', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+            setRaye() {
+                if (!globalModel.activeUser || !globalModel.activeUser.type) return;
+                if (globalModel.activeUser.type != 'rayeDefae' && globalModel.activeUser.type != 'rayeKhoroj') return;
+
+                globalModel.connection.emit('setRaye', {
+                    type: globalModel.activeUser.type,
+                    index: globalModel.activeUser.index,
                     roomId: socketHandler.roomId,
                     userKey: socketHandler.userKey,
                 });

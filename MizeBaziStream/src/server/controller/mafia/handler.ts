@@ -3,6 +3,7 @@ import  Set from './set';
 import { User } from '../../model/interfaces';
 import { winnerType } from '../../model/gameInterfaces';
 import { MafiaControll } from './extensions';
+import { userInDb } from '../userInDb';
 
 export default class mafiaHandler extends Set {
 
@@ -15,6 +16,14 @@ export default class mafiaHandler extends Set {
         this.rooz = new Rooz(this);
         this.raygiri = new Raygiri(this);
         this.shab = new Shab(this);
+    }
+
+    public setRaye(model: any) {
+        if (this.raygiri.activeDefaeUser == -1 && this.raygiri.activeRaygiriUser == -1) return;
+        if (model.type == 'rayeDefae')
+            this.raygiri.setRayeDefa(model);
+        if (model.type == 'rayeKhoroj')
+            this.raygiri.setRayeKhoroj(model);
     }
 
     public cancel(model: any) {
@@ -50,14 +59,16 @@ export default class mafiaHandler extends Set {
             return;
         }
 
+
         if (this.door == 0) {
             await this.delay(this.wait * 1000);
+            this.door++;
         }
 
-        if (this.door == 1 && this.doorType == 2) {
-            this.shab.main();
-            return;
-        }
+
+        await this.delay(100);
+        this.infoMainReceive();
+        await this.delay(500);
 
         this.setState();
         if (this.doorType == 1)
@@ -113,6 +124,7 @@ class Rooz {
     }
 
     public async main() {
+
         if (this.handler.finish)
             return;
 
@@ -151,13 +163,7 @@ class Rooz {
             this.handler.endStreamReceive();
             await this.delay(200);
         }
-
-        if (this.handler.activeUser == -1) {
-            this.nextReset();
-            this.handler.door++;
-            this.handler.infoMainReceive();
-            await this.delay(this.handler.mainWait * 1000);
-        }
+        
         this.setNobatIndex();
     }
 
@@ -184,7 +190,10 @@ class Rooz {
         this.nobatIndex = this.nobatIndex + 1;
         if (this.nobatIndex >= room.users.length) {
             this.nextReset();
-            this.handler.doorType == 2;
+            if (this.handler.door == 1)
+                this.handler.doorType = 3;
+            else
+                this.handler.doorType = 2;
             this.handler.main();
             return;
         }
@@ -215,10 +224,6 @@ class Raygiri {
 
 
     public async main() {
-        await this.delay(100);
-        this.handler.infoMainReceive();
-        await this.delay(100);
-
         this.handler.defae.clear();
         this.handler.rayeKhoroj.clear();
         this.defaeList = [];
@@ -237,7 +242,7 @@ class Raygiri {
         }
 
         this.nobatIndex = this.nobatIndex + 1;
-        if (this.handler.nobatIndex >= room.users.length) {
+        if (this.nobatIndex >= room.users.length) {
             this.checkDefae();
             return;
         }
@@ -254,16 +259,19 @@ class Raygiri {
     private async rayegiri() {
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'rayegiriReceive', {
             type: 'wait',
-            activeUser: -1,
-            wait: 3
+            activeUser: this.activeDefaeUser
         });
-        await this.delay(3000);
+        await this.delay(1500);
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'rayegiriReceive', {
             type: 'start',
             activeUser: this.activeDefaeUser,
-            wait: 7
+            wait: 5
         });
-        await this.delay(7000);
+        await this.delay(5000);
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'rayegiriReceive', { type: 'end' });
+        await this.delay(1000);
+        this.activeDefaeUser = -1;
+
         this.setNobatIndex();
     }
 
@@ -286,13 +294,13 @@ class Raygiri {
         }
 
         if (this.defaeList.length == 0) {
-            this.handler.doorType == 3;
+            this.handler.doorType = 3;
             this.handler.main();
         }
         else {
             await this.delay(100);
             MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeListReceive', this.defaeList);
-            await this.delay(7000);
+            await this.delay(5000);
             this.nobatIndex = -1;
             this.defae();
         }
@@ -357,16 +365,19 @@ class Raygiri {
     private async rayeKhoroj2() {
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'rayeKhorojReceive', {
             type: 'wait',
-            activeUser: -1,
-            wait: 3
+            activeUser: this.activeRaygiriUser
         });
-        await this.delay(3000);
+        await this.delay(1500);
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'rayeKhorojReceive', {
             type: 'start',
             activeUser: this.activeRaygiriUser,
-            wait: 7
+            wait: 5
         });
-        await this.delay(7000);
+        await this.delay(5000);
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'rayegiriReceive', { type: 'end' });
+        await this.delay(1000);
+        this.activeRaygiriUser = -1;
+
         this.rayeKhoroj();
     }
 
@@ -401,7 +412,7 @@ class Raygiri {
             this.khoroj(user);
         }
         else {
-            this.handler.doorType == 3;
+            this.handler.doorType = 3;
             this.handler.main();
         }
 
@@ -409,11 +420,10 @@ class Raygiri {
 
     private async khoroj(user: User | undefined) {
         if (!user) {
-            this.handler.doorType == 3;
+            this.handler.doorType = 3;
             this.handler.main();
             return;
         }
-
         await this.delay(100);
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'wait', wait: 3, activeUser: user.id });
         this.handler.activeUser
@@ -422,12 +432,47 @@ class Raygiri {
         await this.delay(500);
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'start', wait: 15, activeUser: user.id });
         await this.delay(20000);
-        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'end' });
+        user.userInGameStatus = 2;
+        userInDb().update(this.handler.roomId, user);
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'end', activeUser: user.id });
 
         await this.delay(100);
 
-        this.handler.doorType == 3;
+        this.handler.doorType = 3;
         this.handler.main();
+    }
+
+    public setRayeDefa(model: any) {
+        const room = mafiaDb().get(this.handler.roomId);
+        const user1 = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeDefaeUser);
+        const user2 = room?.users.find((x: User) => x.index == model.index && x.index == this.activeDefaeUser);
+        if (!user1 || !user2) return;
+
+        if (!this.handler.defae.has(user2.id)) {
+            this.handler.defae.set(user2.id, []);
+        }
+        var list = this.handler.defae.get(user2.id) || [];
+        if (list.includes(user1.id)) return;
+
+        list.push(user1.id);
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'setRayeReceive', {id: user1.id});
+    }
+
+    public setRayeKhoroj(model: any) {
+        const room = mafiaDb().get(this.handler.roomId);
+        const user1 = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeRaygiriUser);
+        const user2 = room?.users.find((x: User) => x.index == model.index && x.index == this.activeRaygiriUser);
+        if (!user1 || !user2) return;
+
+        if (!this.handler.rayeKhoroj.has(user2.id)) {
+            this.handler.rayeKhoroj.set(user2.id, []);
+        }
+        var list = this.handler.rayeKhoroj.get(user2.id) || [];
+        if (list.includes(user1.id)) return;
+
+        list.push(user1.id);
+
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'setRayeReceive', { id: user1.id });
     }
 }
 class Shab {
@@ -441,12 +486,10 @@ class Shab {
     }
 
     public async main() {
-        await this.delay(100);
-        this.handler.infoMainReceive();
-        await this.delay(100);
+
         setTimeout(() => {
             this.check();
-        }, 40000);
+        }, this.handler.nightWait * 1000);
     }
 
     public async check() {
@@ -463,8 +506,11 @@ class Shab {
             return;
         }
 
+
+        this.handler.nextReset();
         this.handler.door++;
-        this.handler.doorType == 1;
+        this.handler.doorType = 1;
+        await this.delay(this.handler.mainWait * 1000);
         this.handler.main();
     }
 

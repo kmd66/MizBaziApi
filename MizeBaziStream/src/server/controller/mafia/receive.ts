@@ -13,6 +13,8 @@ export default class Receive extends Stream {
             doorType: this.doorType,
             wait: wait ? wait : this.mainWait,
         };
+        if (this.doorType == 3)
+            model.wait = this.door == 1 ? 20 : this.nightWait;
         MafiaControll.sendToMultipleSockets(this.roomId, 'infoMainReceive', model);
     }
 

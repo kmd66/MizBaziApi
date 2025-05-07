@@ -50,13 +50,18 @@
         </div>
 
         <div class="mainBottom">
+            <div v-show="raye" @click="setRaye()" style="text-align:center">
+                <i class="icon-hand"></i>
+            </div>
+
             <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
                 <i class="icon-chevron-square-right"></i>
                 <span style="margin-right: 12px;">بعدی</span>
             </div>
-            <div v-if="!cancelBtn" class="d-flex">
+            
+            <div v-if="!cancelBtn && !raye" class="d-flex">
                 <div>
-                    <i :class="iconClass.like"  onclick="sticker.handleUpdate('l1')"></i>
+                    <i :class="iconClass.like" onclick="sticker.handleUpdate('l1')"></i>
                     <i :class="iconClass.dislike" onclick="sticker.handleUpdate('l2')" style="margin-right: 12px;"></i>
                 </div>
                 <i :class="iconClass.sticker" onclick="sticker.toggleTab()"></i>

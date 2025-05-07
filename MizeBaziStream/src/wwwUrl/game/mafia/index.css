@@ -72,3 +72,6 @@
 .helpMain .main [class^="icon-"]{
     color: var(--TextColor2) !important;
 }
+.raygiriIcon.icon-hand {
+    color: #00ff5d;
+}

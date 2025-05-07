@@ -17,6 +17,7 @@ export class Property {
 
     public wait: number = 12;
     public mainWait: number = 3;
+    public nightWait: number = 40;
     public activeUser: number = -1;
     public state: string = 'main';
 
@@ -58,7 +59,7 @@ export class Property {
         if (this.chalengerTime)
             this.wait = 10;
         else if (this.activeUser)
-            this.wait = 10;
+            this.wait = 3;
         else
             this.wait = 12;
     }

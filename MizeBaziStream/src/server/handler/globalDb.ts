@@ -66,11 +66,16 @@ export class GlobalsDb {
     }
     public delete(id: string): void {
         this.db.delete(id);
+        const _db = this.getDbByid(id);
+        _db.delete(id);
     }
 
     public clear(): void {
         this.db.clear();
         rangOrazDb().clear();
+        afsonDb().clear();
+        mafiaDb().clear();
+        khandeDb().clear();
     }
 
 }

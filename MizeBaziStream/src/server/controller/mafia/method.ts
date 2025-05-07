@@ -103,6 +103,8 @@ export function MafiaMethod() {
             setChalesh: wrapHandler('setChalesh'),
             addTarget: wrapHandler('addTarget'),
 
+            setRaye: wrapHandler('setRaye'),
+
         },
 
         streamHandler: {

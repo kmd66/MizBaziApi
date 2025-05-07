@@ -29,9 +29,17 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
     globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
 
+    globalModel.connection.on('rayegiriReceive', socketHandler.rayegiriReceive);
+    globalModel.connection.on('rayeKhorojReceive', socketHandler.rayeKhorojReceive);
+    globalModel.connection.on('setRayeReceive', socketHandler.setRayeReceive);
+    globalModel.connection.on('defaeListReceive', socketHandler.defaeListReceive);
+    globalModel.connection.on('defaeReceive', socketHandler.defaeReceive);
+    globalModel.connection.on('khorojReceive', socketHandler.khorojReceive);
+
     //globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
     //globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
     //globalModel.connection.on('getMessage', gameresponse.getMessage);
+
 
 }
 function socketCallBack() {
