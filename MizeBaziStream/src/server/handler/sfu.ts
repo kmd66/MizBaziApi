@@ -10,6 +10,7 @@ class SFU {
 
     public steamType: SteamType;
     public router: Router | null = null;
+    public producerUserId: number = 0;
     public producerTransport: WebRtcTransport | null = null;
     public producer: Producer | null = null;
     public consumerTransport: Map<number, WebRtcTransport> = new Map();
@@ -76,7 +77,7 @@ class SFU {
         this.router = null;
     }
 
-    async stopProducer(): Promise<void> {
+    public  async stopProducer(): Promise<void> {
         if (this.producer) {
             await this.producer.close();
             this.producer = null;
@@ -85,6 +86,7 @@ class SFU {
             await this.producerTransport.close();
             this.producerTransport = null;
         }
+        this.producerUserId = 0;
     }
 
     async closeConsumer(userId: number): Promise<void> {
@@ -98,7 +100,7 @@ class SFU {
         }
     }
 
-    async closeAllConsumer(): Promise<void> {
+    public async closeAllConsumer(): Promise<void> {
         for (const [userId, consumer] of this.consumer.entries()) {
             try {
                 await consumer.close();
@@ -141,6 +143,7 @@ class SFU {
 
             if (sender) {
                 await this.stopProducer();
+                this.producerUserId = userId;
                 this.producerTransport = transport;
             } else {
                 this.consumerTransport.set(userId, transport);

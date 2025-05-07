@@ -24,6 +24,7 @@ function initShare() {
 initShare();
 
 globalModel.infoRoomReceive = function (model) {
+    socketHandler.closelObj();
     if (model.room.state) {
         vm.changeState(model.room.state);
     }

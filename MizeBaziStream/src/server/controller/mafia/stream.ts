@@ -26,6 +26,14 @@ export default class Stream extends Property {
         await this.sfu.closeConsumer(user.id);
     }
 
+    public async closeProducer(roomId: any, userKey: any) {
+        const user = this.getUser({ roomId: roomId, userKey: userKey });
+        if (!user) return;
+        if (user.id == this.sfu.producerUserId) {
+            this.sfu.stopProducer()
+        }
+    }
+
     public async getRtpCapabilities(model: any) {
         const user = this.getUser(model);
         if (!user) return;

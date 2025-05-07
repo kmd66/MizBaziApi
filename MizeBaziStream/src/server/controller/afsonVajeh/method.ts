@@ -81,14 +81,21 @@ export function AfsonMethod() {
                 });
                 connectionReceive(socket.handshake.auth.roomId, socket.handshake.auth.userKey, socket.id);
                 const handler = AfsonControll.getHandler(socket.handshake.auth.roomId);
-                if (handler)
+                if (handler) {
+                    handler.closeProducer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
                     handler.closeConsumer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
+                }
             },
         },
 
         handler: {
             'disconnect': (socket: Socket) => {
                 GameControll.disconnect('hubAfsonVajeh', socket.handshake.auth.roomId, socket.id)
+                const handler = AfsonControll.getHandler(socket.handshake.auth.roomId);
+                if (handler) {
+                    handler.closeProducer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
+                    handler.closeConsumer(socket.handshake.auth.roomId, socket.handshake.auth.userKey)
+                }
             },
         },
 

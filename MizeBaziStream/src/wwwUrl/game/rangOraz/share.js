@@ -58,6 +58,7 @@ function taeinDoor(room) {
 
 }
 function infoRoomReceive(model) {
+    socketHandler.closelObj();
     globalModel.infoMainReceive(model.room)
     //loserUser: handler.loserUser,
     //hadseNaghsh: handler.hadseNaghsh,
