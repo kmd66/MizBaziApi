@@ -32,6 +32,21 @@
                 </div>
             </div>
 
+
+            <div v-if="gameName == 'mafia'">
+                <div>
+                    <div class="modalTarget d-flex" style="margin-top:0">
+                        <div class="icon icon-information4" @click="info()"></div>
+                    </div>
+                </div>
+                <div v-show="isAddTarget && afson == null && !isMy">
+                    <div class="modalTarget d-flex">
+                        <div class="icon target1 modalTargetItem1" @click="target(0)"></div>
+                        <div class="icon target2 modalTargetItem2" @click="target(1)"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 

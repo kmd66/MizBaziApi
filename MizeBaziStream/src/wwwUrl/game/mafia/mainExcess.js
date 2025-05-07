@@ -26,8 +26,8 @@ main.init = function () {
     globalModel.connection.on('startStreamReceive', startStreamReceive);
     globalModel.connection.on('endStreamReceive', endStreamReceive);
 
-    //globalModel.connection.on('addChaleshReceive', addChaleshReceive);
-    //globalModel.connection.on('setChaleshReceive', setChaleshReceive);
+    globalModel.connection.on('addChaleshReceive', addChaleshReceive);
+    globalModel.connection.on('setChaleshReceive', setChaleshReceive);
 }
 main.setUsers = function () {
     globalModel.user = globalModel.users.find(x => x.id == socketHandler.userId);

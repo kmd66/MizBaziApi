@@ -92,7 +92,7 @@ export default class Stream extends Property {
     }
 
 
-    protected async startProduceStream() {
+    public startProduceStream() {
         const room = mafiaDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.index == this.activeUser);
         if (!user) return;
@@ -100,7 +100,11 @@ export default class Stream extends Property {
         SocketManager.sendToSocket('hubMafia', 'startProduceStream', user.connectionId, true);
     }
 
-    protected async startProduceStreamById(id: number) {
+    public startProduceStream2(connectionId: string) {
+        SocketManager.sendToSocket('hubMafia', 'startProduceStream', connectionId, true);
+    }
+
+    public startProduceStreamById(id: number) {
         const room = mafiaDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.id == id);
         if (!user) return;
@@ -108,7 +112,7 @@ export default class Stream extends Property {
         SocketManager.sendToSocket('hubMafia', 'startProduceStream', user.connectionId, true);
     }
 
-    protected async startConsumerStream(userId: number) {
+    public startConsumerStream(userId: number) {
         const room = mafiaDb().get(this.roomId);
         if (!room || !room?.users) return;
 
@@ -123,13 +127,15 @@ export default class Stream extends Property {
         MafiaControll.sendToConnectionListId(connectionIds, 'startConsumerStream', true);
     }
 
-    protected async allCancelStream() {
+    public allCancelStream() {
         MafiaControll.sendToMultipleSockets(this.roomId, 'canselStream', true);
     }
 
     public setFinish() {
         this.finish = true;
         this.sfu.clear();
+        this.defae.clear();
+        this.rayeKhoroj.clear();
         clearTimeout(this.timeoutId);
         mafiaDb().delete(this.roomId);
         mafiaInstance().stop(this.roomId);

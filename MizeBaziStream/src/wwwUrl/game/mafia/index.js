@@ -2,8 +2,8 @@
 import './socketHandler'
 import './main'
 import './help'
-//import '../sticker'
-//import '../itemclick'
+import '../sticker'
+import '../itemclick'
 //import '../gameresponse'
 
 const app = Vue.createApp({
@@ -37,8 +37,8 @@ const app = Vue.createApp({
 })
 main.Component(app);
 help.Component(app);
-//sticker.Component(app);
-//itemclick.Component(app);
+sticker.Component(app);
+itemclick.Component(app);
 //gameresponse.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -54,7 +54,7 @@ globalModel.infoMainReceive = function (room) {
     reset();
     globalModel.room = room;
     main.topTimeProgress(-100);
-    vm.$refs.childmain.door = `دور ${room.door}`;
+    vm.$refs.childmain.door = room.door;
 
     setNightMode(room.doorType);
 }

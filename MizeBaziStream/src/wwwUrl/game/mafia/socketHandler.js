@@ -27,7 +27,7 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('infoRoomReceive', globalModel.infoRoomReceive);
     globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
     globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
-    //globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
+    globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
 
     //globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
     //globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
@@ -39,6 +39,6 @@ function socketCallBack() {
     vm.appModel.loding = false;
     vm.changeState('main');
     main.init();
-    //itemclick.listen();
+    itemclick.listen();
     socketHandler.streamInit();
 }

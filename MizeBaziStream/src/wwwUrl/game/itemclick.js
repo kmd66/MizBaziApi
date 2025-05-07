@@ -28,7 +28,7 @@ function itemMainClick(i) {
 
     if (globalModel.gameName == 'rangOraz')
         vm.$refs.childitemclick.rangOrazClick(i);
-    if (globalModel.gameName == 'afsonVajeh')
+    if (globalModel.gameName == 'afsonVajeh' || globalModel.gameName == 'mafia')
         vm.$refs.childitemclick.modal = true;
 }
 
@@ -66,7 +66,15 @@ function afsonVajehClick(i) {
         vm.$refs.childitemclick.afson = { ...globalModel.groupItem };
     }
     else
-        vm.$refs.childitemclick.afson = null; 
+        vm.$refs.childitemclick.afson = null;
+}
+function mafiaClick(i) {
+
+    if (main.stream != null && main.stream.activeUser == globalModel.user.index) {
+        vm.$refs.childitemclick.mafia = { ...globalModel.groupItem };
+    }
+    else
+        vm.$refs.childitemclick.afson = null;
 }
 
 function addTargetReceive(model) {
@@ -158,7 +166,8 @@ itemclick.Component = function (app) {
                 isMy: false,
                 isShowOstad: false,
 
-                afson:null
+                afson:null,
+                mafia: null
             }
         },
         props: {

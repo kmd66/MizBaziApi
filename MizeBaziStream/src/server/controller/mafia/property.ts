@@ -20,20 +20,23 @@ export class Property {
     public activeUser: number = -1;
     public state: string = 'main';
 
+    public defae: Map<number, number[]> = new Map();
+    public rayeKhoroj: Map<number, number[]> = new Map();
+
     public finish: boolean = false;
 
-    protected timeoutId?: NodeJS.Timeout;
+    public timeoutId?: NodeJS.Timeout;
 
-    protected chalenger: number = -1;
-    protected chalengerTime: boolean = false;
-    protected chalengerList: number[] = [];
+    public chalenger: number = -1;
+    public chalengerTime: boolean = false;
+    public chalengerList: number[] = [];
 
-    protected nobatIndex: number = -1;
+    public nobatIndex: number = -1;
 
     protected winner: winnerType = winnerType.undefined;
 
     protected isStream: boolean = false;
-    protected isUserAction: boolean = false;
+    public isUserAction: boolean = false;
 
     public groups: any[] = [];
 
@@ -49,13 +52,13 @@ export class Property {
         this.door = this.door + 1;
     }
 
-    protected setState() {
+    public setState() {
         this.state = 'main';
 
         if (this.chalengerTime)
-            this.wait = 20;
+            this.wait = 10;
         else if (this.activeUser)
-            this.wait = 30;
+            this.wait = 10;
         else
             this.wait = 12;
     }

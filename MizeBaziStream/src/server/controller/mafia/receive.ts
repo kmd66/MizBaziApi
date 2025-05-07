@@ -16,14 +16,14 @@ export default class Receive extends Stream {
         MafiaControll.sendToMultipleSockets(this.roomId, 'infoMainReceive', model);
     }
 
-    protected getDefensePositionReceive() {
+    public getDefensePositionReceive() {
         const model = {
             activeUser: this.activeUser,
             wait: this.mainWait
         };
         MafiaControll.sendToMultipleSockets(this.roomId, 'getDefensePositionReceive', model);
     }
-    protected startStreamReceive() {
+    public startStreamReceive() {
         this.isStream = true;
         const model = {
             activeUser: this.activeUser,
@@ -31,13 +31,13 @@ export default class Receive extends Stream {
         };
         MafiaControll.sendToMultipleSockets(this.roomId, 'startStreamReceive', model);
     }
-    protected endStreamReceive() {
+    public endStreamReceive() {
         this.isStream = false;
         const model = {};
         MafiaControll.sendToMultipleSockets(this.roomId, 'endStreamReceive', model);
     }
 
-    protected gameResponseReceive(wait: number) {
+    public gameResponseReceive(wait: number) {
         const users: any = [];
 
         const room = mafiaDb().get(this.roomId);
