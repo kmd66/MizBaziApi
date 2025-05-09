@@ -174,13 +174,14 @@ main.Component = function (app) {
         methods: {
             itemStatus(item) {
                 if (item) {
+                    if (this.appModel.nightMode && (item.userInGameStatus == 1 || item.userInGameStatus == 10)) {
+                        const user = globalModel.users.find(x => x.id == item.id);
+                        const icon = item.userInGameStatus == 10 ? `${user.nightIcon} ofline` : user.nightIcon;
+                        return icon;
+                    }
+
                     switch (item.userInGameStatus) {
                         case 1:
-                            if (this.appModel.nightMode) {
-                                const user = globalModel.users.find(x => x.id == item.id);
-                                return user.nightIcon;
-                            }
-
                             return 'a6s5d4q';
                         case 10:
                             return 'imgStatus icon-ofline';
@@ -193,4 +194,4 @@ main.Component = function (app) {
             },
         }
     });
-}
+} 

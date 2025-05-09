@@ -93,3 +93,6 @@
     margin-top: 12px;
     font-size: 0.8rem;
 }
+.icon-mask.ofline, .icon-mafia1.ofline, .icon-mafia2.ofline, .icon-mafia3.ofline {
+    background: #7d2e2e;
+}
