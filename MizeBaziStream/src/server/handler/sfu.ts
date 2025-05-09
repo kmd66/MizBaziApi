@@ -110,7 +110,7 @@ class SFU {
     }
 
     async addRouter(): Promise<void> {
-
+        await this.clear();
         const mediaCodecs: RtpCodecCapability[] = [
             {
                 kind: 'audio' as MediaKind,

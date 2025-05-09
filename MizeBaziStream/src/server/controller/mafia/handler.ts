@@ -160,6 +160,7 @@ class Rooz {
 
     public async next() {
         if (this.handler.activeUser > -1) {
+            this.handler.sfu.stopProducer();
             this.handler.endStreamReceive();
             await this.delay(200);
         }
@@ -299,8 +300,8 @@ class Raygiri {
         }
         else {
             await this.delay(100);
-            MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeListReceive', this.defaeList);
-            await this.delay(5000);
+            //MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeListReceive', this.defaeList);
+            //await this.delay(5000);
             this.nobatIndex = -1;
             this.defae();
         }
@@ -323,18 +324,20 @@ class Raygiri {
         }
         const user = room.users.find(x => x.id == this.defaeList[this.nobatIndex]);
         if (!user || user.userInGameStatus != 1) {
-            this.setNobatIndex();
+            this.defae();
             return;
         }
 
         await this.delay(100);
-        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeReceive', {type:'wait', wait: 3, activeUser: user.id });
-        this.handler.activeUser
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeReceive', { type: 'wait', wait: 3, activeUser: user.index });
         await this.delay(3000);
-        this.handler.startProduceStream2(user.connectionId!);
-        await this.delay(500);
-        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeReceive', { type: 'start', wait: 20, activeUser: user.id });
-        await this.delay(20000);
+        if (user.userInGameStatus == 1) {
+            this.handler.startProduceStream2(user.connectionId!);
+            await this.delay(500);
+            MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeReceive', { type: 'start', wait: 15, activeUser: user.index });
+            await this.delay(15000);
+            this.handler.sfu.stopProducer();
+        }
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'defaeReceive', { type: 'end' });
 
         this.defae();
@@ -408,7 +411,7 @@ class Raygiri {
         }
 
         if (this.khorojList.length == 1) {
-            const user = room.users.find(x => x.index == this.khorojList[0]);
+            const user = room.users.find(x => x.id == this.khorojList[0]);
             this.khoroj(user);
         }
         else {
@@ -425,16 +428,19 @@ class Raygiri {
             return;
         }
         await this.delay(100);
-        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'wait', wait: 3, activeUser: user.id });
-        this.handler.activeUser
-        await this.delay(3000);
-        this.handler.startProduceStream2(user.connectionId!);
-        await this.delay(500);
-        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'start', wait: 15, activeUser: user.id });
-        await this.delay(20000);
+            MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'wait', wait: 3, activeUser: user.index });
+            await this.delay(3000);
+        if (user.userInGameStatus == 1) {
+            this.handler.startProduceStream2(user.connectionId!);
+            await this.delay(500);
+            MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'start', wait: 15, activeUser: user.index });
+            await this.delay(15000);
+            this.handler.sfu.stopProducer();
+        }
+        this.handler.isUserAction = true;
         user.userInGameStatus = 2;
         userInDb().update(this.handler.roomId, user);
-        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'end', activeUser: user.id });
+        MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'end', activeUser: user.index });
 
         await this.delay(100);
 

@@ -56,7 +56,7 @@
         </div>
 
         <div v-if="!isChat" class="mainBottom">
-            <div v-show="raye" @click="setRaye()" style="text-align:center">
+            <div v-if="raye" @click="setRaye()" style="text-align:center">
                 <i class="icon-hand"></i>
             </div>
 

@@ -20,6 +20,7 @@ export default class Stream extends Property {
     }
 
     public async closeConsumer(roomId: any, userKey: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser({ roomId: roomId, userKey: userKey });
         if (!user) return;
 
@@ -27,6 +28,7 @@ export default class Stream extends Property {
     }
 
     public async closeProducer(roomId: any, userKey: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser({ roomId: roomId, userKey: userKey });
         if (!user) return;
         if (user.id == this.sfu.producerUserId) {
@@ -35,6 +37,7 @@ export default class Stream extends Property {
     }
 
     public async getRtpCapabilities(model: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
 
@@ -43,6 +46,7 @@ export default class Stream extends Property {
     }
 
     public async createWebRtcTransport(model: any, callback: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
 
@@ -51,6 +55,7 @@ export default class Stream extends Property {
     }
 
     public async transportConnect(model: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
 
@@ -61,6 +66,7 @@ export default class Stream extends Property {
     }
 
     public async transportProduce(model: any, callback: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
         const createProducerModel = {
@@ -75,6 +81,7 @@ export default class Stream extends Property {
     }
 
     public async transportRecvConnect(model: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
         const transport = this.sfu.consumerTransport.get(user.id);
@@ -85,6 +92,7 @@ export default class Stream extends Property {
     }
 
     public async consume(model: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
 
@@ -93,6 +101,7 @@ export default class Stream extends Property {
     }
 
     public async consumerResume(model: any) {
+        if (!this.sfu.router) return;
         const user = this.getUser(model);
         if (!user) return;
 
@@ -107,6 +116,7 @@ export default class Stream extends Property {
 
 
     public startProduceStream() {
+        if (!this.sfu.router) return;
         const room = mafiaDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.index == this.activeUser);
         if (!user) return;
@@ -115,10 +125,12 @@ export default class Stream extends Property {
     }
 
     public startProduceStream2(connectionId: string) {
+        if (!this.sfu.router) return;
         SocketManager.sendToSocket('hubMafia', 'startProduceStream', connectionId, true);
     }
 
     public startProduceStreamById(id: number) {
+        if (!this.sfu.router) return;
         const room = mafiaDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.id == id);
         if (!user) return;
@@ -127,6 +139,7 @@ export default class Stream extends Property {
     }
 
     public startConsumerStream(userId: number) {
+        if (!this.sfu.router) return;
         const room = mafiaDb().get(this.roomId);
         if (!room || !room?.users) return;
 
@@ -142,6 +155,7 @@ export default class Stream extends Property {
     }
 
     public allCancelStream() {
+        if (!this.sfu.router) return;
         MafiaControll.sendToMultipleSockets(this.roomId, 'canselStream', true);
     }
 

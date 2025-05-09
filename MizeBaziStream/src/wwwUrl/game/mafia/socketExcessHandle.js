@@ -23,6 +23,7 @@ function rayegiri(model, type) {
             element.remove();
         });
         globalModel.activeUser = {};
+        vm.$refs.childmain.raye = false;
         return;
     }
 
@@ -49,10 +50,52 @@ function rayegiri(model, type) {
 }
 
 socketHandler.defaeListReceive = function (model) {
+    //console.log(`defaeListReceive ${model}`)
 }
 
 socketHandler.defaeReceive = function (model) {
+    defaeStream(model, 'defaeReceive')
 }
 
 socketHandler.khorojReceive = function (model) {
+    defaeStream(model, 'khorojReceive');
+    if (model.type == 'end') {
+        globalModel.users.map((x) => {
+            if (x.index == model.activeUser)
+                x.userInGameStatus = 2;
+        });
+        vm.$refs.childmain.users = globalModel.users;
+        if (globalModel.user.index == model.activeUser) {
+            globalModel.user.userInGameStatus = 2;
+            vm.$refs.childmain.user = globalModel.user;
+        }
+    }
+}
+
+function defaeStream(model, type) {
+    if (model.type == 'end') {
+        main.reset();
+        vm.$refs.childmain.soundDivI = false;
+        vm.$refs.childitemclick.isAddTarget = true;
+        socketHandler.closelObj();
+        globalModel.activeUser = {};
+        main.stream = null;
+        return;
+    }
+
+    globalModel.activeUser = {
+        index: model.activeUser,
+        row: model.activeUser + 1,
+        type: type
+    };
+
+    if (model.type == 'wait') {
+        main.getDefensePosition();
+    }
+
+    if (model.type == 'start') {
+        vm.$refs.childmain.soundDivI = true;
+        globalModel.room.wait = model.wait;
+        main.topTimeProgress(-100);
+    }
 }
