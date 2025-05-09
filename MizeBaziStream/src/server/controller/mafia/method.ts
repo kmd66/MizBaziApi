@@ -112,6 +112,8 @@ export function MafiaMethod() {
 
             setRaye: wrapHandler('setRaye'),
 
+            addMessage: wrapHandler('addMessage'),
+
         },
 
         streamHandler: {

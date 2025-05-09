@@ -39,6 +39,12 @@
                 <mainitem-component v-if="users.length > 0" :app-model="appModel"
                                     :users="users.slice(0, 5)"
                                     :left="false"></mainitem-component>
+                <div class="mainCenter">
+                    <div v-for="chat in chatList" class="mainCenterChat">
+                        <div style="color: var(--NaghshSiahColor);">{{chat.title}}</div>
+                        <div>{{chat.message}}</div>
+                    </div>
+                </div>
                 <mainitem-component v-if="users.length > 0" :app-model="appModel"
                                     :users="users.slice(5)"
                                     :left="true"></mainitem-component>
@@ -49,7 +55,7 @@
             </div>
         </div>
 
-        <div class="mainBottom">
+        <div v-if="!isChat" class="mainBottom">
             <div v-show="raye" @click="setRaye()" style="text-align:center">
                 <i class="icon-hand"></i>
             </div>
@@ -58,7 +64,7 @@
                 <i class="icon-chevron-square-right"></i>
                 <span style="margin-right: 12px;">بعدی</span>
             </div>
-            
+
             <div v-if="!cancelBtn && !raye" class="d-flex">
                 <div>
                     <i :class="iconClass.like" onclick="sticker.handleUpdate('l1')"></i>
@@ -68,9 +74,18 @@
                 <i :class="iconClass.chalesh" @click="addChalesh()"></i>
             </div>
         </div>
+        <div v-if="isChat" class="mainBottom">
+            <div style="height:100%">
+                <div class="inputText-group" style="height:100%">
+                    <div class="label">
+                        <i class="icon-send-14" @click="addMessage()"></i>
+                    </div><input v-model="chatMessage" class="inputText" placeholder="ارسال پیام" autocomplete="off">
+                </div>
+            </div>
+        </div>
     </div>
 
-    <sticker-component></sticker-component>
+        <sticker-component></sticker-component>
 
 </template>
 

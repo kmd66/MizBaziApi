@@ -99,7 +99,11 @@ main.Component = function (app) {
                 user: {},
                 users: [],
 
-                msg: {}
+                msg: {},
+
+                chatList: [],
+                chatMessage: '',
+                isChat: false
             }
         },
         props: {
@@ -137,6 +141,15 @@ main.Component = function (app) {
                     roomId: socketHandler.roomId,
                     userKey: socketHandler.userKey,
                 });
+            },
+            addMessage() {
+                if (!globalModel.room.doorType != 3 && globalModel.user.type < 20) return;
+                globalModel.connection.emit('addMessage', {
+                    message: this.chatMessage,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+                this.chatMessage = '';
             }
         }
     });

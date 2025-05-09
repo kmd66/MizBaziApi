@@ -11,6 +11,7 @@
     line-height: 2rem;
     font-size: 2rem;
     color: #999999;
+    background: #1c1c1c;
 }
 .soundDiv {
     position: fixed;
@@ -78,5 +79,17 @@
 .imgStatus.icon-mafia1, .imgStatus.icon-mafia2, .imgStatus.icon-mafia3 {
     line-height: 2rem;
     font-size: 2rem;
-    color: var(--NaghshSiahColor);
+    color: #000000;
+    background: #bbbbbb;
+}
+.mainCenter{
+    width: 100%;
+    overflow: auto;
+}
+.mainCenterChat {
+    background: #00ceff2e;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 12px;
+    font-size: 0.8rem;
 }

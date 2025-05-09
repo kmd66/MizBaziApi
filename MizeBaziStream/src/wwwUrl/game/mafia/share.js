@@ -68,6 +68,17 @@ globalModel.infoMainReceive = function (room) {
     setNightMode(room.doorType);
 }
 function setNightMode(doorType) {
+
+    if (doorType == 3 && globalModel.user.type > 20 && globalModel.user.userInGameStatus == 1) {
+        vm.$refs.childmain.isChat = true;
+    }
+    else {
+        if (vm.$refs.childmain.isChat) {
+            vm.$refs.childmain.chatList = [];
+            vm.$refs.childmain.isChat = false;
+        }
+    }
+
     if (doorType == 3) {
         if (!vm.appModel.nightMode)
             vm.appModel.nightMode = true;

@@ -95,3 +95,7 @@ function setChaleshReceive(model) {
     el.classList.add("chaleshForItem2");
     removeChalesh();
 }
+
+main.addMessageReceive = function (model) {
+    vm.$refs.childmain.chatList.push(model);
+}

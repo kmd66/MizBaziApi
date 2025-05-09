@@ -55,4 +55,19 @@ export default class Set extends Receive {
         });
     }
 
+    public addMessage(model: any) {
+        if (this.doorType != 3) return;
+
+        const room = mafiaDb().get(this.roomId);
+        if (!room) return;
+        const user = room.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1 && x.type > 20);
+        if (!user) return;
+
+        const users = room.users.filter((x: User) => x.userInGameStatus == 1 && x.type > 20);
+
+        const connectionIds = users.map(x => x.connectionId);
+
+        MafiaControll.sendToConnectionListId(connectionIds, 'addMessageReceive', { message: model.message, title: user.info.UserName });
+    }
+
 }
