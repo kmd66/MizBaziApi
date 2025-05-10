@@ -164,6 +164,7 @@ export default class Stream extends Property {
         this.sfu.clear();
         this.defae.clear();
         this.rayeKhoroj.clear();
+        this.rayeChaos.clear();
         clearTimeout(this.timeoutId);
         mafiaDb().delete(this.roomId);
         mafiaInstance().stop(this.roomId);

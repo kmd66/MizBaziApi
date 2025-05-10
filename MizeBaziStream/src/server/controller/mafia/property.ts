@@ -27,6 +27,8 @@ export class Property {
 
     public defae: Map<number, number[]> = new Map();
     public rayeKhoroj: Map<number, number[]> = new Map();
+    public rayeChaos: Map<number, number> = new Map();
+    public isChaos: boolean = false;
 
     public finish: boolean = false;
 

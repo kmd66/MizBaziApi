@@ -85,18 +85,143 @@ export default class mafiaHandler extends Set {
             this.rooz.next();
     }
 
-    public async Chaos() {
-    }
-
     public checkLoser() {
         this.isUserAction = false;
         this.isAddDisconnec = false;
 
+        const room = mafiaDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+        let siah = 0;
+        let sefid = 0;
+
+        room.users.map(x => {
+            if (x.type < 20)
+                sefid++;
+            else siah++;
+        })
+
+        if (siah == 0 || sefid >= siah) {
+            this.endGame(siah, sefid);
+            return;
+        }
+
+        const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
+        if (users.length < 4) {
+            this.Chaos();
+            return;
+        }
+
         this.main();
     }
 
-    public async endGame(blue: number, red: number) {
-     
+    public async Chaos() {
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'chaos', wait: 10 });
+        await this.delay(10000);
+        this.isChaos = true;
+        this.rayeChaos.clear();
+        this.nobatIndex = -1;
+        this.nobatChaos();
+    }
+
+    private async nobatChaos() {
+
+        const room = mafiaDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+        this.nobatIndex = this.nobatIndex + 1;
+        if (this.nobatIndex >= room.users.length) {
+            this.checkChaos();
+            return;
+        }
+        const user = room.users.find(x => x.index == this.nobatIndex);
+        if (!user || user.userInGameStatus != 1) {
+            this.nobatChaos();
+            return;
+        }
+
+        this.activeUser = user.index;
+        this.nobatChaos2();
+    }
+
+    private async nobatChaos2() {
+        await this.delay(100);
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'wait', wait: 3, activeUser: this.activeUser });
+        await this.delay(3000);
+        this.startProduceStream();
+        await this.delay(500);
+        MafiaControll.sendToMultipleSockets(this.roomId, 'defaeReceive', { type: 'start', wait: 15, activeUser: this.activeUser });
+        await this.delay(15000);
+        this.sfu.stopProducer();
+        MafiaControll.sendToMultipleSockets(this.roomId, 'defaeReceive', { type: 'end' });
+
+        this.nobatChaos();
+    }
+    private async checkChaos() {
+
+        await this.delay(1000);
+
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'resultChaos', wait: 15 });
+        await this.delay(15000);
+
+        const room = mafiaDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+        const voteCounts: Map<number, number> = new Map();
+
+        for (const [, votedFor] of this.rayeChaos.entries()) {
+            voteCounts.set(votedFor, (voteCounts.get(votedFor) || 0) + 1);
+        }
+
+        let maxVotes = 0;
+        let candidates: number[] = [];
+
+        for (const [id, count] of voteCounts.entries()) {
+            if (count > maxVotes) {
+                maxVotes = count;
+                candidates = [id];
+            } else if (count === maxVotes) {
+                candidates.push(id);
+            }
+        }
+
+        let userId = 0;
+        if (candidates.length == 1) {
+            const user = room.users.find(x => x.id == candidates[0]);
+            if (user)
+                userId = user.id;
+
+        } else {
+            const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
+            const index = Math.floor(Math.random() * users.length);
+            if (index > -1)
+                userId = users[index].id;
+        }
+        if (userId == 0)
+            this.endGame(5, 0);
+        const userLoser = room.users.find(x => x.id == userId);
+        if (!userLoser)
+            this.endGame(5, 0);
+        userLoser!.userInGameStatus = 2;
+        userInDb().update(this.roomId, userLoser!);
+
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'resultChaos', wait: 5, id: userId });
+        await this.delay(5000);
+        this.checkLoser();
+    }
+
+    public async endGame(siah: number, sefid: number) {
+        if (siah >= sefid)
+            this.winner = winnerType.siah;
+        else
+            this.winner = winnerType.sefid;
+
         this.gameResponseReceive(90)
         await this.delay(90000);
 
@@ -106,7 +231,6 @@ export default class mafiaHandler extends Set {
         this.setFinish();
     }
 } 
-
 
 class Rooz {
 
@@ -505,7 +629,6 @@ class Shab {
             this.handler.setFinish();
             return;
         }
-
 
         const user = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
         if (user.length < 4) {
