@@ -10,7 +10,7 @@
                     </div>
                 </div>
 
-                <div v-show="isAddTarget && afson == null && !isMy">
+                <div v-show="isAddTarget && !isMy">
                     <div class="modalTarget d-flex">
                         <div class="icon target1 modalTargetItem1" @click="target(0)"></div>
                         <div class="icon target2 modalTargetItem2" @click="target(1)"></div>
@@ -39,12 +39,14 @@
                         <div class="icon icon-information4" @click="info()"></div>
                     </div>
                 </div>
-                <div v-show="isAddTarget && afson == null && !isMy">
+                <div v-show="isAddTarget && !isMy">
                     <div class="modalTarget d-flex">
                         <div class="icon target1 modalTargetItem1" @click="target(0)"></div>
                         <div class="icon target2 modalTargetItem2" @click="target(1)"></div>
                     </div>
                 </div>
+                <div v-show="mafia?.kalantarShot && !isMy" style="text-align:center"><i class="icon icon-gun" style="color: #ff9797; " @click="setKalantarShot()"></i></div>
+                <div v-show="mafia?.hadseNaghsh && !isMy" style="text-align:center"><i class="icon icon-theft" style="color: #ff9797; " @click="mafia.isHadseNaghshList = true;modal=false;"></i></div>
             </div>
 
         </div>
@@ -61,6 +63,19 @@
             <p>{{userInfo?.info?.BirthDate}}</p>
             <p>{{userInfo?.info?.Date}}</p>
             <button class="btn btn-Greenlight " v-show="!isMy">درخاست دوستی</button>
+        </div>
+    </div>
+
+    <div v-if="mafia != null && mafia.isHadseNaghshList" class="listMain re">
+        <div class="ras"> یک نقش را برای حدس انتخاب کنید. در صورت اشتباه بودن از بازی خارج میشوید.</div>
+        <div class="raq">
+            <div v-for="m in mafia.hadseNaghshList" class="rwa" @click="setHadseNaghsh(m)">
+                <div :class="m.icon"></div> 
+                <div class="rwa2">{{m.title}}</div>
+            </div>
+        </div>
+        <div>
+            <button class="btn btn-yellow w100" @click="mafia.isHadseNaghshList = false">انصراف</button>
         </div>
     </div>
 

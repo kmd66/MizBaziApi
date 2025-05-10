@@ -91,7 +91,8 @@ export default class mafiaHandler extends Set {
     public checkLoser() {
         this.isUserAction = false;
         this.isAddDisconnec = false;
-        
+
+        this.main();
     }
 
     public async endGame(blue: number, red: number) {

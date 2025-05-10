@@ -36,6 +36,9 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('defaeReceive', socketHandler.defaeReceive);
     globalModel.connection.on('khorojReceive', socketHandler.khorojReceive);
 
+    globalModel.connection.on('setKalantarShotReceive', socketHandler.setKalantarShotReceive);
+    globalModel.connection.on('setHadseNaghshReceive', socketHandler.setHadseNaghshReceive);
+
     globalModel.connection.on('addMessageReceive', main.addMessageReceive);
 
     //globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);

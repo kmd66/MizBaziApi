@@ -96,3 +96,26 @@
 .icon-mask.ofline, .icon-mafia1.ofline, .icon-mafia2.ofline, .icon-mafia3.ofline {
     background: #7d2e2e;
 }
+.listMain {
+    height: unset;
+}
+.ras{
+    color: var(--LinkColor);
+    margin-top: 12px;
+}
+.raq {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 14px 0;
+}
+.rwa {
+    width: 30%;
+    margin: 5px 1.15%;
+    border: 1px solid var(--TextColor2);
+    padding: 14px 0;
+}
+.rwa2 {
+    font-size: 0.8rem;
+    margin-top: 5px;
+}

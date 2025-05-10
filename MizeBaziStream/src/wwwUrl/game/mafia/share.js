@@ -31,13 +31,14 @@ globalModel.infoRoomReceive = function (model) {
 
     model.users.map((x) => {
         if (x.type && x.type > 20) {
-            x.nightIcon = 'imgStatus ' +help.find(x.type).icon;
+            x.nightIcon = 'imgStatus ' + help.find(x.type).icon;
         } else {
             x.nightIcon = 'imgStatus icon-mask';
         }
 
         x.row = x.index + 1;
     });
+
     globalModel.users = model.users;
     globalModel.room = model.room;
     globalModel.groupItem = model.groupItem;
@@ -68,6 +69,10 @@ globalModel.infoMainReceive = function (room) {
     setNightMode(room.doorType);
 }
 function setNightMode(doorType) {
+
+    if (doorType == 3 && globalModel.user.type > 20 && globalModel.user.userInGameStatus == 1) {
+        vm.$refs.childmain.isChat = true;
+    }
 
     if (doorType == 3 && globalModel.user.type > 20 && globalModel.user.userInGameStatus == 1) {
         vm.$refs.childmain.isChat = true;

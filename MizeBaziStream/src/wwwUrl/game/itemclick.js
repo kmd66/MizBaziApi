@@ -25,6 +25,9 @@ function itemMainClick(i) {
     if (globalModel.gameName == 'afsonVajeh') {
         afsonVajehClick(i);
     }
+    if (globalModel.gameName == 'mafia') {
+        mafiaClick(i);
+    }
 
     if (globalModel.gameName == 'rangOraz')
         vm.$refs.childitemclick.rangOrazClick(i);
@@ -68,13 +71,31 @@ function afsonVajehClick(i) {
     else
         vm.$refs.childitemclick.afson = null;
 }
-function mafiaClick(i) {
 
-    if (main.stream != null && main.stream.activeUser == globalModel.user.index) {
-        vm.$refs.childitemclick.mafia = { ...globalModel.groupItem };
+let hadseNaghshList = null;
+function mafiaClick(i) {
+    if (hadseNaghshList == null) {
+        hadseNaghshList = [];
+        vm.$refs.childhelp.helpComment.map(x => {
+            if (x.type < 20 && x.type > 0)
+                hadseNaghshList.push({ type: x.type, title: x.title, icon: x.icon });
+        })
     }
-    else
-        vm.$refs.childitemclick.afson = null;
+
+    const model = {};
+
+    if (globalModel.room.doorType == 1 && globalModel.room.door > 2 && globalModel.user.userInGameStatus == 1) {
+        if (globalModel.user.type == 7 && globalModel.groupItem.shot)
+            model.kalantarShot = true;
+
+        if (globalModel.user.type > 20 && globalModel.groupItem.hadseNaghsh) {
+            model.hadseNaghsh = true;
+            model.isHadseNaghshList = false;
+            model.hadseNaghshList = hadseNaghshList;
+        }
+    }
+
+    vm.$refs.childitemclick.mafia = model;
 }
 
 function addTargetReceive(model) {
@@ -111,6 +132,7 @@ function addTargetReceive(model) {
         divEl.remove()
     }, 1400);
 }
+
 itemclick.listen = function () {
     vm.$refs.childitemclick.gameName = globalModel.gameName;
     if (globalModel.gameName != 'nabardKhande') {
@@ -208,6 +230,27 @@ itemclick.Component = function (app) {
                 const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
                 globalModel.connection.emit('addTalk', {
                     userId: user.id,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+
+            setKalantarShot() {
+                this.modal = false;
+                const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
+                globalModel.connection.emit('setKalantarShot', {
+                    userId: user.id,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+            setHadseNaghsh(m) {
+                this.mafia.isHadseNaghshList = false;
+                const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
+                if ([1, 10].indexOf(user.userInGameStatus) == -1) return;
+                globalModel.connection.emit('setHadseNaghsh', {
+                    userId: user.id,
+                    type: m.type,
                     roomId: socketHandler.roomId,
                     userKey: socketHandler.userKey,
                 });
