@@ -43,9 +43,16 @@ export class Property {
     protected winner: winnerType = winnerType.undefined;
 
     protected isStream: boolean = false;
+    public khorojId: number = 0;
     public isUserAction: boolean = false;
 
     public groups: any[] = [];
+
+    public nightEvents: any[] = [];
+
+    public isEstelam: boolean = false;
+    public estelam: number = 2;
+    public estelamList: number[] = [];
 
     protected get streamDoor(): boolean {
         return true;

@@ -114,8 +114,13 @@ export function MafiaMethod() {
 
             setKalantarShot: wrapHandler('setKalantarShot'),
             setHadseNaghsh: wrapHandler('setHadseNaghsh'),
+            setHadseNaghshKhoroj: wrapHandler('setHadseNaghshKhoroj'),
 
             addMessage: wrapHandler('addMessage'),
+
+            setNightEvent: wrapHandler('setNightEvent'),
+
+            setEstelam: wrapHandler('setEstelam'),
 
         },
 

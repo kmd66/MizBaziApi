@@ -65,10 +65,14 @@ export default class mafiaHandler extends Set {
             this.door++;
         }
 
-
         await this.delay(100);
         this.infoMainReceive();
         await this.delay(500);
+
+        if (this.isEstelam) {
+            this.checkEstelam();
+            return;
+        }
 
         this.setState();
         if (this.doorType == 1)
@@ -78,6 +82,35 @@ export default class mafiaHandler extends Set {
         else if (this.doorType == 3)
             this.shab.main();
 
+    }
+
+    public async checkEstelam() {
+        const room = mafiaDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+
+        MafiaControll.sendToMultipleSockets(this.roomId, 'estelamReceive', { type: 'start', wait: 10 });
+        await this.delay(10000);
+        this.isEstelam = false;
+
+        const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
+        if (this.estelamList.length >= Math.floor(users.length / 2)) {
+            const shahr = room.users.filter(x => x.type < 20 && [2, 11].indexOf(x.userInGameStatus) > -1);
+            const mafia = room.users.filter(x => x.type > 20 && [2, 11].indexOf(x.userInGameStatus) > -1);
+            const model = {
+                type: 'result',
+                wait: 5,
+                shahr: shahr.length,
+                mafia: mafia.length,
+            }
+            this.estelam--;
+            MafiaControll.sendToMultipleSockets(this.roomId, 'estelamReceive', model);
+            await this.delay(5000);
+        }
+        this.nightEvents = [];
+        this.main();
     }
 
     public async next() {
@@ -161,6 +194,7 @@ export default class mafiaHandler extends Set {
 
         this.nobatChaos();
     }
+
     private async checkChaos() {
 
         await this.delay(1000);
@@ -552,6 +586,8 @@ class Raygiri {
             this.handler.main();
             return;
         }
+        this.handler.khorojId = user.id;
+
         await this.delay(100);
             MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'wait', wait: 3, activeUser: user.index });
             await this.delay(3000);
@@ -567,6 +603,7 @@ class Raygiri {
         userInDb().update(this.handler.roomId, user);
         MafiaControll.sendToMultipleSockets(this.handler.roomId, 'khorojReceive', { type: 'end', activeUser: user.index });
 
+        this.handler.khorojId = 0;
         await this.delay(100);
 
         this.handler.doorType = 3;
@@ -616,7 +653,7 @@ class Shab {
         this.handler = handler;
     }
 
-    public async main() {
+    public main() {
 
         setTimeout(() => {
             this.check();
@@ -640,7 +677,8 @@ class Shab {
         this.handler.nextReset();
         this.handler.door++;
         this.handler.doorType = 1;
-        await this.delay(this.handler.mainWait * 1000);
+        if (this.handler.estelam > 0 && this.handler.door > 2)
+            this.handler.isEstelam = true;
         this.handler.main();
     }
 
