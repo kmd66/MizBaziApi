@@ -59,7 +59,12 @@ socketHandler.defaeReceive = function (model) {
 
 socketHandler.khorojReceive = function (model) {
     defaeStream(model, 'khorojReceive');
+    if (model.type == 'start') {
+        if (globalModel.user.index == model.activeUser)
+            globalModel.khorojHadseNaghsh = true;
+    }
     if (model.type == 'end') {
+        globalModel.khorojHadseNaghsh = false;
         setUserInGameStatus(model.activeUser, 2);
     }
 }
@@ -79,7 +84,7 @@ function defaeStream(model, type) {
     if (model.type == 'end') {
         main.reset();
         vm.$refs.childmain.soundDivI = false;
-        vm.$refs.childitemclick.isAddTarget = true;
+        vm.$refs.childitemclick.isAddTarget = false;
         socketHandler.closelObj();
         globalModel.activeUser = {};
         main.stream = null;
@@ -97,6 +102,7 @@ function defaeStream(model, type) {
     }
 
     if (model.type == 'start') {
+        vm.$refs.childitemclick.isAddTarget = true;
         vm.$refs.childmain.soundDivI = true;
         globalModel.room.wait = model.wait;
         main.topTimeProgress(-100);

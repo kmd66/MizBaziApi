@@ -7,6 +7,7 @@ function initShare() {
         gameName: 'mafia'
     };
     vm = {};
+
     globalModel.connection;
     globalModel.reset = reset;
     globalModel.room = {};
@@ -19,6 +20,9 @@ function initShare() {
     main = {};
     help = {};
     gameresponse = {};
+
+    globalModel.khorojHadseNaghsh = false;
+
 }
 
 initShare();

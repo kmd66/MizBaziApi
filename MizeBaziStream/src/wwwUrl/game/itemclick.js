@@ -27,6 +27,7 @@ function itemMainClick(i) {
     }
     if (globalModel.gameName == 'mafia') {
         mafiaClick(i);
+        if (globalModel.khorojHadseNaghsh == true) return;
     }
 
     if (globalModel.gameName == 'rangOraz')
@@ -82,6 +83,13 @@ function mafiaClick(i) {
         })
     }
 
+    if (globalModel.khorojHadseNaghsh == true) {
+        vm.$refs.childitemclick.mafia = {
+            isHadseNaghshList: true,
+            hadseNaghshList: hadseNaghshList
+        };
+        return;
+    }
     const model = {};
 
     if (globalModel.room.doorType == 1 && globalModel.room.door > 2 && globalModel.user.userInGameStatus == 1) {
@@ -248,7 +256,8 @@ itemclick.Component = function (app) {
                 this.mafia.isHadseNaghshList = false;
                 const user = vm.$refs.childmain.users.find(x => x.row == rowNum);
                 if ([1, 10].indexOf(user.userInGameStatus) == -1) return;
-                globalModel.connection.emit('setHadseNaghsh', {
+                let eventName = globalModel.khorojHadseNaghsh == true ? 'setHadseNaghshKhoroj':'setHadseNaghsh';
+                globalModel.connection.emit(eventName, {
                     userId: user.id,
                     type: m.type,
                     roomId: socketHandler.roomId,

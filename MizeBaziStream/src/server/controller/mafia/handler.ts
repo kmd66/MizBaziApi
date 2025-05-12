@@ -189,7 +189,7 @@ export default class mafiaHandler extends Set {
             else siah++;
         })
 
-        if (siah == 0 || sefid >= siah) {
+        if (siah == 0 || siah >= sefid) {
             this.endGame(siah, sefid);
             return;
         }
