@@ -64,10 +64,15 @@ export default class mafiaHandler extends Set {
             await this.delay(this.wait * 1000);
             this.door++;
         }
-
-        await this.delay(100);
-        this.infoMainReceive();
-        await this.delay(500);
+        
+        if (this.shab.checkProperty()) {
+            this.checkEstelam();
+            return;
+        } else {
+            await this.delay(100);
+            this.infoMainReceive();
+            await this.delay(3000);
+        }
 
         if (this.isEstelam) {
             this.checkEstelam();
@@ -82,6 +87,54 @@ export default class mafiaHandler extends Set {
         else if (this.doorType == 3)
             this.shab.main();
 
+    }
+
+    public async sendMsg() {
+        const room = mafiaDb().get(this.roomId);
+        if (!room) {
+            this.setFinish();
+            return;
+        }
+        const status = room.users.map(({ id, userInGameStatus }) => ({
+            id, userInGameStatus,
+        }));
+
+        const model = {
+            door: this.door,
+            doorType: this.doorType,
+            wait: this.mainWait + 2,
+            status: status
+        };
+
+        await this.delay(100);
+        MafiaControll.sendToMultipleSockets(this.roomId, 'nightUpdate', model);
+
+        if (this.shab.isMobarezMsg) {
+            const mobarez = room.users.find(x => x.type == 9);
+            if (mobarez) {
+                await this.delay(100);
+                MafiaControll.sendToSocket('mobarezMsgReceive', mobarez.connectionId!, true);
+            }
+        }
+        if (this.shab.Karagah != null) {
+            const Karagah = room.users.find(x => x.type == 5);
+            if (Karagah) {
+                await this.delay(100);
+                MafiaControll.sendToSocket('KaragahMsgReceive', Karagah.connectionId!, this.shab.kharabkar);
+            }
+        }
+        if (this.shab.kharabkar > 0) {
+            const kharabkar = room.users.find(x => x.id == this.shab.kharabkar);
+            if (kharabkar) {
+                await this.delay(100);
+                MafiaControll.sendToSocket('kharabkarMsgReceive', kharabkar.connectionId!, true);
+            }
+
+        }
+        await this.delay(2000);
+        
+        this.shab.resetProperty();
+        this.main();
     }
 
     public async checkEstelam() {
@@ -644,6 +697,13 @@ class Raygiri {
     }
 }
 class Shab {
+    private removeId = 0;
+    private mobarez = 0;
+    public isMobarezMsg = false;
+    private ahangar = 0;
+    public kharabkar = 0;
+    public Karagah: any = null;
+    private shekarchi = 0;
 
     private handler: mafiaHandler;
     private delay(ms: number): Promise<void> {
@@ -654,27 +714,41 @@ class Shab {
     }
 
     public main() {
-
+        this.resetProperty();
         setTimeout(() => {
             this.check();
         }, this.handler.nightWait * 1000);
     }
 
-    public async check() {
-        const room = mafiaDb().get(this.handler.roomId);
-        if (!room) {
-            this.handler.setFinish();
-            return;
-        }
+    public resetProperty() {
+        this.removeId = 0;
+        this.mobarez = 0;
+        this.isMobarezMsg = false;
+        this.ahangar = 0;
+        this.kharabkar = 0;
+        this.Karagah = null;
+        this.shekarchi = 0;
+    }
 
-        const user = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
-        if (user.length < 4) {
-            this.handler.Chaos();
-            return;
-        }
+    public checkProperty(): boolean {
+        if (this.removeId > 0 || this.shekarchi > 0 || this.Karagah != null )
+            return true;
+        return false;
+    }
 
+    public check() {
+
+        this.check22();
+        this.check4();
+        this.check9();
+        this.mafiaShot();
+        this.check5();
+        this.check6();
+
+        this.dbUpdate();
 
         this.handler.nextReset();
+        this.handler.isUserAction = true;
         this.handler.door++;
         this.handler.doorType = 1;
         if (this.handler.estelam > 0 && this.handler.door > 2)
@@ -682,4 +756,143 @@ class Shab {
         this.handler.main();
     }
 
+    private mafiaShot() {
+        const events = this.handler.nightEvents.filter(x => x.eventType == 0 && x.type > 20);
+        if (events.length == 0) return;
+        const priorityOrder = [21, 22, 23];
+
+        const selected = priorityOrder
+            .map(type => events.find(e => e.type === type))
+            .find(e => e !== undefined);
+
+        if (selected.targetType == 8) return;
+
+        else if (selected.targetType == 9) {
+            if (this.mobarez == 0)
+                this.removeId = selected.targetId;
+            else {
+                this.isMobarezMsg = true;
+                if (selected.type > 21 && this.mobarez != this.ahangar)
+                    this.removeId = selected.userId;
+            }
+        } else {
+            if (selected.targetId != this.ahangar)
+                this.removeId = selected.targetId;
+        }
+
+    }
+
+    //kharabkar
+    private check22() {
+        const event = this.handler.nightEvents.find(x => x.eventType == 1 && x.type == 22);
+        if (!event) return;
+
+        const events = this.handler.nightEvents.filter(x => x.type == 10);
+        const hasMatch = events.some(e => e.targetId == event.userId);
+        const targetHasMatch = events.some(e => e.targetId == event.targetId);
+        if (hasMatch || targetHasMatch) return;
+
+        this.kharabkar = event.targetId;
+    }
+
+    //Ahangar
+    private check4() {
+        const event = this.handler.nightEvents.find(x => x.type == 4);
+        if (!event) return;
+        if (this.kharabkar == event.userId) return;
+        this.ahangar = event.targetId;
+    }
+
+    //Karagah
+    private check5() {
+        const event = this.handler.nightEvents.find(x => x.type == 5);
+        if (!event) return;
+        if (this.kharabkar == event.userId) return;
+
+        let model = {
+            isMafia: event.targetType > 21 ? true : false,
+            targetId: event.targetId
+        }
+        if (event.targetType == 21) {
+            this.Karagah = model;
+            return;
+        }
+
+        const event23 = this.handler.nightEvents.find(x => x.type == 23);
+        if (event23 && event23.targetId == event.targetId) {
+            const events = this.handler.nightEvents.filter(x => x.type == 10);
+            const hasMatch = events.some(e => e.targetId == event.userId);
+            const targetHasMatch = events.some(e => e.targetId == event.targetId);
+            if (!hasMatch && !targetHasMatch)
+                model.isMafia = !model.isMafia;
+        }
+        this.Karagah = model;
+    }
+
+    //shekarchi
+    private check6() {
+        const event = this.handler.nightEvents.find(x => x.type == 6);
+        if (!event) return;
+        if (this.kharabkar == event.userId) return;
+        if (event.targetType > 20) {
+            if (event.targetType > 21 && this.ahangar != event.targetId)
+                this.shekarchi = event.targetId;
+        }
+        else {
+            this.shekarchi = event.userId;
+        }
+    }
+
+    //mobarez
+    private check9() {
+        const event = this.handler.nightEvents.find(x => x.type == 9);
+        if (!event) return;
+        if (this.kharabkar == event.userId) return;
+
+        if (event.targetType > 20) {
+            this.mobarez = event.targetId;
+        }
+    }
+
+
+    private dbUpdate() {
+        const room = mafiaDb().get(this.handler.roomId);
+
+        if (!room) {
+            this.handler.setFinish();
+            return;
+        }
+        if (this.removeId > 0) {
+            const removeUser = room.users.find(x => x.id == this.removeId);
+            if (removeUser) 
+                removeUser.userInGameStatus = 2;
+        }
+
+        if (this.shekarchi > 0) {
+            const shekarchiUser = room.users.find(x => x.id == this.shekarchi);
+            if (shekarchiUser) 
+                shekarchiUser.userInGameStatus = 2;
+        }
+
+        if (this.shekarchi > 0 || this.shekarchi)
+            mafiaDb().update(this.handler.roomId, room);
+
+        if (this.Karagah) { }
+        if (this.isMobarezMsg) {
+            const mobarez = room.users.find(x => x.type == 9);
+            if (mobarez) {
+                const iMobarez = this.handler.groups.findIndex(x => x.key == mobarez.key)
+                if (iMobarez > -1)
+                    this.handler.groups[iMobarez].shot = false;
+            }
+        }
+        if (this.shekarchi > 0) {
+            const shekarchi = room.users.find(x => x.type == 6);
+            if (shekarchi) {
+                const ishekarchi = this.handler.groups.findIndex(x => x.key == shekarchi.key)
+                if (ishekarchi > -1)
+                    this.handler.groups[ishekarchi].shot = false;
+            }
+        }
+    }
 }

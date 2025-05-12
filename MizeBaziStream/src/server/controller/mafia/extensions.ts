@@ -35,6 +35,10 @@ export class MafiaControll {
         if (ConnectionListId && ConnectionListId.length > 0)
             SocketManager.sendToMultipleSockets('hubMafia', name, ConnectionListId!, model)
     }
+
+    public static sendToSocket(name: string, connectionId: string, model: any) {
+            SocketManager.sendToSocket('hubMafia', name, connectionId, model)
+    }
 }
 
 class MafiaTimer {

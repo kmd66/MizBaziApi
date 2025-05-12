@@ -1,7 +1,6 @@
 ﻿import { mafiaDb } from './mafiaDb';
 import { User } from '../../model/interfaces';
 import Receive from './receive';
-import SocketManager from '../../handler/socket';
 import { MafiaControll } from './extensions';
 
 export default class Set extends Receive {
@@ -119,15 +118,61 @@ export default class Set extends Receive {
     }
 
     public setNightEvent(model: any) {
-        var user = this.permissionNightEvent(model);
-        if (user) {
-            const returnModel: any = { eventType: model.eventType, type: user.type, userId: user.id, targetId: model.targetId };
-            this.addNaghtEvent(returnModel);
-            if (user.type > 20)
-                this.sentToMafia(returnModel, 'setNightEventReceive');
+        var result = this.permissionNightEvent(model);
+        if (result) {
+            const addModel: any = {
+                eventType: model.eventType,
+                type: result.user.type,
+                userId: result.user.id,
+                targetId: model.targetId,
+                targetType: result.target.type
+            };
+            const returnModel = this.addNightEvent(addModel);
+            if (result.user.type > 20)
+                this.sentToMafia(addModel, 'setNightEventReceive');
             else
-                SocketManager.sendToSocket('hubMafia', 'setNightEventReceive', user.connectionId!, returnModel)
+                MafiaControll.sendToSocket('setNightEventReceive', result.user.connectionId!, returnModel);
         }
+    }
+
+    public setNegahban(model: any) {
+        var result = this.permissionNightEvent(model);
+        if (!result.user || result.user.type != 10) return;
+        const room = mafiaDb().get(this.roomId);
+        if (!room) return null;
+        const users = room.users.filter((x: User) => [1, 10].indexOf(x.userInGameStatus) > -1);
+
+        const addModel: any = {
+            eventType: model.eventType,
+            type: result.user.type,
+            userId: result.user.id,
+            targetId: model.targetId,
+            targetType: result.target.type
+        };
+        const events = this.nightEvents.filter(x => x.userId == result.user!.id);
+        if (events.length == 0) {
+            this.nightEvents.push(addModel);
+        } else if (users.length >= 7) {
+            const event = this.nightEvents.find(x => x.userId == result.user!.id && x.targetId == model.targetId);
+            if (event) {
+                this.nightEvents = this.nightEvents.filter(x => !(x.userId == result.user!.id && x.targetId == model.targetId));
+            } else {
+                if (events.length == 1) {
+                    this.nightEvents.push(addModel);
+                } else {
+                    const toRemove = events[0];
+                    this.nightEvents = this.nightEvents.filter(x => !(x.userId === toRemove.userId && x.targetId === toRemove.targetId));
+                    this.nightEvents.push(addModel);
+                }
+            }
+        }
+        else {
+            this.addNightEvent(addModel);
+        }
+
+        const events2 = this.nightEvents.filter(x => x.userId == result.user!.id);
+        const returnModel = events2.map(x => ({ eventType: x.eventType, userId: x.userId }));
+        MafiaControll.sendToSocket('setZendanReceive', result.user.connectionId!, returnModel);
     }
 
     public setEstelam(model: any) {
@@ -142,7 +187,6 @@ export default class Set extends Receive {
             MafiaControll.sendToMultipleSockets(this.roomId, 'setEstelamReceive', {userId: user.id});
         }
     }
-
 
 
     private setHadseNaghsh2(userId1: number, userId2: number, index: number, type: number) {
@@ -182,14 +226,15 @@ export default class Set extends Receive {
         });
     }
 
-    private permissionNightEvent(model: any): User | null {
+    private permissionNightEvent(model: any): any{
         if (this.doorType != 3 || this.door == 1) return null;
-        if (!model.eventType || model.targetId) return null;
+        if (!model.eventType || !model.targetId) return null;
         const room = mafiaDb().get(this.roomId);
         if (!room) return null;
         const user1 = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
         const user2 = room?.users.find((x: User) => x.key == model.targetId && [1, 10].indexOf(x.userInGameStatus) > -1);
         if (!user1 || !user2) return null;
+
 
         if (user1.type < 22 && model.eventType != 0) return null;
         if (user1.type > 21 && [0, 1].indexOf(model.eventType) == -1) return null;
@@ -201,13 +246,13 @@ export default class Set extends Receive {
         if ([6, 9].indexOf(user1.type) > -1) {
             if (!this.groups[index].shot) return null;
         }
-        return user1
+        return { user: user1, target: user2 }
     }
 
-    private addNaghtEvent(model: any) {
-        const index = this.nightEvents.findIndex(item =>
-            item.eventType === model.eventType &&
-            item.userId === model.userId
+    private addNightEvent(model: any): any {
+        const index = this.nightEvents.findIndex(x =>
+            x.eventType == model.eventType &&
+            x.userId == model.userId
         );
         if (index > -1) {
             this.nightEvents = model.targetId;
@@ -222,6 +267,10 @@ export default class Set extends Receive {
         } else {
             this.nightEvents.push(model);
         }
+        const events = this.nightEvents.filter(x => x.userId == model.userId);
+
+        const returnModel = events.map(x => ({ eventType: x.eventType, userId: x.userId, type: x.type }));
+        return returnModel;
     }
 
     private sentToMafia(model: any, eventName: string) {

@@ -119,6 +119,7 @@ export function MafiaMethod() {
             addMessage: wrapHandler('addMessage'),
 
             setNightEvent: wrapHandler('setNightEvent'),
+            setNegahban: wrapHandler('setNegahban'),
 
             setEstelam: wrapHandler('setEstelam'),
 

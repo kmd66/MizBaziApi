@@ -82,7 +82,7 @@ const HELP_Mafia_COMMENT = [
     },
     {
         "type": '10',
-        "title": 'زندانبان',
+        "title": 'نگهبان',
         "icon": 'icon-zendanban',
         "comment": Mafia_COMMENT10
     },

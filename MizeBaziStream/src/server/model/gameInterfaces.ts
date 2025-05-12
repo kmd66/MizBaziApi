@@ -57,7 +57,7 @@ export enum mafiaRole {
 
     rointan = 8, //'روینتن',
     mobarez = 9, //'مبارز',
-    zendanban = 10, //'زندانبان'
+    negahban = 10, //'نگهبان'
 
     raees = 21, //'رییس مافیا',
     kharabkar = 22, //'خرابکار',
