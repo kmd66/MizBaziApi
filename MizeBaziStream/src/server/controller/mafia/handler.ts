@@ -138,6 +138,7 @@ export default class mafiaHandler extends Set {
     }
 
     public async checkEstelam() {
+        this.estelamList = [];
         const room = mafiaDb().get(this.roomId);
         if (!room) {
             this.setFinish();
