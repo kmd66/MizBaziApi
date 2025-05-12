@@ -144,8 +144,8 @@ export default class mafiaHandler extends Set {
             return;
         }
 
-        MafiaControll.sendToMultipleSockets(this.roomId, 'estelamReceive', { type: 'start', wait: 10 });
-        await this.delay(10000);
+        MafiaControll.sendToMultipleSockets(this.roomId, 'estelamReceive', { type: 'start', wait: 7 });
+        await this.delay(7000);
         this.isEstelam = false;
 
         const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
@@ -286,15 +286,23 @@ export default class mafiaHandler extends Set {
 
         } else {
             const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
+            if (users.length == 0) {
+                this.endGame(5, 0);
+                return;
+            }
             const index = Math.floor(Math.random() * users.length);
             if (index > -1)
                 userId = users[index].id;
         }
-        if (userId == 0)
+        if (userId == 0) {
             this.endGame(5, 0);
+            return;
+        }
         const userLoser = room.users.find(x => x.id == userId);
-        if (!userLoser)
+        if (!userLoser) {
             this.endGame(5, 0);
+            return;
+        }
         userLoser!.userInGameStatus = 2;
         userInDb().update(this.roomId, userLoser!);
 

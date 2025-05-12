@@ -122,7 +122,7 @@ socketHandler.setKalantarShotReceive = function (model) {
         globalModel.groupItem.shot = false;
     }
 
-    elModal(html);
+    elModal({ model: html });
 }
 socketHandler.setHadseNaghshReceive = function (model) {
     const user1 = globalModel.users.find(x => x.id == model.user1);
@@ -137,15 +137,60 @@ socketHandler.setHadseNaghshReceive = function (model) {
     }
 
     setUserInGameStatus(index, 2);
-    elModal(html, backgroundColor);
+    elModal({ model: html, backgroundColor: backgroundColor });
 }
-function elModal(model, backgroundColor) {
+function elModal({ model = '', backgroundColor = null, time = 7000, className = '' } = {}) {
     const divEl = document.createElement('div');
-    divEl.className = `modalBady`;
+    divEl.className = `modalBady ${className}` ;
     if (backgroundColor) divEl.style.backgroundColor = backgroundColor;
     divEl.innerHTML = model;
     document.body.appendChild(divEl);
     setTimeout(() => {
         divEl.remove();
-    }, 7000);
+    }, time);
+}
+socketHandler.estelamReceive = function (model) {
+    if (model.type == 'start' && globalModel.user.userInGameStatus == 1) {
+        const html = `<div style="margin: 10px 0;text-align: center;">ایا استعلام میخواهید؟</div><div style="margin: 10px 0;" class="d-flex"><button class="btn btn-green" onclick="socketHandler.estelamAdd()">بله</button><button class="btn btn-red" onclick="socketHandler.estelamRemove()">خیر</button></div>`;
+        elModal({ model: html, className: 'estelamAdd', time: model.wait * 1000 });
+        setTimeout(() => {
+            const elements = document.querySelectorAll('.raygiriIcon');
+            elements.forEach(element => {
+                element.remove();
+            });
+        }, model.wait * 1000);
+
+    }
+    if (model.type == 'result') {
+        const elements = document.querySelectorAll('.raygiriIcon');
+        elements.forEach(element => {
+            element.remove();
+        });
+        const html = `<div style="margin: 10px 0;text-align: center;">از بازی شما </div><div style="margin: 10px 0;text-align: center;">
+        <span style="color:var(--NaghshSiahColor)">${model.shahr} </span> مافیا
+        <span style="color:var(--NaghshSefidColor)">${model.mafia} </span> شهروند
+        </div><div style="margin: 10px 0;text-align: center;">بیرون هستند</div>`;
+        elModal({ model: html, className: 'estelamResult', time: model.wait * 1000 });
+
+    }
+    globalModel.room.wait = model.wait;
+    main.topTimeProgress(-100);
+}
+socketHandler.setEstelamReceive = function (model) {
+    socketHandler.setRayeReceive({ id: model.userId });
+}
+
+socketHandler.estelamRemove = function () {
+    const elements = document.querySelectorAll('.estelamAdd');
+    elements.forEach(element => {
+        element.remove();
+    });
+}
+
+socketHandler.estelamAdd = function () {
+    socketHandler.estelamRemove();
+    globalModel.connection.emit('setEstelam', {
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
 }
