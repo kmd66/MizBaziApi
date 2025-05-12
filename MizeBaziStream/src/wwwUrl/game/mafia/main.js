@@ -38,7 +38,7 @@ main.getDefensePosition = function (duration) {
     const rectEl = el.getBoundingClientRect();
 
     el.style.position = 'fixed';
-    el.style.width = '80px';
+    el.style.width = '60px';
     const top = (screen.height / 4);
     const left = (screen.width / 2) - (rectEl.width / 2);
     const animation = el.animate([

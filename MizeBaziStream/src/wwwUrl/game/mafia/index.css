@@ -120,3 +120,20 @@
     font-size: 0.8rem;
     margin-top: 5px;
 }
+.itemMain {
+    width: 60px;
+}
+.itemImg {
+    height: 50px;
+    width: 50px;
+}
+.imgStatus[class*="icon-"] {
+    padding: 8px;
+}
+.stickerVideo {
+    width: 45px;
+    height: 45px;
+}
+.itemMain .itemName, .itemMain .userName {
+    max-width: 60px;
+}

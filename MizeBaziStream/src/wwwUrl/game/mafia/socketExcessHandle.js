@@ -167,8 +167,8 @@ socketHandler.estelamReceive = function (model) {
             element.remove();
         });
         const html = `<div style="margin: 10px 0;text-align: center;">از بازی شما </div><div style="margin: 10px 0;text-align: center;">
-        <span style="color:var(--NaghshSiahColor)">${model.shahr} </span> شهروند 
-        <span style="color:var(--NaghshSefidColor)">${model.mafia} </span> مافیا
+        <span style="color:var(--NaghshSefidColor)">${model.shahr} </span> شهروند
+        <span style="color:var(--NaghshSiahColor)">${model.mafia} </span> مافیا
         </div><div style="margin: 10px 0;text-align: center;">بیرون هستند</div>`;
         elModal({ model: html, className: 'estelamResult', time: model.wait * 1000 });
 
