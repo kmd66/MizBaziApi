@@ -46,10 +46,10 @@ globalModel.infoRoomReceive = function (model) {
     globalModel.users = model.users;
     globalModel.room = model.room;
     globalModel.groupItem = model.groupItem;
-    vm.$refs.childmain.door = model.room.door;
     main.topTimeProgress(-100);
     globalModel.userStatusReceive(model.status);
 
+    setDoor(model.room)
     setNightMode(model.room.doorType);
 
 }
@@ -68,9 +68,16 @@ globalModel.infoMainReceive = function (room) {
     reset();
     globalModel.room = room;
     main.topTimeProgress(-100);
-    vm.$refs.childmain.door = room.door;
-
+    setDoor(room)
     setNightMode(room.doorType);
+}
+function setDoor(room) {
+    if (room.door == 1)
+        vm.$refs.childmain.door = 'معارفه';
+    else if (room.doorType == 2)
+        vm.$refs.childmain.door = 'رای‌گیری';
+    else
+        vm.$refs.childmain.door = room.doorType == 3 ? `شب ${room.door}` : `روز ${room.door}`;
 }
 function setNightMode(doorType) {
 

@@ -14,6 +14,8 @@ socketHandler.rayegiriReceive = function (model) {
 }
 socketHandler.rayeKhorojReceive = function (model) {
     rayegiri(model, 'rayeKhoroj')
+    if (vm.$refs.childmain.door != 'رای‌خروج')
+        vm.$refs.childmain.door = 'رای‌خروج';
 }
 function rayegiri(model, type) {
     if (model.type == 'end') {
@@ -54,16 +56,21 @@ socketHandler.defaeListReceive = function (model) {
 }
 
 socketHandler.defaeReceive = function (model) {
-    defaeStream(model, 'defaeReceive')
+    defaeStream(model, 'defaeReceive');
+    if (vm.$refs.childmain.door != 'دفاع')
+        vm.$refs.childmain.door = 'دفاع';
 }
 
 socketHandler.khorojReceive = function (model) {
     defaeStream(model, 'khorojReceive');
     if (model.type == 'start') {
+        if (vm.$refs.childmain.door != 'وصیت')
+            vm.$refs.childmain.door = 'وصیت';
         if (globalModel.user.index == model.activeUser)
             globalModel.khorojHadseNaghsh = true;
     }
     if (model.type == 'end') {
+        vm.$refs.childmain.door = '----';
         globalModel.khorojHadseNaghsh = false;
         setUserInGameStatus(model.activeUser, 2);
     }
