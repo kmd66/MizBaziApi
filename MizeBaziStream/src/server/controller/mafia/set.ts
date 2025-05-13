@@ -82,7 +82,7 @@ export default class Set extends Receive {
         });
     }
     public setHadseNaghsh(model: any) {
-        if (this.doorType != 1 || this.door < 3) return;
+        if (this.doorType != 1 || this.door < 2) return;
 
         const room = mafiaDb().get(this.roomId);
         if (!room) return;
@@ -172,7 +172,7 @@ export default class Set extends Receive {
 
         const events2 = this.nightEvents.filter(x => x.userId == result.user!.id);
         const returnModel = events2.map(x => ({ eventType: x.eventType, userId: x.userId }));
-        MafiaControll.sendToSocket('setZendanReceive', result.user.connectionId!, returnModel);
+        MafiaControll.sendToSocket('setNegahbanReceive', result.user.connectionId!, returnModel);
     }
 
     public setEstelam(model: any) {

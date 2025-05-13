@@ -413,3 +413,8 @@ body{
     border-radius: 50%;
     margin: 0 10px;
 }
+.flex-column {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between !important;
+}

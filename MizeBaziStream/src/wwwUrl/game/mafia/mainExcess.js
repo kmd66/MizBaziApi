@@ -37,6 +37,49 @@ main.setUsers = function () {
     if (globalModel.isChaos)
         chaos.setUsers();
 }
+
+main.nightAlert = function () {
+    if (globalModel.room.door == 1 || globalModel.room.doorType != 3 || globalModel.user.userInGameStatus != 1) return;
+    if ([7, 8].indexOf(globalModel.user.type) > -1) return;
+    if ([6, 9].indexOf(globalModel.user.type) > -1 && !globalModel.groupItem.shot) return;
+
+    const divEl = document.createElement('div');
+    divEl.className = `modalBady`;
+    divEl.style.textAlign = "center";
+
+    if (globalModel.user.type == 4)
+        divEl.innerHTML = `<div>از یک نفر دربرابر شلیک مافیا محافظت کنید</div>`;
+    else if (globalModel.user.type == 5)
+        divEl.innerHTML = `<div>استعلام یک نفر را بگیرید</div>`;
+    else if (globalModel.user.type == 10) {
+        const users = globalModel.users.filter(x => [1, 10].indexOf(x.userInGameStatus) > -1);
+        divEl.innerHTML = users.length >= 7 ? `<div>از قابلیت نقش 2 نفر حفاظت کنید</div>` : `<div>از قابلیت نقش 1 نفر حفاظت کنید</div>`;
+
+    }
+    else
+        divEl.innerHTML = `<div>میتوانید یک نفر را برای شلیک انتخاب کنید</div>`;
+
+    if (globalModel.user.type == 22)
+        divEl.innerHTML += `<div>قابلیت نقش یک نفر را ازبین ببرید</div>`;
+    if (globalModel.user.type == 23)
+        divEl.innerHTML += `<div>نتیجه استعلام یک نفر را تغییر دهید</div>`;
+
+    document.body.appendChild(divEl);
+    setTimeout(() => {
+        divEl.remove();
+    }, 4000);
+
+
+    //ahangar = 4, //'اهنگر',icon-bolt-shield
+    //    karagah = 5, //'کاراگاه',icon-search-normal-2
+    //    shekarchi = 6, //'شکارچی', icon-target
+    //    mobarez = 9, //'مبارز',icon-target
+    //    negahban = 10, //'نگهبان'icon-bolt-shield
+
+    //    raees = 21, //'رییس مافیا', icon-target
+    //    kharabkar = 22, //'خرابکار',icon-sabotage icon-target
+    //    taghier = 23, //'تغییردهنده', icon-smileys icon-target
+}
 function getDefensePositionReceive(model) {
     main.reset();
     globalModel.activeUser = {
@@ -99,5 +142,12 @@ function setChaleshReceive(model) {
 }
 
 main.addMessageReceive = function (model) {
+    vm.$refs.childmain.chatList.push(model);
+}
+
+main.setNightEventReceive = function (model) {
+    vm.$refs.childmain.chatList.push(model);
+}
+main.setNegahbanReceive = function (model) {
     vm.$refs.childmain.chatList.push(model);
 }

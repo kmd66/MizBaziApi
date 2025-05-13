@@ -84,7 +84,7 @@ function setDoor(room) {
         vm.$refs.childmain.door = room.doorType == 3 ? `شب ${room.door}` : `روز ${room.door}`;
 }
 function setNightMode(doorType) {
-
+    main.nightAlert();
     if (doorType == 3 && globalModel.user.type > 20 && globalModel.user.userInGameStatus == 1) {
         vm.$refs.childmain.isChat = true;
     }
@@ -107,5 +107,6 @@ function setNightMode(doorType) {
         if (vm.appModel.nightMode)
             vm.appModel.nightMode = false;
     }
-    
+
+    main.nightAlert(doorType);
 }

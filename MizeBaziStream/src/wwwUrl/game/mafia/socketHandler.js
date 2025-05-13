@@ -47,6 +47,9 @@ socketHandler.initSoket = function () {
 
     globalModel.connection.on('addMessageReceive', main.addMessageReceive);
 
+    globalModel.connection.on('setNightEventReceive', main.setNightEventReceive);
+    globalModel.connection.on('setNegahbanReceive', main.setNegahbanReceive);
+
     globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
     globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
     globalModel.connection.on('getMessage', gameresponse.getMessage);

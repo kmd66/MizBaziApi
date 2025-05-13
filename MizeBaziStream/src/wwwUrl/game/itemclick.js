@@ -92,8 +92,8 @@ function mafiaClick(i) {
     }
     const model = {};
 
-    if (globalModel.room.doorType == 1 && globalModel.room.door > 2 && globalModel.user.userInGameStatus == 1) {
-        if (globalModel.user.type == 7 && globalModel.groupItem.shot)
+    if (globalModel.room.doorType == 1 && globalModel.room.door > 1 && globalModel.user.userInGameStatus == 1) {
+        if (globalModel.user.type == 7 && globalModel.room.door > 2 && globalModel.groupItem.shot)
             model.kalantarShot = true;
 
         if (globalModel.user.type > 20 && globalModel.groupItem.hadseNaghsh) {
