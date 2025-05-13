@@ -12,6 +12,7 @@ export default class Receive extends Stream {
             door: this.door,
             doorType: this.doorType,
             wait: wait ? wait : this.mainWait,
+            isChaos: this.isChaos
         };
         if (this.doorType == 3)
             model.wait = this.nightWait;

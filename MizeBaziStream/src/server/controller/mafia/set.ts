@@ -178,14 +178,30 @@ export default class Set extends Receive {
     public setEstelam(model: any) {
         if (!this.isEstelam) return;
         const room = mafiaDb().get(this.roomId);
-        if (!room) return null;
+        if (!room) return;
         const user = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
-        if (!user) return null;
+        if (!user) return;
         const index = this.estelamList.findIndex(x => x == user.id);
         if (index == -1) {
             this.estelamList.push(user.id);
             MafiaControll.sendToMultipleSockets(this.roomId, 'setEstelamReceive', {userId: user.id});
         }
+    }
+
+    public setRayeChaos(model: any) {
+        if (!this.isChaos) return;
+        const room = mafiaDb().get(this.roomId);
+        if (!room) return;
+        const user1 = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
+        const user2 = room?.users.find((x: User) => x.id == model.userId && [1, 10].indexOf(x.userInGameStatus) > -1);
+        if (!user1 || !user2) return;
+        if (user1.id == user2.id) return;
+
+        if (this.rayeChaos.has(user1.id)) {
+            this.rayeChaos.delete(user1.id);
+        }
+        this.rayeChaos.set(user1.id, user2.id);
+        MafiaControll.sendToSocket('setRayeChaosReceive', user1.connectionId!, { userId: user2.id });
     }
 
 

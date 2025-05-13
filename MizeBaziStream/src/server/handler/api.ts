@@ -114,6 +114,8 @@ class PageRoot {
         const mainTemp = fs.readFileSync(mainFile, 'utf8');
         const helpFile = path.join(__dirname, '../../public/mafia/help.html');
         const helpTemp = fs.readFileSync(helpFile, 'utf8');
+        const chaosFile = path.join(__dirname, '../../public/mafia/chaos.html');
+        const chaosTemp = fs.readFileSync(chaosFile, 'utf8');
 
         const stickerFile = path.join(__dirname, '../../public/sticker.html');
         const stickerTemp = fs.readFileSync(stickerFile, 'utf8');
@@ -130,6 +132,7 @@ class PageRoot {
 
             main: mainTemp,
             help: helpTemp,
+            chaos: chaosTemp,
             sticker: stickerTemp,
             itemclick: itemclickTemp,
             gameresponse: gameresponseTemp

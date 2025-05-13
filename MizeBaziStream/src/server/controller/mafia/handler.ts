@@ -214,7 +214,6 @@ export default class mafiaHandler extends Set {
     }
 
     private async nobatChaos() {
-
         const room = mafiaDb().get(this.roomId);
         if (!room) {
             this.setFinish();
@@ -241,10 +240,10 @@ export default class mafiaHandler extends Set {
         await this.delay(3000);
         this.startProduceStream();
         await this.delay(500);
-        MafiaControll.sendToMultipleSockets(this.roomId, 'defaeReceive', { type: 'start', wait: 15, activeUser: this.activeUser });
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'start', wait: 15, activeUser: this.activeUser });
         await this.delay(15000);
         this.sfu.stopProducer();
-        MafiaControll.sendToMultipleSockets(this.roomId, 'defaeReceive', { type: 'end' });
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'end' });
 
         this.nobatChaos();
     }
@@ -253,8 +252,8 @@ export default class mafiaHandler extends Set {
 
         await this.delay(1000);
 
-        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'resultChaos', wait: 15 });
-        await this.delay(15000);
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'resultChaosWait', wait: 10 });
+        await this.delay(10000);
 
         const room = mafiaDb().get(this.roomId);
         if (!room) {
@@ -307,8 +306,8 @@ export default class mafiaHandler extends Set {
         userLoser!.userInGameStatus = 2;
         userInDb().update(this.roomId, userLoser!);
 
-        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'resultChaos', wait: 5, id: userId });
-        await this.delay(5000);
+        MafiaControll.sendToMultipleSockets(this.roomId, 'chaosReceive', { type: 'resultChaos', wait: 7, id: userId });
+        await this.delay(7000);
         this.checkLoser();
     }
 

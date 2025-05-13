@@ -1,0 +1,36 @@
+
+<template id="chaos-template">
+    <div class="mainTemplate">
+        <div class="mainTop" style="text-align: center; padding: 12px">{{msg1}}</div>
+        <div class="progressbar ap218daf">
+            <div style="width:0px"></div>
+        </div>
+        <div class="chaosMsg2">{{msg2}}</div>
+        <div class="main">
+            <div class="mainItem d-flex">
+                <div class="mainRight flex-column">
+                    <div v-for="user in users" class="itemMain">
+                        <div class="rtl">
+                            <div class="sitNumber">{{ user.row }}</div>
+                        </div>
+                        <div :class="'chaosItem' + user.row" @click="itemClick(user.id)">
+                            <div class="itemImg">
+                                <img :src="user.info.Img + '90.jpg'" />
+                                <div :class="itemStatus(user)"></div>
+                            </div>
+                            <div class="itemName">{{ user.info.FirstName }}</div>
+                            <div class="userName">{{ user.info.UserName }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="soundDiv2">
+                <i class="icon-radar-14" :style="{ display: soundDivI == true ? 'inline-block':'none'}"></i>
+            </div>
+        </div>
+
+    </div>
+
+</template>

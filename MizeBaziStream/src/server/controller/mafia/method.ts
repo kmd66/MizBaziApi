@@ -50,7 +50,8 @@ function infoRoomReceive(roomId: string, userKey: string, userType: number, conn
         room: modelRoom,
         users: MafiaControll.SafeUsers(userType, users),
         status: GameControll.userStatus(users),
-        groupItem: handler.groupItem(userKey)
+        groupItem: handler.groupItem(userKey),
+        isChaos: handler.isChaos
     }
 
     SocketManager.sendToSocket(
@@ -120,6 +121,8 @@ export function MafiaMethod() {
 
             setNightEvent: wrapHandler('setNightEvent'),
             setNegahban: wrapHandler('setNegahban'),
+
+            setRayeChaos: wrapHandler('setRayeChaos'),
 
             setEstelam: wrapHandler('setEstelam'),
 

@@ -14,6 +14,10 @@
                 <main-component ref="childmain" :app-model="appModel"></main-component>
             </div>
 
+            <div class="mainTemplate" v-show="appModel.state == 'chaos'">
+                <chaos-component ref="childchaos" :app-model="appModel"></chaos-component>
+            </div>
+
             <div class="gameresponseMain" v-show="appModel.state == 'gameresponse'">
                 <gameresponse-component ref="childGameresponse"></gameresponse-component>
             </div>
