@@ -19,9 +19,11 @@ function initShare() {
     socketHandler = {};
     main = {};
     help = {};
+    chaos = {};
     gameresponse = {};
 
     globalModel.khorojHadseNaghsh = false;
+    globalModel.isChaos = false;
 
 }
 
@@ -51,6 +53,8 @@ globalModel.infoRoomReceive = function (model) {
 
     setDoor(model.room)
     setNightMode(model.room.doorType);
+
+    if (model.isChaos) chaos.chaosReceive({ type: 'chaos', wait: 10 });
 
 }
 globalModel.userStatusReceive = function (model) {
@@ -103,4 +107,5 @@ function setNightMode(doorType) {
         if (vm.appModel.nightMode)
             vm.appModel.nightMode = false;
     }
+    
 }

@@ -34,6 +34,8 @@ main.setUsers = function () {
     vm.$refs.childmain.user = globalModel.user;
     vm.$refs.childmain.users = globalModel.users;
     vm.$refs.childmain.naghsh = help.usersReceive(globalModel.user.type);
+    if (globalModel.isChaos)
+        chaos.setUsers();
 }
 function getDefensePositionReceive(model) {
     main.reset();

@@ -13,13 +13,13 @@
     color: #999999;
     background: #1c1c1c;
 }
-.soundDiv {
+.soundDiv, .soundDiv2 {
     position: fixed;
     text-align: center;
 }
-.soundDiv i {
-    color: rgb(255 0 0);
-}
+    .soundDiv i, .soundDiv2 i{
+        color: rgb(255 0 0);
+    }
 .containerGame .Night .mainTop {
     background: rgb(0 13 31);
 }
@@ -136,4 +136,11 @@
 }
 .itemMain .itemName, .itemMain .userName {
     max-width: 60px;
+}
+.chaosMsg2 {
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 5px;
+    height: 60px;
+    overflow: hidden
 }
