@@ -70,7 +70,7 @@ const HELP_Mafia_COMMENT = [
     },
     {
         "type": '8',
-        "title": 'روینتن',
+        "title": 'رویین‌تن',
         "icon": 'icon-rointan',
         "comment": Mafia_COMMENT8
     },
