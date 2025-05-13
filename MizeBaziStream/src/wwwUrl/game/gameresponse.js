@@ -37,6 +37,15 @@ function setWinner(w) {
             vm.$refs.childGameresponse.winnerColor = '#f35a9f';
         }
     }
+
+    if (globalModel.gameName == 'mafia') {
+        if (w == 1) {
+            vm.$refs.childGameresponse.winner = 'شهروند‌ها';
+        }
+        else {
+            vm.$refs.childGameresponse.winner = 'مافیا';
+        }
+    }
 }
 
 gameresponse.getMessage = function (model) {

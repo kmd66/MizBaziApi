@@ -184,18 +184,18 @@ export default class mafiaHandler extends Set {
         let siah = 0;
         let sefid = 0;
 
-        room.users.map(x => {
+        const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
+
+        users.map(x => {
             if (x.type < 20)
                 sefid++;
             else siah++;
         })
-
         if (siah == 0 || siah >= sefid) {
             this.endGame(siah, sefid);
             return;
         }
 
-        const users = room.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
         if (users.length < 4) {
             this.Chaos();
             return;

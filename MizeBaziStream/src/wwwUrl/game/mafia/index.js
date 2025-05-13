@@ -4,7 +4,7 @@ import './main'
 import './help'
 import '../sticker'
 import '../itemclick'
-//import '../gameresponse'
+import '../gameresponse'
 
 const app = Vue.createApp({
     data() {
@@ -39,7 +39,7 @@ main.Component(app);
 help.Component(app);
 sticker.Component(app);
 itemclick.Component(app);
-//gameresponse.Component(app);
+gameresponse.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

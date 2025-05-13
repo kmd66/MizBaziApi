@@ -18,7 +18,6 @@ export class Property {
     public wait: number = 12;
     public mainWait: number = 3;
     public get nightWait(): number {
-        return 1;
         if (this.door == 1)
             return 15;
         else return 40;
@@ -76,7 +75,6 @@ export class Property {
             this.wait = 30;
         else
             this.wait = 12;
-            this.wait = 1;
     }
 
     private addGroups(roomId: string): void {
