@@ -144,3 +144,45 @@
     height: 60px;
     overflow: hidden
 }
+.nightIconGroup {
+    position: fixed;
+    overflow: hidden;
+    z-index:1005;
+}
+
+.nightIcon {
+    display: block;
+    background: red;
+    font-size: 1rem;
+    border-radius: 50%;
+    color: white;
+    line-height: 1rem;
+    padding: 0.2rem;
+}
+    .nightIcon.nightIconUserType22 {
+        background: #7900ff;
+    }
+    .nightIcon.nightIconUserType23 {
+        background: #001dff;
+    }
+.KaragahMsg {
+    margin: 12px;
+    font-size: 2rem;
+    line-height: 2rem;
+}
+    .KaragahMsg.icon-dislike {
+        color: green;
+    }
+    .KaragahMsg.icon-like {
+        color: red;
+    }
+.KaragahMsgBody {
+    top: 10px;
+    position: fixed;
+    padding: 12px;
+    background: var(--BtnColor);
+    border-radius: 14px;
+    text-align: center;
+    width: 90%;
+    margin: 0px 5%;
+}

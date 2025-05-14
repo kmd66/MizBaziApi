@@ -127,9 +127,10 @@ export default class Set extends Receive {
                 targetId: model.targetId,
                 targetType: result.target.type
             };
-            const returnModel = this.addNightEvent(addModel);
+            const nightEvents = this.addNightEvent(addModel);
+            const returnModel = { type: addModel.type, nightEvents: nightEvents }
             if (result.user.type > 20)
-                this.sentToMafia(addModel, 'setNightEventReceive');
+                this.sentToMafia(returnModel, 'setNightEventReceive');
             else
                 MafiaControll.sendToSocket('setNightEventReceive', result.user.connectionId!, returnModel);
         }
@@ -161,7 +162,7 @@ export default class Set extends Receive {
                     this.nightEvents.push(addModel);
                 } else {
                     const toRemove = events[0];
-                    this.nightEvents = this.nightEvents.filter(x => !(x.userId === toRemove.userId && x.targetId === toRemove.targetId));
+                    this.nightEvents = this.nightEvents.filter(x => !(x.userId == toRemove.userId && x.targetId == toRemove.targetId));
                     this.nightEvents.push(addModel);
                 }
             }
@@ -171,7 +172,7 @@ export default class Set extends Receive {
         }
 
         const events2 = this.nightEvents.filter(x => x.userId == result.user!.id);
-        const returnModel = events2.map(x => ({ eventType: x.eventType, userId: x.userId }));
+        const returnModel = events2.map(x => ({ eventType: x.eventType, targetId: x.targetId, userId: x.userId }));
         MafiaControll.sendToSocket('setNegahbanReceive', result.user.connectionId!, returnModel);
     }
 
@@ -242,13 +243,13 @@ export default class Set extends Receive {
         });
     }
 
-    private permissionNightEvent(model: any): any{
+    private permissionNightEvent(model: any): any {
         if (this.doorType != 3 || this.door == 1) return null;
-        if (!model.eventType || !model.targetId) return null;
+        if (!model.targetId) return null;
         const room = mafiaDb().get(this.roomId);
         if (!room) return null;
         const user1 = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
-        const user2 = room?.users.find((x: User) => x.key == model.targetId && [1, 10].indexOf(x.userInGameStatus) > -1);
+        const user2 = room?.users.find((x: User) => x.id == model.targetId && [1, 10].indexOf(x.userInGameStatus) > -1);
         if (!user1 || !user2) return null;
 
 
@@ -271,21 +272,21 @@ export default class Set extends Receive {
             x.userId == model.userId
         );
         if (index > -1) {
-            this.nightEvents = model.targetId;
-            if (this.nightEvents[index].targetId == model.targetId)
-                this.nightEvents = this.nightEvents.filter(item =>
-                    !(
-                        item.eventType === model.eventType &&
-                        item.userId === model.userId
-                    )
-                );
-            else this.nightEvents[index].targetId = model.targetId
+            let targetId = this.nightEvents[index].targetId;
+            this.nightEvents = this.nightEvents.filter(item =>
+                !(
+                    item.eventType === model.eventType &&
+                    item.userId === model.userId
+                )
+            );
+            if (targetId != model.targetId)
+                this.nightEvents.push(model);
         } else {
             this.nightEvents.push(model);
         }
         const events = this.nightEvents.filter(x => x.userId == model.userId);
 
-        const returnModel = events.map(x => ({ eventType: x.eventType, userId: x.userId, type: x.type }));
+        const returnModel = events.map(x => ({ eventType: x.eventType, targetId: x.targetId, userId: x.userId, type: x.type }));
         return returnModel;
     }
 

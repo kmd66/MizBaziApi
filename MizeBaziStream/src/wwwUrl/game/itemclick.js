@@ -17,6 +17,10 @@ function itemMainClick(i) {
     if (i == globalModel.user.row)
         vm.$refs.childitemclick.isMy = true;
 
+    if (globalModel.isNightEvent) {
+        main.addNightEvent(rowNum);
+        return;
+    }
     if (globalModel.gameName == 'rangOraz') {
         let b = rangOrazClick(i);
         if (b)

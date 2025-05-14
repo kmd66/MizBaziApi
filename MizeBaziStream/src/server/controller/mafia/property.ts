@@ -20,7 +20,7 @@ export class Property {
     public get nightWait(): number {
         if (this.door == 1)
             return 15;
-        else return 40;
+        else return 50;
     }
     public activeUser: number = -1;
     public state: string = 'main';

@@ -4,7 +4,10 @@ function reset() {
 }
 function initShare() {
     globalModel = {
-        gameName: 'mafia'
+        gameName: 'mafia',
+        khorojHadseNaghsh: false,
+        isChaos: false,
+        isNightEvent: false,
     };
     vm = {};
 
@@ -21,9 +24,6 @@ function initShare() {
     help = {};
     chaos = {};
     gameresponse = {};
-
-    globalModel.khorojHadseNaghsh = false;
-    globalModel.isChaos = false;
 
 }
 
@@ -75,6 +75,11 @@ globalModel.infoMainReceive = function (room) {
     setDoor(room)
     setNightMode(room.doorType);
 }
+globalModel.nightUpdate = function (model) {
+    globalModel.userStatusReceive(model.status);
+    const { status, ...newModel } = model;
+    globalModel.infoMainReceive(newModel);
+}
 function setDoor(room) {
     if (room.door == 1)
         vm.$refs.childmain.door = 'معارفه';
@@ -108,5 +113,5 @@ function setNightMode(doorType) {
             vm.appModel.nightMode = false;
     }
 
-    main.nightAlert(doorType);
+    main.nightAlert();
 }

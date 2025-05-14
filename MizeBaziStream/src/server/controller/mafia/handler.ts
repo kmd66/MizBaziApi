@@ -54,11 +54,6 @@ export default class mafiaHandler extends Set {
         if (this.finish)
             return;
 
-        if (this.isUserAction || this.isAddDisconnec || this.door > 14) {
-            this.checkLoser();
-            return;
-        }
-
 
         if (this.door == 0) {
             await this.delay(this.wait * 1000);
@@ -66,12 +61,17 @@ export default class mafiaHandler extends Set {
         }
         
         if (this.shab.checkProperty()) {
-            this.checkEstelam();
+            this.shabSendMsg();
             return;
         } else {
             await this.delay(100);
             this.infoMainReceive();
             await this.delay(3000);
+        }
+
+        if (this.isUserAction || this.isAddDisconnec || this.door > 14) {
+            this.checkLoser();
+            return;
         }
 
         if (this.isEstelam) {
@@ -89,7 +89,7 @@ export default class mafiaHandler extends Set {
 
     }
 
-    public async sendMsg() {
+    public async shabSendMsg() {
         const room = mafiaDb().get(this.roomId);
         if (!room) {
             this.setFinish();
@@ -103,6 +103,7 @@ export default class mafiaHandler extends Set {
             door: this.door,
             doorType: this.doorType,
             wait: this.mainWait + 2,
+            isChaos: this.isChaos,
             status: status
         };
 
@@ -110,21 +111,21 @@ export default class mafiaHandler extends Set {
         MafiaControll.sendToMultipleSockets(this.roomId, 'nightUpdate', model);
 
         if (this.shab.isMobarezMsg) {
-            const mobarez = room.users.find(x => x.type == 9);
+            const mobarez = room.users.find(x => x.type == 9 && [1, 2].indexOf(x.userInGameStatus) > -1);
             if (mobarez) {
                 await this.delay(100);
                 MafiaControll.sendToSocket('mobarezMsgReceive', mobarez.connectionId!, true);
             }
         }
         if (this.shab.Karagah != null) {
-            const Karagah = room.users.find(x => x.type == 5);
+            const Karagah = room.users.find(x => x.type == 5 && [1, 2].indexOf(x.userInGameStatus) > -1);
             if (Karagah) {
                 await this.delay(100);
-                MafiaControll.sendToSocket('KaragahMsgReceive', Karagah.connectionId!, this.shab.kharabkar);
+                MafiaControll.sendToSocket('KaragahMsgReceive', Karagah.connectionId!, this.shab.Karagah);
             }
         }
         if (this.shab.kharabkar > 0) {
-            const kharabkar = room.users.find(x => x.id == this.shab.kharabkar);
+            const kharabkar = room.users.find(x => x.id == this.shab.kharabkar && [1, 2].indexOf(x.userInGameStatus) > -1);
             if (kharabkar) {
                 await this.delay(100);
                 MafiaControll.sendToSocket('kharabkarMsgReceive', kharabkar.connectionId!, true);
@@ -201,6 +202,10 @@ export default class mafiaHandler extends Set {
             return;
         }
 
+        if (this.door > 14) {
+            this.endGame(5, 0);
+            return;
+        }
         this.main();
     }
 
@@ -344,7 +349,6 @@ class Rooz {
     }
 
     public async main() {
-
         if (this.handler.finish)
             return;
 
@@ -712,6 +716,7 @@ class Shab {
     public kharabkar = 0;
     public Karagah: any = null;
     private shekarchi = 0;
+    private isShekarchiShot = false;
 
     private handler: mafiaHandler;
     private delay(ms: number): Promise<void> {
@@ -736,10 +741,11 @@ class Shab {
         this.kharabkar = 0;
         this.Karagah = null;
         this.shekarchi = 0;
+        this.isShekarchiShot = false;
     }
 
     public checkProperty(): boolean {
-        if (this.removeId > 0 || this.shekarchi > 0 || this.Karagah != null )
+        if (this.removeId > 0 || this.shekarchi > 0 || this.kharabkar > 0 || this.Karagah != null )
             return true;
         return false;
     }
@@ -774,14 +780,13 @@ class Shab {
             .find(e => e !== undefined);
 
         if (selected.targetType == 8) return;
-
         else if (selected.targetType == 9) {
             if (this.mobarez == 0)
                 this.removeId = selected.targetId;
             else {
                 this.isMobarezMsg = true;
-                if (selected.type > 21 && this.mobarez != this.ahangar)
-                    this.removeId = selected.userId;
+                if (this.mobarez != this.ahangar)
+                    this.removeId = this.mobarez;
             }
         } else {
             if (selected.targetId != this.ahangar)
@@ -842,6 +847,8 @@ class Shab {
         const event = this.handler.nightEvents.find(x => x.type == 6);
         if (!event) return;
         if (this.kharabkar == event.userId) return;
+
+        this.isShekarchiShot = true;
         if (event.targetType > 20) {
             if (event.targetType > 21 && this.ahangar != event.targetId)
                 this.shekarchi = event.targetId;
@@ -872,7 +879,7 @@ class Shab {
         }
         if (this.removeId > 0) {
             const removeUser = room.users.find(x => x.id == this.removeId);
-            if (removeUser) 
+            if (removeUser && removeUser.type != 21) 
                 removeUser.userInGameStatus = 2;
         }
 
@@ -882,7 +889,7 @@ class Shab {
                 shekarchiUser.userInGameStatus = 2;
         }
 
-        if (this.shekarchi > 0 || this.shekarchi)
+        if (this.removeId > 0 || this.shekarchi > 0)
             mafiaDb().update(this.handler.roomId, room);
 
         if (this.Karagah) { }
@@ -894,12 +901,12 @@ class Shab {
                     this.handler.groups[iMobarez].shot = false;
             }
         }
-        if (this.shekarchi > 0) {
+        if (this.isShekarchiShot) {
             const shekarchi = room.users.find(x => x.type == 6);
             if (shekarchi) {
-                const ishekarchi = this.handler.groups.findIndex(x => x.key == shekarchi.key)
-                if (ishekarchi > -1)
-                    this.handler.groups[ishekarchi].shot = false;
+                const isShekarchi = this.handler.groups.findIndex(x => x.key == shekarchi.key)
+                if (isShekarchi > -1)
+                    this.handler.groups[isShekarchi].shot = false;
             }
         }
     }

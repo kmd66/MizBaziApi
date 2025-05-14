@@ -17,6 +17,7 @@ chaos.chaosReceive = function (model) {
     if (model.type != 'start')
         reset();
     if (model.type == 'chaos') {
+        globalModel.isNightEvent = false;
         vm.appModel.nightMode = false;
         vm.$refs.childchaos.users = globalModel.users.filter(x => x.userInGameStatus == 1 || x.userInGameStatus == 10);
         globalModel.isChaos = true;
