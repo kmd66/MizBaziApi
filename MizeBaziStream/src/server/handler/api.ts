@@ -1,6 +1,6 @@
 ﻿import { Router, Request, Response } from 'express';
 import { RoomUsers, Result } from '../model/interfaces';
-import { GameTypeExtension, userInGameStatusType } from '../model/gameInterfaces';
+import { GameType, GameTypeExtension, userInGameStatusType } from '../model/gameInterfaces';
 import config from './config';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
@@ -176,7 +176,10 @@ class ApiRoot {
                 return res.status(200).json(Result.fail(401, 't 0'));
 
             var types = GameTypeExtension.roles(model.type);
-            types = this.shuffleArray(types);
+            if (model.type == GameType.nabardKhande)
+                types = this.sortArray(types);
+            else
+                types = this.shuffleArray(types);
             model.users = this.shuffleArray(model.users);
 
             var resultUser: any = {
@@ -214,6 +217,18 @@ class ApiRoot {
         }
     }
 
+    sortArray(array: string[]): string[] {
+        return [...array].sort((a, b) => {
+            const [_, groupA, posA] = a.match(/groh(\d)_(\d)/)!;
+            const [__, groupB, posB] = b.match(/groh(\d)_(\d)/)!;
+
+            const priorityA = parseInt(posA) * 10 + parseInt(groupA);
+            const priorityB = parseInt(posB) * 10 + parseInt(groupB);
+
+            return priorityA - priorityB;
+        });
+    }
+
     shuffleArray<T>(array: T[]): T[] {
         const shuffled = [...array];
         for (let i = shuffled.length - 1; i > 0; i--) {
@@ -226,7 +241,7 @@ class ApiRoot {
 class TestApiRoot {
     constructor() { }
     public async testCreateRoom(req: Request, res: Response): Promise<any> {
-        const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/testPage/userdata-mafia.json', 'utf-8');
+        const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/testPage/userdata-nabardKhande.json', 'utf-8');
         const model: RoomUsers = JSON.parse(jsonData);
         globalDb().clear();
         model.key = config.apiKey;
