@@ -1,4 +1,44 @@
 ﻿
+.mainItem {height:100%}
 .fading-image {
     background-image: url('/img/1.png');
+}
+.helpMain .mainBottom {
+    padding: 0;
+}
+.helpMain .item {
+    height: 60px;
+    display: inline-flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 25%;
+    text-align: center;
+}.helpMain .item span {
+    font-size: 0.7rem;
+}.helpIcon, .helpTitle {
+    text-align: center;
+}
+.helpIcon i{
+    font-size: 6rem;
+    line-height: 6rem;
+}
+.helpTitle {
+    font-size: 1rem;
+    font-weight: bold;
+}
+.helpMain hr {
+    margin: 14px 0;
+    border-color: var(--TextColor3);
+}
+.helpMain p {
+    line-height: 2.2rem;
+}
+.helpMain .mainBottom {
+    text-align: center;
+}
+.helpMain .main{height: calc(100% - 60px);}
+.helpMain .main [class^="icon-"] {
+    color: var(--TextColor2) !important;
 }

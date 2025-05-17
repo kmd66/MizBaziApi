@@ -17,7 +17,7 @@ export class GlobalsDb {
     public static Instance(port?: string): GlobalsDb {
         if (!GlobalsDb._instance && port) {
             GlobalsDb._instance = new GlobalsDb(port);
-            mafiaDb();
+            khandeDb();
             // اصلاح 
             //afsonDb();
             //rangOrazDb();

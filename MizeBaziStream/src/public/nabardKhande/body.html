@@ -1,5 +1,23 @@
-<div>
-    <h1>
-       سلام
-    </h1>
+<div class="fading-image"></div>
+
+<div class="d-flex asdw90">
+    <video id="localVideo" autoplay class="video"></video>
+    <video id="remoteVideo" autoplay class="video"></video>
 </div>
+
+<div class="containerGame" id="app" v-cloak>
+    <div :class="appModel.nightMode? 'Night':'Day'">
+        <div v-show="appModel.loding" class="lds-hourglass"></div>
+        <div v-show="!appModel.loding">
+
+            <div class="mainTemplate" v-show="appModel.state == 'main'">
+                <main-component ref="childmain" :app-model="appModel"></main-component>
+            </div>
+
+            <help-component ref="childhelp" :app-model="appModel"></help-component>
+            <itemclick-component ref="childitemclick"></itemclick-component>
+        </div>
+    </div>
+</div>
+
+<div id="errorBox"></div>
