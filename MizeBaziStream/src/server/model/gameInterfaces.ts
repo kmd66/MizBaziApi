@@ -11,6 +11,12 @@ export enum winnerType {
     sefid = 1,
     siah = 2,
 }
+export enum winnerType2 {
+    undefined = 0,
+    abi = 1,
+    sabz = 2,
+    germez = 3,
+}
 export enum GameType {
     nabardKhande = 25,
     rangOraz = 45,

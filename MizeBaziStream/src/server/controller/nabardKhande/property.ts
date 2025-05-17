@@ -1,0 +1,74 @@
+﻿import { winnerType2 } from '../../model/gameInterfaces';
+
+export enum DoorType {
+    d0 = 'در انتظار شروع',
+    d1 = 'معارفه',
+    d2 = 'خوانندگی',
+    d3 = 'وقت آزاد',
+    d4 = 'زبان پیچ',
+    d5 = 'وقت آزاد',
+    d6 = '20سوالی',
+    d7 = 'وقت آزاد',
+    d8 = 'حدس نقاشی',
+    d9 = 'وقت آزاد',
+    d10 = 'لبخونی',
+    d11 = '---',
+}
+export class Property {
+    constructor(roomId: string) {
+        this.roomId = roomId;
+        this.addGroups();
+    }
+
+    public roomId!: string;
+    public door?: DoorType = DoorType.d0;
+
+    public isAddDisconnec: boolean = false;
+
+    public wait: number = 12;
+    public mainWait: number = 3;
+    public activeUser: number = -1;
+    public state: string = 'main';
+
+    public finish: boolean = false;
+
+    public timeoutId?: NodeJS.Timeout;
+
+    public nobatIndex: number = -1;
+
+    protected winner: winnerType2 = winnerType2.undefined;
+
+    protected isStream: boolean = false;
+
+    public groups: any[] = [];
+
+    protected get streamDoor(): boolean {
+        return true;
+    }
+
+    protected delay(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    protected getNextStep() {
+        const keys = Object.keys(DoorType).filter(key => isNaN(Number(key)));
+        const currentIndex = keys.findIndex(key => DoorType[key as keyof typeof DoorType] === this.door);
+        if (currentIndex === -1 || currentIndex === keys.length - 1) {
+            this.door = undefined;
+        }
+        const nextKey = keys[currentIndex + 1];
+        this.door = DoorType[nextKey as keyof typeof DoorType];
+    }
+
+    public setState() {
+        this.state = 'main';
+    }
+
+    private addGroups(): void {
+    }
+
+    public groupItem(key: string): any {
+        return  this.groups.find(x => x.key == key);
+    }
+}
+

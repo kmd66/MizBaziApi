@@ -147,10 +147,22 @@ class PageRoot {
         const filePathBody = path.join(__dirname, '../../public/nabardKhande/body.html');
         const bodyPartial = fs.readFileSync(filePathBody, 'utf8');
 
+        const mainFile = path.join(__dirname, '../../public/nabardKhande/main.html');
+        const mainTemp = fs.readFileSync(mainFile, 'utf8');
+        const helpFile = path.join(__dirname, '../../public/nabardKhande/help.html');
+        const helpTemp = fs.readFileSync(helpFile, 'utf8');
+
+        const stickerFile = path.join(__dirname, '../../public/sticker.html');
+        const stickerTemp = fs.readFileSync(stickerFile, 'utf8');
+
         const renderedHtml = ejs.render(mainTemplate, {
             fileBaseUsrl: this._fileBaseUrl,
             body: bodyPartial,
             title: 'نبرد خنده',
+
+            main: mainTemp,
+            help: helpTemp,
+            sticker: stickerTemp,
         });
         res.send(renderedHtml);
     }
