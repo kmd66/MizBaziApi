@@ -128,7 +128,6 @@ export default class AfsonHandler extends Set {
         this.main();
     }
 
-
     public checkLoser() {
         this.isUserAction = false;
         this.isAddDisconnec = false;

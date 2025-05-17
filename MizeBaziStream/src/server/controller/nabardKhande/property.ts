@@ -1,23 +1,24 @@
 ﻿import { winnerType2 } from '../../model/gameInterfaces';
+import { khandeDb } from './khandeDb';
 
 export enum DoorType {
     d0 = 'در انتظار شروع',
     d1 = 'معارفه',
     d2 = 'خوانندگی',
-    d3 = 'وقت آزاد',
-    d4 = 'زبان پیچ',
-    d5 = 'وقت آزاد',
-    d6 = '20سوالی',
-    d7 = 'وقت آزاد',
-    d8 = 'حدس نقاشی',
-    d9 = 'وقت آزاد',
+    d3 = 'وقت‌آزاد',
+    d4 = 'زبان‌پیچ',
+    d5 = 'وقت‌آزاد',
+    d6 = 'سوال‌پیچ',
+    d7 = 'وقت‌آزاد',
+    d8 = 'حدس‌نقاشی',
+    d9 = 'وقت‌آزاد',
     d10 = 'لبخونی',
     d11 = '---',
 }
 export class Property {
     constructor(roomId: string) {
         this.roomId = roomId;
-        this.addGroups();
+        this.addGroups(roomId);
     }
 
     public roomId!: string;
@@ -25,9 +26,12 @@ export class Property {
 
     public isAddDisconnec: boolean = false;
 
-    public wait: number = 12;
+    public wait: number = 14;
     public mainWait: number = 3;
-    public activeUser: number = -1;
+
+    public activeUser1: number = -1;
+    public activeUser2: number = -1;
+
     public state: string = 'main';
 
     public finish: boolean = false;
@@ -40,6 +44,7 @@ export class Property {
 
     protected isStream: boolean = false;
 
+    public score: Map<number, number[]> = new Map();
     public groups: any[] = [];
 
     protected get streamDoor(): boolean {
@@ -58,13 +63,59 @@ export class Property {
         }
         const nextKey = keys[currentIndex + 1];
         this.door = DoorType[nextKey as keyof typeof DoorType];
+        this.setState();
     }
 
     public setState() {
-        this.state = 'main';
+        switch (this.door) {
+            case DoorType.d0:
+            case DoorType.d1:
+            case DoorType.d3:
+            case DoorType.d5:
+            case DoorType.d7:
+            case DoorType.d9: this.state = 'main'; break;
+
+            case DoorType.d2:
+            case DoorType.d4:
+            case DoorType.d6:
+            case DoorType.d8:
+            case DoorType.d10: this.wait = 60; break;
+        }
+
+        switch (this.door) {
+            case DoorType.d0: this.wait = 12; break;
+
+            case DoorType.d1:
+            case DoorType.d3:
+            case DoorType.d5:
+            case DoorType.d7:
+            case DoorType.d9: this.wait = 30; break;
+
+            case DoorType.d2:
+            case DoorType.d4:
+            case DoorType.d6:
+            case DoorType.d8:
+            case DoorType.d10: this.wait = 60; break;
+        }
     }
 
-    private addGroups(): void {
+    private addGroups(roomId: string): void {
+        const room = khandeDb().get(roomId);
+        room?.users.map((x: any) => {
+            const model = {
+                key: x.key,
+                type: 'blue',
+            };
+
+            if (x.type > 20) {
+                model.type = 'red';
+            }
+            else if (x.type > 10) {
+                model.type = 'green';
+            }
+
+            this.groups.push(model);
+        });
     }
 
     public groupItem(key: string): any {
