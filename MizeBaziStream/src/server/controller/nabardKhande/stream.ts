@@ -118,7 +118,7 @@ export default class Stream extends Property {
     public startProduceStream() {
         if (!this.sfu.router) return;
         const room = khandeDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.index == this.activeUser);
+        const user = room?.users.find((x: User) => x.index == this.activeUser1);
         if (!user) return;
 
         SocketManager.sendToSocket('hubNabardKhande', 'startProduceStream', user.connectionId, true);

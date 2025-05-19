@@ -36,7 +36,8 @@ function infoRoomReceive(roomId: string, userType: number, connectionId: string)
         return false;
     const modelRoom = {
         door: handler.door,
-        activeUser: handler.activeUser,
+        activeUser: handler.activeUser1,
+        activeUser2: handler.activeUser2,
         state: handler.state,
         wait: handler.wait
     };
