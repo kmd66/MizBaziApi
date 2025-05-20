@@ -1,5 +1,6 @@
 ﻿import io from 'socket.io-client';
 import './socketExcessHandle';
+import './stream';
 
 socketHandler.initSoket = function () {
     let params = new URLSearchParams(document.location.search);
@@ -36,6 +37,7 @@ function socketCallBack() {
     vm.appModel.loding = false;
     vm.changeState('main');
     main.init();
+    socketHandler.init();
+    socketHandler.streamInit();
     //itemclick.listen();
-    //socketHandler.streamInit();
 }

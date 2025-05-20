@@ -42,3 +42,10 @@
 .helpMain .main [class^="icon-"] {
     color: var(--TextColor2) !important;
 }
+.soundDiv, .soundDiv2 {
+    position: fixed;
+    text-align: center;
+}
+    .soundDiv i, .soundDiv2 i{
+        color: rgb(255 0 0);
+    }

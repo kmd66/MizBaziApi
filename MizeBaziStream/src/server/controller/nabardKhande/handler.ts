@@ -167,6 +167,7 @@ export default class khandeHandler extends Set {
     }
     private async sendStateEnd(eventName: string) {
         this.sfu.stopProducer();
+        this.sfu.closeAllConsumer();
         this.sendMainReceive(eventName, 'end', 0);
         await this.delay(200);
         this.setNobatIndex();

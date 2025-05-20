@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import config from './handler/config';
 import SFU from './handler/sfu';
+import SFU2 from './handler/sfu2';
 import api from './handler/api';
 import path from 'path';
 import { Server } from 'socket.io';
@@ -41,7 +42,9 @@ const io = new Server(httpsServer, {
 SocketInit(io, process.pid);
 
 async function init() {
-    await SFU.createWorker();
+    // اصلاح
+    //await SFU.createWorker();
+    await SFU2.createWorker();
     const PORT = process.env.PORT || '3000';
     const ENV = process.env.NODE_ENV || 'production';
     globalDb(PORT);

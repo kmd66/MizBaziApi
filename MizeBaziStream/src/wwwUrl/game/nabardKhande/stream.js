@@ -6,64 +6,58 @@ socketHandler.streamInit = function () {
         if (params.error) {
             return
         }
-        consumer = await consumerTransport.consume({
+        const cT = consumerTransport.get(params.producerUserId);
+
+        const cR = await cT.consume({
             id: params.id,
             producerId: params.producerId,
             kind: params.kind,
             rtpParameters: params.rtpParameters
-        })
-        const { track } = consumer
-
-        remoteVideo.srcObject = new MediaStream([track])
-        remoteVideo.muted = true;
-
-        remoteVideo.onloadedmetadata = () => {
-            remoteVideo.play().catch(e => {
-                console.warn('Play error:', e);
-            });
-        };
+        });
+        consumer.set(params.producerUserId, cR);
+        const { track } = cR;
+        setRemoteVideo(track);
 
         globalModel.connection.emit('consumerResume', {
-                roomId: socketHandler.roomId,
-                userKey: socketHandler.userKey,
-            });
+            roomId: socketHandler.roomId,
+            userKey: socketHandler.userKey,
+        });
     });
 
     globalModel.connection.on('getRtpCapabilitiesReceive', async (data) => {
         rtpCapabilities = data.rtpCapabilities;
-        await createDevice(localObj);
+        await createDevice(data);
     });
 
     globalModel.connection.on('startProduceStream', async (data) => {
-        socketHandler.closelObj();
         getLocalStream();
     });
 
     globalModel.connection.on('startConsumerStream', async (data) => {
-        socketHandler.closelObj();
-        getRtpCapabilities(false);
+        getRtpCapabilities(false, data);
     });
     globalModel.connection.on('canselStream', async (data) => {
-        socketHandler.closelObj();
+        socketHandler.closeObj();
     });
-
+}
+function setRemoteVideo(track) {
+    remoteVideo.srcObject = new MediaStream([track])
+    remoteVideo.muted = true;
+    remoteVideo.onloadedmetadata = () => {
+        remoteVideo.play().catch(e => {
+            console.warn('Play error:', e);
+        });
+    };
 }
 
 function setVideoObj() {
     localVideo = document.querySelector(`#localVideo`);
     remoteVideo = document.querySelector(`#remoteVideo`);
 }
-socketHandler.closelObj = function () {
+socketHandler.closeObj = function () {
     remoteVideo.srcObject = null;
     localVideo.srcObject = null;
-    if (consumer) {
-        consumer.close();
-        consumer = null;
-    }
-    if (consumerTransport) {
-        consumerTransport.close();
-        consumerTransport = null;
-    }
+    clearConsumer();
     if (producer) {
         producer.close();
         producer = null;
@@ -74,13 +68,41 @@ socketHandler.closelObj = function () {
     }
 }
 
+function closeConsumer(userId) {
+    if (consumer.has(userId)) {
+        consumer.get(userId).close();
+        consumer.delete(userId);
+    }
+    if (consumerTransport.has(userId)) {
+        consumerTransport.get(userId).close();
+        consumerTransport.delete(userId);
+    }
+}
+
+function clearConsumer() {
+    for (const [userId, c] of consumer.entries()) {
+        try {
+            c.close();
+        } catch (err) { }
+    }
+    consumer.clear();
+
+    for (const [userId, t] of consumerTransport.entries()) {
+        try {
+            t.close();
+        } catch (err) { }
+    }
+    consumerTransport.clear();
+}
 
 let device
 let rtpCapabilities
 let producerTransport
-let consumerTransport
 let producer
-let consumer
+
+let consumerTransport  = new Map();
+let consumer = new Map();
+
 let localObj
 
 let params = {
@@ -111,7 +133,7 @@ let params = {
 function streamSuccess(stream) {
     localVideo.srcObject = stream
     var track = stream.getVideoTracks()[0]
-    getRtpCapabilities(true);
+    getRtpCapabilities(true, 0);
     params.track = track;
 }
 
@@ -136,24 +158,25 @@ function getLocalStream() {
     })
 }
 
-async function getRtpCapabilities(local) {
-    localObj = local;
+async function getRtpCapabilities(local, producerUserId) {
     globalModel.connection.emit('getRtpCapabilities', {
         roomId: socketHandler.roomId,
         userKey: socketHandler.userKey,
+        producerUserId: producerUserId,
+        local: local
     });
 }
 
-async function createDevice (local) {
+async function createDevice(model) {
     try {
         device = new mediasoupClient.Device()
         await device.load({
             routerRtpCapabilities: rtpCapabilities
         })
-        if (local)
+        if (model.local)
             createSendTransport();
         else
-            createRecvTransport();
+            createRecvTransport(model.producerUserId);
 
     } catch (error) {
         console.log(error)
@@ -173,6 +196,7 @@ function createSendTransport() {
             console.log(params.error)
             return
         }
+
         producerTransport = device.createSendTransport(params)
         producerTransport.on('connect', async ({ dtlsParameters }, errback) => {
             try {
@@ -209,24 +233,26 @@ function createSendTransport() {
 async function connectSendTransport () {
     producer = await producerTransport.produce(params)
 }
-async function createRecvTransport() {
+async function createRecvTransport(producerUserId) {
     const model = {
         roomId: socketHandler.roomId,
         userKey: socketHandler.userKey,
         sender: false
     }
+
     await globalModel.connection.emit('createWebRtcTransport', model, ({ params }) => {
         if (params.error) {
             console.log(params.error)
             return
         }
-        consumerTransport = device.createRecvTransport(params);
+        const cT = device.createRecvTransport(params);
         globalModel.connection.emit('consume', {
             roomId: socketHandler.roomId,
             userKey: socketHandler.userKey,
-            rtpCapabilities: device.rtpCapabilities
+            rtpCapabilities: device.rtpCapabilities,
+            producerUserId: producerUserId
         });
-        consumerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        cT.on('connect', async ({ dtlsParameters }, callback, errback) => {
             try {
                 await globalModel.connection.emit('transportRecvConnect', {
                     roomId: socketHandler.roomId,
@@ -239,5 +265,6 @@ async function createRecvTransport() {
                 errback(error)
             }
         })
+        consumerTransport.set(producerUserId, cT);
     })
 }

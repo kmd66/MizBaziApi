@@ -107,6 +107,13 @@ export function KandeMethod() {
         },
 
         streamHandler: {
+            getRtpCapabilities: wrapHandler('getRtpCapabilities'),
+            createWebRtcTransport: wrapHandlerWithCallback('createWebRtcTransport'),
+            transportConnect: wrapHandler('transportConnect'),
+            transportProduce: wrapHandlerWithCallback('transportProduce'),
+            transportRecvConnect: wrapHandler('transportRecvConnect'),
+            consume: wrapHandler('consume'),
+            consumerResume: wrapHandler('consumerResume'),
         },
     };
 }

@@ -101,7 +101,7 @@ export class Property {
     }
 
     private addGroups(roomId: string): void {
-        const soalPichRawData = fs.readFileSync('data/tata2.json', 'utf8');
+        const soalPichRawData = fs.readFileSync('data/data2.json', 'utf8');
         const soalPichData = JSON.parse(soalPichRawData);
         const zabanPichRawData = fs.readFileSync('data/zabanPich.json', 'utf8');
         const zabanPichData = JSON.parse(zabanPichRawData);

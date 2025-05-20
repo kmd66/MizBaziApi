@@ -41,7 +41,7 @@ body{
 .asdw90 {
     position: fixed;
     top: 80px;
-    z-index: 100;
+    z-index: 1010;
     left: 0;
     width: 200px;
     justify-content: space-around !important;

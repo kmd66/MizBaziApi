@@ -38,7 +38,7 @@ main.getDefensePosition = function (duration) {
     const rectEl = el.getBoundingClientRect();
 
     el.style.position = 'fixed';
-    el.style.width = '60px';
+    el.style.width = '80px';
     const top = (screen.height / 4);
     const left = (screen.width / 2) - (rectEl.width / 2);
     const animation = el.animate([
@@ -80,7 +80,6 @@ main.topTimeProgress = function (i) {
         main.topTimeProgress(newTime);
     }, 1000);
 }
-
 main.Component = function (app) {
     app.component('main-component', {
         template: '#main-template',

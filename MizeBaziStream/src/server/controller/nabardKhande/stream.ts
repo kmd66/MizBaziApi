@@ -1,6 +1,6 @@
 ﻿import { SteamType, userInGameStatusType } from '../../model/gameInterfaces';
 import { khandeDb } from './khandeDb';
-import SFU from '../../handler/sfu';
+import SFU2 from '../../handler/sfu2';
 import { User } from '../../model/interfaces';
 import SocketManager from '../../handler/socket';
 import { Property } from './property';
@@ -12,7 +12,7 @@ export default class Stream extends Property {
         this.sfu.addRouter();
     }
 
-    public sfu = new SFU(SteamType.audio);
+    public sfu = new SFU2(SteamType.audio);
 
     protected getUser(model: any): User | undefined {
         const room = khandeDb().get(model.roomId);
@@ -31,8 +31,8 @@ export default class Stream extends Property {
         if (!this.sfu.router) return;
         const user = this.getUser({ roomId: roomId, userKey: userKey });
         if (!user) return;
-        if (user.id == this.sfu.producerUserId) {
-            this.sfu.stopProducer()
+        if (this.sfu.producer.has(user.id)) {
+            this.sfu.closeProducer(user.id)
         }
     }
 
@@ -42,7 +42,11 @@ export default class Stream extends Property {
         if (!user) return;
 
         const rtpCapabilities = this.sfu.router?.rtpCapabilities;
-        SocketManager.sendToSocket('hubNabardKhande', 'getRtpCapabilitiesReceive', user.connectionId, { rtpCapabilities });
+        SocketManager.sendToSocket('hubNabardKhande', 'getRtpCapabilitiesReceive', user.connectionId, {
+            rtpCapabilities: rtpCapabilities,
+            producerUserId: model.producerUserId,
+            local: model.local
+        });
     }
 
     public async createWebRtcTransport(model: any, callback: any) {
@@ -50,7 +54,8 @@ export default class Stream extends Property {
         const user = this.getUser(model);
         if (!user) return;
 
-        const callbackModel = await this.sfu.createWebRtcTransport(user.id, model.sender)
+        const callbackModel = await this.sfu.createWebRtcTransport(user.id, model.sender);
+        callbackModel.producerUserId = model.producerUserId;
         callback(callbackModel)
     }
 
@@ -59,9 +64,10 @@ export default class Stream extends Property {
         const user = this.getUser(model);
         if (!user) return;
 
-        if (this.sfu.producerTransport && !this.sfu.producerTransport.appData.connected) {
-            await this.sfu.producerTransport?.connect({ dtlsParameters: model.dtlsParameters })
-            this.sfu.producerTransport.appData.connected = true;
+        const producerTransport = this.sfu.producerTransport.get(user.id);
+        if (producerTransport && !producerTransport.appData.connected) {
+            await producerTransport?.connect({ dtlsParameters: model.dtlsParameters })
+            producerTransport.appData.connected = true;
         }
     }
 
@@ -73,10 +79,11 @@ export default class Stream extends Property {
             kind: model.kind,
             rtpParameters: model.rtpParameters
         }
-        const b = await this.sfu.createProducer(createProducerModel);
+        const b = await this.sfu.createProducer(user.id, createProducerModel);
         if (b) {
+            const producer = this.sfu.producer.get(user.id);
             this.startConsumerStream(user.id);
-            callback({ id: this.sfu.producer?.id })
+            callback({ id: producer?.id })
         }
     }
 
@@ -96,7 +103,9 @@ export default class Stream extends Property {
         const user = this.getUser(model);
         if (!user) return;
 
-        const params = await this.sfu.createConsumer(user.id, model.rtpCapabilities)
+        const params = await this.sfu.createConsumer(user.id, model.producerUserId, model.rtpCapabilities);
+        if (!params) return;
+        params.producerUserId = model.producerUserId;
         SocketManager.sendToSocket('hubNabardKhande', 'consumeReceive', user.connectionId, { params });
     }
 
@@ -114,29 +123,23 @@ export default class Stream extends Property {
         }
     }
 
-
     public startProduceStream() {
+        this.startStream(this.activeUser1);
+    }
+
+    public startPartnerStream() {
+        this.startStream(this.activeUser2);
+    }
+
+    private startStream(activeUser: number) {
         if (!this.sfu.router) return;
         const room = khandeDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.index == this.activeUser1);
+        const user = room?.users.find((x: User) => x.index == activeUser);
         if (!user) return;
 
         SocketManager.sendToSocket('hubNabardKhande', 'startProduceStream', user.connectionId, true);
     }
 
-    public startProduceStream2(connectionId: string) {
-        if (!this.sfu.router) return;
-        SocketManager.sendToSocket('hubNabardKhande', 'startProduceStream', connectionId, true);
-    }
-
-    public startProduceStreamById(id: number) {
-        if (!this.sfu.router) return;
-        const room = khandeDb().get(this.roomId);
-        const user = room?.users.find((x: User) => x.id == id);
-        if (!user) return;
-
-        SocketManager.sendToSocket('hubNabardKhande', 'startProduceStream', user.connectionId, true);
-    }
 
     public startConsumerStream(userId: number) {
         if (!this.sfu.router) return;
@@ -150,8 +153,8 @@ export default class Stream extends Property {
         );
 
         const connectionIds = users?.map(user => user.connectionId);
-
-        KhandeControll.sendToConnectionListId(connectionIds, 'startConsumerStream', true);
+        
+        KhandeControll.sendToConnectionListId(connectionIds, 'startConsumerStream', userId);
     }
 
     public allCancelStream() {

@@ -26,11 +26,9 @@ function initShare() {
 initShare();
 
 globalModel.infoRoomReceive = function (model) {
-    //socketHandler.closelObj();
     if (model.room.state) {
         vm.changeState(model.room.state);
     }
-
     model.users.map((x) => {
         x.row = x.index + 1;
         x.colorNaghsh = help.find(x.type).color
