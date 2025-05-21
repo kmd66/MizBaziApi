@@ -1,4 +1,26 @@
 
 <template id="labkhoni-template">
-    labkhoni
+    <div class="mainTop d-flex">
+        <div class="mainTopPeriod">{{door}}</div>
+        <div class="mainTopTime">{{topTime}}</div>
+    </div>
+
+    <div class="progressbar aw296wdaf">
+        <div :style="{ width: progressbarWidth }"></div>
+    </div>
+
+    <div class="main">
+    </div>
+
+    <div class="mainBottom">
+        <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
+            <i class="icon-chevron-square-right"></i>
+            <span style="margin-right: 12px;">بعدی</span>
+        </div>
+
+        <div v-if="!cancelBtn && !raye" class="d-flex">
+            <i onclick="sticker.handleUpdate('l1')"></i>
+            <i onclick="sticker.handleUpdate('l2')"></i>
+        </div>
+    </div>
 </template>

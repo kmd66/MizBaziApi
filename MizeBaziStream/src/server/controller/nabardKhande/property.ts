@@ -28,7 +28,7 @@ export class Property {
     public isAddDisconnec: boolean = false;
 
     public wait: number = 14;
-    public mainWait: number = 5;
+    public mainWait: number = 2;
 
     public activeUser1: number = -1;
     public activeUser2: number = -1;
@@ -90,13 +90,13 @@ export class Property {
             case DoorType.d3:
             case DoorType.d5:
             case DoorType.d7:
-            case DoorType.d9: this.wait = 30; break;
+            case DoorType.d9: this.wait = 2; break;
 
             case DoorType.d2:
             case DoorType.d4:
             case DoorType.d6:
             case DoorType.d8:
-            case DoorType.d10: this.wait = 60; break;
+            case DoorType.d10: this.wait = 2; break;
         }
     }
 

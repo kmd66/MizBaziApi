@@ -3,6 +3,10 @@
         template: '#labkhoni-template',
         data() {
             return {
+                topTime: '- ----',
+                naghsh: {},
+                door: '-',
+                progressbarWidth: '0px',
             }
         },
         props: {

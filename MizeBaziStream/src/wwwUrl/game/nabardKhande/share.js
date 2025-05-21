@@ -5,6 +5,8 @@ function reset() {
 function initShare() {
     globalModel = {
         gameName: 'nabardKhande',
+        activeUser: {},
+        activeUser2: {}
     };
     vm = {};
 
@@ -56,6 +58,9 @@ globalModel.userStatusReceive = function (model) {
     main.setUsers();
 }
 globalModel.infoMainReceive = function (room) {
+    if (room.state) {
+        vm.changeState(room.state);
+    }
     reset();
     globalModel.room = room;
     main.topTimeProgress(-100);
@@ -63,5 +68,7 @@ globalModel.infoMainReceive = function (room) {
 }
 function setDoor(room) {
     vm.$refs.childmain.door = room.door;
+    vm.$refs.childsoalpich.door = room.door;
+    vm.$refs.childlabkhoni.door = room.door;
 }
 

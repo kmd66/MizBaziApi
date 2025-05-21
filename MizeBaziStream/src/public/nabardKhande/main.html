@@ -50,11 +50,7 @@
             </div>
         </div>
 
-        <div v-if="!isChat" class="mainBottom">
-            <div v-if="raye" @click="setRaye()" style="text-align:center">
-                <i class="icon-hand"></i>
-            </div>
-
+        <div class="mainBottom">
             <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
                 <i class="icon-chevron-square-right"></i>
                 <span style="margin-right: 12px;">بعدی</span>
@@ -70,7 +66,7 @@
         </div>
     </div>
 
-        <sticker-component></sticker-component>
+    <sticker-component></sticker-component>
 
 </template>
 

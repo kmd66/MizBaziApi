@@ -1,13 +1,11 @@
 ﻿main.stream = null;
-const iconClass = {
+main.icon5641 = {
     sticker: 'icon-smileys',
-    chalesh: 'icon-chalesh',
     like: 'icon-like',
     dislike: 'icon-dislike'
 }
-const iconClassDisabled = {
+main.icon5641Disabled = {
     sticker: 'icon-smileys iconDisabled',
-    chalesh: 'icon-chalesh iconDisabled',
     like: 'icon-like iconDisabled',
     dislike: 'icon-dislike iconDisabled'
 }
@@ -20,7 +18,7 @@ const naghsh = {
 
 main.init = function () {
     vm.$refs.childmain.naghsh = naghsh;
-    vm.$refs.childmain.iconClass = iconClassDisabled;
+    vm.$refs.childmain.iconClass = main.icon5641Disabled;
 }
 main.setUsers = function () {
     globalModel.user = globalModel.users.find(x => x.id == socketHandler.userId);
