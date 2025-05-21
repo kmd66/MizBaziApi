@@ -151,6 +151,10 @@ class PageRoot {
         const mainTemp = fs.readFileSync(mainFile, 'utf8');
         const helpFile = path.join(__dirname, '../../public/nabardKhande/help.html');
         const helpTemp = fs.readFileSync(helpFile, 'utf8');
+        const soalpichFile = path.join(__dirname, '../../public/nabardKhande/soalpich.html');
+        const soalpichTemp = fs.readFileSync(soalpichFile, 'utf8');
+        const labkhoniFile = path.join(__dirname, '../../public/nabardKhande/labkhoni.html');
+        const labkhoniTemp = fs.readFileSync(labkhoniFile, 'utf8');
 
         const stickerFile = path.join(__dirname, '../../public/sticker.html');
         const stickerTemp = fs.readFileSync(stickerFile, 'utf8');
@@ -162,6 +166,8 @@ class PageRoot {
 
             main: mainTemp,
             help: helpTemp,
+            labkhoni: labkhoniTemp,
+            soalpich: soalpichTemp,
             sticker: stickerTemp,
         });
         res.send(renderedHtml);

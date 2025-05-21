@@ -19,6 +19,8 @@ function initShare() {
     socketHandler = {};
     main = {};
     help = {};
+    soalpich = {};
+    labkhoni = {};
     gameresponse = {};
 
 }

@@ -2,6 +2,8 @@
 import './socketHandler'
 import './main'
 import './help'
+import './soalpich'
+import './labkhoni'
 //import '../sticker'
 //import '../itemclick'
 
@@ -27,6 +29,10 @@ const app = Vue.createApp({
             switch (state) {
                 case 'main':
                     vm.$refs.childmain.init(); break;
+                case 'soalPich':
+                    vm.$refs.childsoalpich.init(); break;
+                case 'labKhoni':
+                    vm.$refs.childlabkhoni.init(); break;
             }
             this.appModel.state = state;
         }
@@ -34,6 +40,8 @@ const app = Vue.createApp({
 })
 main.Component(app);
 help.Component(app);
+soalpich.Component(app);
+labkhoni.Component(app);
 //sticker.Component(app);
 //itemclick.Component(app);
 //gameresponse.Component(app);

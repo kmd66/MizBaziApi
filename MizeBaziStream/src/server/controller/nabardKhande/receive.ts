@@ -20,7 +20,8 @@ export default class Receive extends Stream {
             activeUser: this.activeUser1,
             activeUser2: this.activeUser2,
             type: type,
-            wait: wait
+            wait: wait,
+            door: this.door
         };
         KhandeControll.sendToMultipleSockets(this.roomId, eventName, model);
     }

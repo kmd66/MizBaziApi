@@ -28,9 +28,7 @@ export default class khandeHandler extends Set {
         }
         switch (this.state) {
             case 'main': this.mainReceiveEnd(); break;
-            case 'zabanPich': this.zabanPichReceiveEnd(); break;
             case 'soalPich': this.soalPichReceiveEnd(); break;
-            case 'naghashi': this.naghashiReceiveEnd(); break;
             case 'labKhoni': this.labKhoniReceiveEnd(); break;
 
             default: this.main();
@@ -59,9 +57,7 @@ export default class khandeHandler extends Set {
         if (this.activeUser1 > -1) {
             switch (this.state) {
                 case 'main': this.mainReceive(); break;
-                case 'zabanPich': this.zabanPichReceive(); break;
                 case 'soalPich': this.soalPichReceive(); break;
-                case 'naghashi': this.naghashiReceive();break;
                 case 'labKhoni': this.labKhoniReceive(); break;
 
                 default: this.main();
@@ -127,51 +123,45 @@ export default class khandeHandler extends Set {
     //--------------------
 
     private async mainReceive() {
-        this.sendStateReceive('mainReceive');
-    }
-    private async mainReceiveEnd() {
-        this.sendStateEnd('mainReceive');
-    }
-
-    private async zabanPichReceive() {
-        this.sendStateReceive('zabanPichReceive');
-    }
-    private async zabanPichReceiveEnd() {
-        this.sendStateEnd('zabanPichReceive');
-    }
-
-    private async soalPichReceive() {
-        this.sendStateReceive('soalPichReceive');
-    }
-    private async soalPichReceiveEnd() {
-        this.sendStateEnd('soalPichReceive');
-    }
-
-    private naghashiReceive() {
-        this.sendStateReceive('naghashiReceive');
-    }
-    private naghashiReceiveEnd() {
-        this.sendStateEnd('naghashiReceive');
-    }
-
-    private async sendStateReceive(eventName: string) {
-        this.sendMainReceive(eventName, 'wait', this.mainWait);
+        this.sendMainReceive('mainReceive', 'wait', this.mainWait);
         await this.delay(this.mainWait * 1000);
 
         this.startProduceStream();
         await this.delay(500);
-        this.sendMainReceive(eventName, 'start', this.wait);
+        this.sendMainReceive('mainReceive', 'start', this.wait);
         this.timeoutId = setTimeout(() => {
-            this.sendStateEnd(eventName);
+            this.mainReceiveEnd();
         }, this.wait * 1000);
+
     }
-    private async sendStateEnd(eventName: string) {
+    private async mainReceiveEnd() {
         this.sfu.stopProducer();
         this.sfu.closeAllConsumer();
-        this.sendMainReceive(eventName, 'end', 0);
+        this.sendMainReceive('mainReceive', 'end', 0);
         await this.delay(200);
         this.setNobatIndex();
     }
+
+    private async soalPichReceive() {
+        this.sendMainReceive('soalPichReceive', 'wait', this.mainWait);
+        await this.delay(this.mainWait * 1000);
+
+        this.startProduceStream();
+        await this.delay(500);
+        this.sendMainReceive('soalPichReceive', 'start', this.wait);
+        this.timeoutId = setTimeout(() => {
+            this.mainReceiveEnd();
+        }, this.wait * 1000);
+
+    }
+    private async soalPichReceiveEnd() {
+        this.sfu.stopProducer();
+        this.sfu.closeAllConsumer();
+        this.sendMainReceive('soalPichReceive', 'end', 0);
+        await this.delay(200);
+        this.setNobatIndex();
+    }
+
 
     private async labKhoniReceive() {
         this.sendMainReceive('labKhoniReceive', 'wait', this.mainWait);
