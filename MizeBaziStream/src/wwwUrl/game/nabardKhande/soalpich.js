@@ -1,11 +1,19 @@
-﻿main.reset = function (itemMainFix) {
+﻿soalpich.reset = function (itemMainFix) {
     if (soalpich.topTimeProgressTimer)
         clearTimeout(main.topTimeProgressTimer);
     soalpich.topTimeProgressTimer = null;
     soalpich.topTimeProgressAnimation?.cancel();
     soalpich.topTimeProgressAnimation = null;
+    vm.$refs.childsoalpich.soundDivI = false;
     vm.$refs.childsoalpich.topTime = '- ----';
     vm.$refs.childsoalpich.progressbarWidth = "0px";
+    if (itemMainFix) {
+        vm.$refs.childsoalpich.likeBtn = false;
+        vm.$refs.childsoalpich.cancelBtn = false;
+        vm.$refs.childsoalpich.textBtn = false;
+        vm.$refs.childsoalpich.user1 = undefined;
+        vm.$refs.childsoalpich.user2 = undefined;
+    }
 }
 soalpich.topTimeProgress = function (i) {
     if (i == -100) {
@@ -42,6 +50,12 @@ soalpich.Component = function (app) {
                 naghsh: {},
                 door: '-',
                 progressbarWidth: '0px',
+                soundDivI: false,
+                likeBtn: false,
+                cancelBtn: false,
+                textBtn: false,
+                user1: undefined,
+                user2: undefined,
             }
         },
         props: {
@@ -53,6 +67,26 @@ soalpich.Component = function (app) {
         },
         methods: {
             init() {
+            },
+            setCancel() {
+                globalModel.connection.emit('setCancel', {
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+            },
+            itemStatus(item) {
+                if (item) {
+                    switch (item.userInGameStatus) {
+                        case 1:
+                            return 'a6s5d4q';
+                        case 10:
+                            return 'imgStatus icon-ofline';
+                        case 2:
+                        case 11:
+                            return 'imgStatus icon-death';
+                    }
+                }
+                return 'imgStatus icon-ofline';
             },
         }
     });

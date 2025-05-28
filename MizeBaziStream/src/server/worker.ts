@@ -42,8 +42,7 @@ const io = new Server(httpsServer, {
 SocketInit(io, process.pid);
 
 async function init() {
-    // اصلاح
-    //await SFU.createWorker();
+    await SFU.createWorker();
     await SFU2.createWorker();
     const PORT = process.env.PORT || '3000';
     const ENV = process.env.NODE_ENV || 'production';

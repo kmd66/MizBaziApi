@@ -5,13 +5,13 @@ import * as fs from 'fs';
 export enum DoorType {
     d0 = 'در انتظار شروع',
     d1 = 'معارفه',
-    d2 = 'خوانندگی',
+    d2 = 'سوال‌پیچ',
     d3 = 'وقت‌آزاد',
     d4 = 'سوال‌پیچ',
     d5 = 'وقت‌آزاد',
     d6 = 'لبخونی',
     d7 = 'وقت‌آزاد',
-    d8 = 'زبان‌پیچ',
+    d8 = 'سوال‌پیچ',
     d9 = 'وقت‌آزاد',
     d10 = 'لبخونی',
     d11 = '---',
@@ -71,12 +71,12 @@ export class Property {
         switch (this.door) {
             case DoorType.d0:
             case DoorType.d1:
-            case DoorType.d2:
             case DoorType.d3:
             case DoorType.d5:
             case DoorType.d7:
             case DoorType.d9: this.state = 'main'; break;
 
+            case DoorType.d2:
             case DoorType.d4:
             case DoorType.d8: this.state = 'soalPich'; break;
             case DoorType.d6:
@@ -90,21 +90,21 @@ export class Property {
             case DoorType.d3:
             case DoorType.d5:
             case DoorType.d7:
-            case DoorType.d9: this.wait = 2; break;
+            case DoorType.d9: this.wait = 20; break;
 
             case DoorType.d2:
             case DoorType.d4:
             case DoorType.d6:
             case DoorType.d8:
-            case DoorType.d10: this.wait = 2; break;
+            case DoorType.d10: this.wait = 60; break;
         }
     }
 
     private addGroups(roomId: string): void {
         const soalPichRawData = fs.readFileSync('data/data2.json', 'utf8');
         const soalPichData = JSON.parse(soalPichRawData);
-        const zabanPichRawData = fs.readFileSync('data/zabanPich.json', 'utf8');
-        const zabanPichData = JSON.parse(zabanPichRawData);
+        //const zabanPichRawData = fs.readFileSync('data/zabanPich.json', 'utf8');
+        //const zabanPichData = JSON.parse(zabanPichRawData);
         const shaerRawData = fs.readFileSync('data/data3.json', 'utf8');
         const shaerData = JSON.parse(shaerRawData);
         const masalRawData = fs.readFileSync('data/data4.json', 'utf8');
@@ -112,15 +112,17 @@ export class Property {
 
         const room = khandeDb().get(roomId);
         room?.users.map((x: any) => {
-            const randomSoalPich = getRandomItems(soalPichData, 3);
-            const randomZabanPich = getRandomItems(zabanPichData, 3);
+            const randomSoalPich1 = getRandomItems(soalPichData, 1);
+            const randomSoalPich2 = getRandomItems(soalPichData, 1);
+            const randomSoalPich3 = getRandomItems(soalPichData, 1);
             const randomShaer = getRandomItems(shaerData, 3);
             const randomMasal = getRandomItems(masalData, 3);
             const model = {
                 key: x.key,
                 type: 'blue',
-                soalPich: randomSoalPich,
-                zabanPich: randomZabanPich,
+                soalPich1: randomSoalPich1,
+                soalPich2: randomSoalPich2,
+                soalPich3: randomSoalPich3,
                 shear: randomShaer,
                 masal: randomMasal,
             };

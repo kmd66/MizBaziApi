@@ -10,18 +10,57 @@
         <div :style="{ width: progressbarWidth }"></div>
     </div>
 
-    <div class="main">
+    <div class="main soalpich">
+        <div style="text-align:center"> asdasd </div>
+        <div class="d-flex">
+            <div v-if="user1" class="mainRight">
+                <div class="itemMain">
+                    <div style="text-align:center">
+                        <i class="icon-radar-14" :style="{ color: soundDivI == true ? 'red':'var(--TextColor2)'}"></i>
+                    </div>
+                    <div @click="itemMainClick(user1.row)">
+                        <div :style="{ border: '2px solid' + user1.colorNaghsh }" class="itemImg">
+                            <img :src="user1.info.Img + '90.jpg'" />
+                            <div :class="itemStatus(user1)"></div>
+                        </div>
+                        <div :style="{ color: user1.colorNaghsh }" class="itemName">{{ user1.info.FirstName }}</div>
+                        <div :style="{ color: user1.colorNaghsh }" class="userName">{{ user1.info.UserName }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="user2" class="mainLeft">
+                <div class="itemMain">
+                    <div style="text-align:center">
+                        <i class="icon-like-dislike"></i>
+                    </div>
+                    <div @click="itemMainClick(user2.row)">
+                        <div :style="{ border: '2px solid' + user2.colorNaghsh }" class="itemImg">
+                            <img :src="user2.info.Img + '90.jpg'" />
+                            <div :class="itemStatus(user2)"></div>
+                        </div>
+                        <div :style="{ color: user2.colorNaghsh }" class="itemName">{{ user2.info.FirstName }}</div>
+                        <div :style="{ color: user2.colorNaghsh }" class="userName">{{ user2.info.UserName }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="cancelBtn" @click="setCancel()" class="cancelBtn">
+        <i class="icon-chevron-square-right"></i>
     </div>
 
     <div class="mainBottom">
-        <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
-            <i class="icon-chevron-square-right"></i>
-            <span style="margin-right: 12px;">بعدی</span>
+        <div v-if="textBtn" style="height:100%">
+            <div class="inputText-group" style="height:100%">
+                <div class="label">
+                    <i class="icon-send-14" @click="addMessage()"></i>
+                </div><input v-model="chatMessage" class="inputText" placeholder="ارسال پیام" autocomplete="off">
+            </div>
         </div>
-
-        <div v-if="!cancelBtn && !raye" class="d-flex">
-            <i onclick="sticker.handleUpdate('l1')"></i>
-            <i onclick="sticker.handleUpdate('l2')"></i>
+        <div v-if="likeBtn" class="d-flex">
+            <i class="icon-like" onclick="sticker.handleUpdate('l1')"></i>
+            <i class="icon-dislike" onclick="sticker.handleUpdate('l2')"></i>
         </div>
     </div>
 
