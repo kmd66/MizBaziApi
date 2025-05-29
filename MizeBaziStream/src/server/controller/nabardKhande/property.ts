@@ -5,16 +5,17 @@ import * as fs from 'fs';
 export enum DoorType {
     d0 = 'در انتظار شروع',
     d1 = 'معارفه',
-    d2 = 'سوال‌پیچ',
-    d3 = 'وقت‌آزاد',
-    d4 = 'سوال‌پیچ',
-    d5 = 'وقت‌آزاد',
-    d6 = 'لبخونی',
-    d7 = 'وقت‌آزاد',
-    d8 = 'سوال‌پیچ',
-    d9 = 'وقت‌آزاد',
-    d10 = 'لبخونی',
-    d11 = '---',
+    d2 = 'سوال‌پیچ 1',
+    d3 = 'وقت‌آزاد 1',
+    d4 = 'سوال‌پیچ 2',
+    d5 = 'وقت‌آزاد 2',
+    d6 = 'سوال‌پیچ 3',
+    d7 = 'وقت‌آزاد 3',
+    d8 = 'سوال‌پیچ 4',
+    d9 = 'وقت‌آزاد 4',
+    d10 = 'سوال‌پیچ 5',
+    d11 = 'وقت‌آزاد 5',
+    d12 = '---',
 }
 export class Property {
     constructor(roomId: string) {
@@ -48,6 +49,9 @@ export class Property {
     public score: Map<number, number[]> = new Map();
     public groups: any[] = [];
 
+    protected soal: string = '';
+    protected soal2: string = '';
+    protected isSoal: boolean = false;
     protected get streamDoor(): boolean {
         return true;
     }
@@ -74,30 +78,23 @@ export class Property {
             case DoorType.d3:
             case DoorType.d5:
             case DoorType.d7:
-            case DoorType.d9: this.state = 'main'; break;
-
-            case DoorType.d2:
-            case DoorType.d4:
-            case DoorType.d8: this.state = 'soalPich'; break;
-            case DoorType.d6:
-            case DoorType.d10: this.state = 'labKhoni'; break;
-        }
-
-        switch (this.door) {
-            case DoorType.d0: this.wait = 12; break;
-
-            case DoorType.d1:
-            case DoorType.d3:
-            case DoorType.d5:
-            case DoorType.d7:
-            case DoorType.d9: this.wait = 20; break;
+            case DoorType.d9:
+            case DoorType.d11: this.state = 'main'; break;
 
             case DoorType.d2:
             case DoorType.d4:
             case DoorType.d6:
             case DoorType.d8:
-            case DoorType.d10: this.wait = 60; break;
+            case DoorType.d10: this.state = 'soalPich'; break;
         }
+        if (this.door == DoorType.d0)
+            this.wait = 12;
+        else if (this.state == 'main')
+            this.wait = 20;
+        else if (this.state == 'soalPich')
+            this.wait = 20;
+        else
+            this.wait = 12;
     }
 
     private addGroups(roomId: string): void {
@@ -105,26 +102,23 @@ export class Property {
         const soalPichData = JSON.parse(soalPichRawData);
         //const zabanPichRawData = fs.readFileSync('data/zabanPich.json', 'utf8');
         //const zabanPichData = JSON.parse(zabanPichRawData);
-        const shaerRawData = fs.readFileSync('data/data3.json', 'utf8');
-        const shaerData = JSON.parse(shaerRawData);
-        const masalRawData = fs.readFileSync('data/data4.json', 'utf8');
-        const masalData = JSON.parse(masalRawData);
+        //const shaerRawData = fs.readFileSync('data/data3.json', 'utf8');
+        //const shaerData = JSON.parse(shaerRawData);
+        //const masalRawData = fs.readFileSync('data/data4.json', 'utf8');
+        //const masalData = JSON.parse(masalRawData);
 
         const room = khandeDb().get(roomId);
         room?.users.map((x: any) => {
-            const randomSoalPich1 = getRandomItems(soalPichData, 1);
-            const randomSoalPich2 = getRandomItems(soalPichData, 1);
-            const randomSoalPich3 = getRandomItems(soalPichData, 1);
-            const randomShaer = getRandomItems(shaerData, 3);
-            const randomMasal = getRandomItems(masalData, 3);
+            const randomSoalPich = getRandomItems(soalPichData, 5);
             const model = {
                 key: x.key,
+                index: x.index,
                 type: 'blue',
-                soalPich1: randomSoalPich1,
-                soalPich2: randomSoalPich2,
-                soalPich3: randomSoalPich3,
-                shear: randomShaer,
-                masal: randomMasal,
+                soalPich1: randomSoalPich[0],
+                soalPich2: randomSoalPich[1],
+                soalPich3: randomSoalPich[2],
+                soalPich4: randomSoalPich[3],
+                soalPich5: randomSoalPich[4],
             };
 
             if (x.type > 20) {
@@ -161,5 +155,11 @@ export class Property {
         const item = this.groups.find(x => x.key == key);
         const partner = this.groups.find(x => x.type == item.type && x.key != key);
         return partner.key;
+    }
+
+    public soalReplace(text: string | undefined): string {
+        if (!text) return '';
+        text = text.replace(/[\u200c ]/g, "");
+        return text;
     }
 }

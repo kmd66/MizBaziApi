@@ -51,11 +51,16 @@ soalpich.Component = function (app) {
                 door: '-',
                 progressbarWidth: '0px',
                 soundDivI: false,
+                soal: '',
                 likeBtn: false,
                 cancelBtn: false,
                 textBtn: false,
+                isAddSticker: false,
                 user1: undefined,
                 user2: undefined,
+
+                message: '',
+                isMessage: false,
             }
         },
         props: {
@@ -67,6 +72,32 @@ soalpich.Component = function (app) {
         },
         methods: {
             init() {
+            },
+            addMessage() {
+                if (this.isMessage || globalModel.user.index == globalModel.activeUser2.index) return;
+                let message = this.message.slice(0, 30);
+                this.isMessage = true;
+                globalModel.connection.emit('addMessage', {
+                    msg: message,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+                this.message = '';
+                setTimeout(() => {
+                    this.isMessage = false;
+                }, 1000);
+            },
+            addSticker(text) {
+                if (this.isAddSticker || globalModel.user.index != globalModel.activeUser2.index) return;
+                this.isAddSticker = true;
+                globalModel.connection.emit('addSticker2', {
+                    t: text,
+                    roomId: socketHandler.roomId,
+                    userKey: socketHandler.userKey,
+                });
+                setTimeout(() => {
+                    this.isAddSticker = false;
+                }, 1000);
             },
             setCancel() {
                 globalModel.connection.emit('setCancel', {

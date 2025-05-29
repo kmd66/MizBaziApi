@@ -1,7 +1,50 @@
 ﻿import Receive from './receive';
+import { khandeDb } from './khandeDb';
+import { User } from '../../model/interfaces';
+import { KhandeControll } from './extensions';
 
 export default class Set extends Receive {
     constructor(roomId: string) {
         super(roomId);
+    }
+
+    public addSticker(model: any) {
+        const room = khandeDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser1 && x.userInGameStatus == 1);
+        if (!user) return;
+        KhandeControll.sendToMultipleSockets(this.roomId, 'addStickerReceive', {
+            id: user.id,
+            t: model.t
+        });
+    }
+
+    public addSticker2(model: any) {
+        if (!model.t ) return;
+        if (model.t != 'l1' && model.t != 'l2') return;
+        const room = khandeDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index == this.activeUser2 && x.userInGameStatus == 1);
+        if (!user) return;
+        KhandeControll.sendToMultipleSockets(this.roomId, 'addSticker2Receive', {
+            id: user.id,
+            t: model.t
+        });
+    }
+
+    public addMessage(model: any) {
+        if (this.soal == '' || this.isSoal) return;
+        if (!model.msg || model.msg.length > 30) return;
+        const room = khandeDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser2 && x.userInGameStatus == 1);
+        if (!user) return;
+        const soal = this.soalReplace(model.msg);
+        if (soal == this.soal) {
+            this.isSoal = true;
+        }
+
+        KhandeControll.sendToMultipleSockets(this.roomId, 'addMessageReceive', {
+            soal: this.isSoal == true ? this.soal2 : undefined,
+            userName: user.info.UserName,
+            msg: model.msg
+        });
     }
 }

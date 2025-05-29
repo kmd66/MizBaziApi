@@ -3,8 +3,8 @@ import './socketHandler'
 import './main'
 import './help'
 import './soalpich'
+import '../sticker'
 import './labkhoni'
-//import '../sticker'
 //import '../itemclick'
 
 const app = Vue.createApp({
@@ -31,6 +31,8 @@ const app = Vue.createApp({
                     vm.$refs.childmain.init(); break;
                 case 'soalPich':
                     vm.$refs.childsoalpich.init(); break;
+                default:
+                    vm.$refs.childmain.init(); break;
                 case 'labKhoni':
                     vm.$refs.childlabkhoni.init(); break;
             }
@@ -42,7 +44,7 @@ main.Component(app);
 help.Component(app);
 soalpich.Component(app);
 labkhoni.Component(app);
-//sticker.Component(app);
+sticker.Component(app);
 //itemclick.Component(app);
 //gameresponse.Component(app);
 

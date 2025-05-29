@@ -104,6 +104,10 @@ export function KandeMethod() {
             setMessage: (model: any) => {
                 GameControll.setMessage('hubNabardKhande', model);
             },
+            setCancel: wrapHandler('cancel'),
+            addSticker: wrapHandler('addSticker'),
+            addSticker2: wrapHandler('addSticker2'),
+            addMessage: wrapHandler('addMessage'),
         },
 
         streamHandler: {

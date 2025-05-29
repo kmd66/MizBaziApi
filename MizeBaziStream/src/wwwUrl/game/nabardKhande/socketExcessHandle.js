@@ -2,8 +2,11 @@
 socketHandler.init = function () {
     globalModel.connection.on('mainReceive', mainReceive);
     globalModel.connection.on('soalPichReceive', soalPichReceive);
+    globalModel.connection.on('sendSoalReceive', sendSoalReceive);
+    globalModel.connection.on('addSticker2Receive', addSticker2Receive);
 }
 function mainReceive(model) {
+    main.stream = false;
     vm.$refs.childmain.soundDivI = false;
     vm.$refs.childmain.cancelBtn = false;
     vm.$refs.childmain.iconClass = main.icon5641Disabled;
@@ -17,6 +20,7 @@ function mainReceive(model) {
     }
 
     if (model.type == 'start') {
+        main.stream = true;
         if (model.activeUser == globalModel.user.index) {
             vm.$refs.childmain.cancelBtn = true;
         } else {
@@ -51,7 +55,7 @@ function soalPichReceive(model) {
 
     if (model.type == 'start') {
         vm.$refs.childsoalpich.soundDivI = true;
-            vm.$refs.childsoalpich.textBtn = true;
+        vm.$refs.childsoalpich.textBtn = true;
         if (globalModel.activeUser.index == globalModel.user.index) {
             vm.$refs.childsoalpich.cancelBtn = true;
         }
@@ -73,7 +77,30 @@ function soalPichReceive(model) {
     }
 
     if (model.type == 'end') {
+        vm.$refs.childsoalpich.soal = '';
         socketHandler.closeObj();
         soalpich.reset(true);
+    }
+}
+function sendSoalReceive(model) {
+    vm.$refs.childsoalpich.soal = model;
+}
+
+async function addSticker2Receive(model) {
+    try {
+        const itemMain = document.querySelector('.showSticker');
+
+        const video = document.createElement('video');
+        video.src = `data:video/mp4;base64,${sDATA[model.t]}`;
+        video.className = 'stickerVideo';
+
+        video.muted = true;
+        await video.play();
+        video.addEventListener('ended', () => {
+            video.remove();
+        }, { once: true });
+        itemMain.appendChild(video);
+
+    } catch (error) {
     }
 }

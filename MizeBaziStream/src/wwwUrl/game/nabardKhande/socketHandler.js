@@ -30,7 +30,7 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('infoRoomReceive', globalModel.infoRoomReceive);
     globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
     globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
-    //globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
+    globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
 }
 function socketCallBack() {
     publicUserRow = 3;
