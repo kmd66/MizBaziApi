@@ -32,7 +32,9 @@ export default class Set extends Receive {
 
     public addMessage(model: any) {
         if (this.soal == '' || this.isSoal) return;
-        if (!model.msg || model.msg.length > 30) return;
+        if (!model.msg) return;
+        if (this.state == 'soalPich' && model.msg.length > 30) return;
+        if (this.state == 'labKhoni' && model.msg.length > 60) return;
         const room = khandeDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.key == model.userKey && x.index != this.activeUser2 && x.userInGameStatus == 1);
         if (!user) return;
@@ -42,7 +44,7 @@ export default class Set extends Receive {
         }
 
         KhandeControll.sendToMultipleSockets(this.roomId, 'addMessageReceive', {
-            soal: this.isSoal == true ? this.soal2 : undefined,
+            isSoal: this.isSoal,
             userName: user.info.UserName,
             msg: model.msg
         });

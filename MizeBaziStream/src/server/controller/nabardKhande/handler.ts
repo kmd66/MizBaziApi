@@ -29,6 +29,7 @@ export default class khandeHandler extends Set {
         switch (this.state) {
             case 'main': this.mainReceiveEnd(); break;
             case 'soalPich': this.soalPichReceiveEnd(); break;
+            case 'labKhoni': this.labKhoniReceiveEnd(); break;
 
             default: this.main();
         }
@@ -57,6 +58,7 @@ export default class khandeHandler extends Set {
             switch (this.state) {
                 case 'main': this.mainReceive(); break;
                 case 'soalPich': this.soalPichReceive(); break;
+                case 'labKhoni': this.labKhoniReceive(); break;
 
                 default: this.main();
             }
@@ -164,24 +166,26 @@ export default class khandeHandler extends Set {
         this.setNobatIndex();
     }
 
-    //private async labKhoniReceive() {
-    //    this.sendMainReceive('labKhoniReceive', 'wait', this.mainWait);
-    //    await this.delay(this.mainWait * 1000);
+    private async labKhoniReceive() {
+        this.sendSoal();
+        await this.delay(100);
+        this.sendMainReceive('labKhoniReceive', 'wait', this.mainWait);
+        await this.delay(this.mainWait * 1000);
 
-    //    this.startPartnerStream();
-    //    await this.delay(500);
-    //    this.startProduceStream();
-    //    await this.delay(500);
-    //    this.sendMainReceive('labKhoniReceive', 'start', this.wait);
-    //    this.timeoutId = setTimeout(() => {
-    //        this.mainReceiveEnd();
-    //    }, this.wait * 1000);
-    //}
-    //private async labKhoniReceiveEnd() {
-    //    this.sfu.stopProducer();
-    //    this.sendMainReceive('labKhoniReceive', 'end', 0);
-    //    await this.delay(200);
-    //    this.setNobatIndex();
-    //}
+        this.startPartnerStream();
+        await this.delay(2000);
+        this.startProduceStream();
+        await this.delay(500);
+        this.sendMainReceive('labKhoniReceive', 'start', this.wait);
+        this.timeoutId = setTimeout(() => {
+            this.labKhoniReceiveEnd();
+        }, this.wait * 1000);
+    }
+    private async labKhoniReceiveEnd() {
+        this.sfu.stopProducer();
+        this.sendMainReceive('labKhoniReceive', 'end', 0);
+        await this.delay(200);
+        this.setNobatIndex();
+    }
 } 
 

@@ -39,9 +39,9 @@ export default class Receive extends Stream {
         switch (this.door) {
             case DoorType.d2: model =  item.soalPich1; break;
             case DoorType.d4: model =  item.soalPich2; break;
-            case DoorType.d6: model =  item.soalPich3; break;
-            case DoorType.d8: model =  item.soalPich4; break;
-            case DoorType.d10: model = item.soalPich5; break;
+            case DoorType.d6: model = item.shaer; break;
+            case DoorType.d8: model = item.soalPich3; break;
+            case DoorType.d10: model = item.masal; break;
         }
         this.soal = this.soalReplace(model);
         this.soal2 = model;

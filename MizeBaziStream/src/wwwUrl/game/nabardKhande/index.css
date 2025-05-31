@@ -65,3 +65,20 @@
     .cancelBtn i {
         line-height: 50px;
     }
+#labKhoniVideo {
+    margin: auto;
+}
+.listMsg .msg {
+    padding: 5px;
+}
+.listMsg .msgFix {
+    padding: 5px;
+    background: #020b1e;
+    border-radius: 5px;
+}
+.listMsg {
+    position: fixed;
+    bottom: 70px;
+    font-size: 0.8rem;
+    z-index: 1010;
+}

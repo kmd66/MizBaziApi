@@ -1,5 +1,5 @@
 ﻿import * as mediasoupClient from "mediasoup-client";
-let remoteVideo, localVideo;
+let remoteVideo, localVideo, labKhoniVideo;
 socketHandler.streamInit = function () {
     setVideoObj();
     globalModel.connection.on('consumeReceive', async ({ params }) => {
@@ -41,22 +41,45 @@ socketHandler.streamInit = function () {
     });
 }
 function setRemoteVideo(track) {
-    remoteVideo.srcObject = new MediaStream([track])
-    remoteVideo.muted = true;
-    remoteVideo.onloadedmetadata = () => {
-        remoteVideo.play().catch(e => {
-            console.warn('Play error:', e);
-        });
-    };
+    if (vm.appModel.state == 'labKhoni') {
+        if (!remoteVideo.srcObject) {
+            remoteVideo.srcObject = new MediaStream([track]);
+            remoteVideo.muted = true;
+            remoteVideo.onloadedmetadata = () => {
+                remoteVideo.play().catch(e => {
+                    console.warn('Play error:', e);
+                });
+            };
+        }
+        else {
+            labKhoniVideo.srcObject = new MediaStream([track]);
+            labKhoniVideo.muted = true;
+            labKhoniVideo.onloadedmetadata = () => {
+                labKhoniVideo.play().catch(e => {
+                    console.warn('Play error:', e);
+                });
+            };
+        }
+    }
+    else {
+        remoteVideo.srcObject = new MediaStream([track]);
+        remoteVideo.muted = true;
+        remoteVideo.onloadedmetadata = () => {
+            remoteVideo.play().catch(e => {
+                console.warn('Play error:', e);
+            });
+        };
+    }
 }
-
 function setVideoObj() {
     localVideo = document.querySelector(`#localVideo`);
     remoteVideo = document.querySelector(`#remoteVideo`);
+    labKhoniVideo = document.querySelector(`#labKhoniVideo`);
 }
 socketHandler.closeObj = function () {
     remoteVideo.srcObject = null;
     localVideo.srcObject = null;
+    labKhoniVideo.srcObject = null;
     clearConsumer();
     if (producer) {
         producer.close();
@@ -131,7 +154,11 @@ let params = {
 }
 
 function streamSuccess(stream) {
-    localVideo.srcObject = stream
+    if (vm.appModel.state == 'labKhoni')
+        labKhoniVideo.srcObject = stream;
+    else
+        localVideo.srcObject = stream;
+
     var track = stream.getVideoTracks()[0]
     getRtpCapabilities(true, 0);
     params.track = track;

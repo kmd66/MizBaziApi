@@ -2,8 +2,10 @@
 socketHandler.init = function () {
     globalModel.connection.on('mainReceive', mainReceive);
     globalModel.connection.on('soalPichReceive', soalPichReceive);
+    globalModel.connection.on('labKhoniReceive', labKhoniReceive);
     globalModel.connection.on('sendSoalReceive', sendSoalReceive);
     globalModel.connection.on('addSticker2Receive', addSticker2Receive);
+    globalModel.connection.on('addMessageReceive', addMessageReceive);
 }
 function mainReceive(model) {
     main.stream = false;
@@ -40,6 +42,7 @@ function mainReceive(model) {
     }
 }
 function soalPichReceive(model) {
+    vm.$refs.childsoalpich.soundDivI = false;
     if (model.type == 'wait') {
         soalpich.reset(true);
         globalModel.activeUser = {
@@ -66,6 +69,7 @@ function soalPichReceive(model) {
     }
 
     if (model.type == 'wait' || model.type == 'start') {
+        removeListMsg();
         globalModel.room.wait = model.wait;
         soalpich.topTimeProgress(-100);
         globalModel.users.map((x) => {
@@ -82,8 +86,53 @@ function soalPichReceive(model) {
         soalpich.reset(true);
     }
 }
+function labKhoniReceive(model) {
+    vm.$refs.childlabkhoni.soundDivI = false;
+    if (model.type == 'wait') {
+        labkhoni.reset(true);
+        globalModel.activeUser = {
+            index: model.activeUser,
+            row: model.activeUser + 1
+        };
+        globalModel.activeUser2 = {
+            index: model.activeUser2,
+            row: model.activeUser2 + 1
+        };
+
+    }
+
+    if (model.type == 'start') {
+        vm.$refs.childlabkhoni.soundDivI = true;
+        vm.$refs.childlabkhoni.textBtn = true;
+        if (globalModel.activeUser.index == globalModel.user.index) {
+            vm.$refs.childlabkhoni.cancelBtn = true;
+        }
+        if (globalModel.activeUser2.index == globalModel.user.index) {
+            vm.$refs.childlabkhoni.textBtn = false;
+        }
+    }
+
+    if (model.type == 'wait' || model.type == 'start') {
+        removeListMsg();
+        globalModel.room.wait = model.wait;
+        labkhoni.topTimeProgress(-100);
+        globalModel.users.map((x) => {
+            if (globalModel.activeUser.index == x.index)
+                vm.$refs.childlabkhoni.user = x;
+        });
+    }
+
+    if (model.type == 'end') {
+        vm.$refs.childlabkhoni.soal = '';
+        socketHandler.closeObj();
+        labkhoni.reset(true);
+    }
+}
 function sendSoalReceive(model) {
-    vm.$refs.childsoalpich.soal = model;
+    if (vm.appModel.state == 'labKhoni')
+        vm.$refs.childlabkhoni.soal = model;
+    else
+        vm.$refs.childsoalpich.soal = model;
 }
 
 async function addSticker2Receive(model) {
@@ -103,4 +152,40 @@ async function addSticker2Receive(model) {
 
     } catch (error) {
     }
+}
+
+function addMessageReceive(model) {
+    let query = '.soalpich .listMsg';
+    if (vm.appModel.state == 'labKhoni')
+        query = '.labKhoni .listMsg';
+    const listMsg = document.querySelector(query);
+    if (!listMsg) return;
+
+    const divEl = document.createElement('div');
+    divEl.className = `msg`;
+    divEl.innerHTML = `<span style="color: var(--LinkColor);">${model.userName} : </span> <span>${model.msg}</span>`;
+    if (model.isSoal) {
+        divEl.className = `msgFix`;
+        vm.$refs.childlabkhoni.textBtn = false;
+        vm.$refs.childsoalpich.textBtn = false;
+        if (vm.appModel.state == 'labKhoni')
+            vm.$refs.childlabkhoni.soal = model.msg;
+        else
+            vm.$refs.childsoalpich.soal = model.msg;
+    }
+
+
+    if (!model.isSoal) {
+        setTimeout(() => {
+            divEl.remove();
+        }, 2000)
+    }
+    listMsg.appendChild(divEl);
+}
+function removeListMsg() {
+    let query = '.soalpich .listMsg';
+    if (vm.appModel.state == 'labKhoni')
+        query = '.labKhoni .listMsg';
+    const listMsg = document.querySelector(query);
+    listMsg.innerHTML = '';
 }

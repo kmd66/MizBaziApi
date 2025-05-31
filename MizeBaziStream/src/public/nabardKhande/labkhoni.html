@@ -9,18 +9,40 @@
         <div :style="{ width: progressbarWidth }"></div>
     </div>
 
-    <div class="main">
+    <div class="main labKhoni">
+        <div style="text-align:center"> {{soal}} </div>
+        <div v-if="user" class="mainRight">
+            <div class="itemMain">
+                <div style="text-align:center">
+                    <i class="icon-radar-14" :style="{ color: soundDivI == true ? 'red':'var(--TextColor2)'}"></i>
+                </div>
+                <div @click="itemMainClick(user.row)">
+                    <div :style="{ border: '2px solid' + user.colorNaghsh }" class="itemImg">
+                        <img :src="user.info.Img + '90.jpg'" />
+                        <div :class="itemStatus()"></div>
+                    </div>
+                    <div :style="{ color: user.colorNaghsh }" class="itemName">{{ user.info.FirstName }}</div>
+                    <div :style="{ color: user.colorNaghsh }" class="userName">{{ user.info.UserName }}</div>
+                </div>
+            </div>
+        </div>
+
+        <video id="labKhoniVideo" autoplay></video>
+        <div class="listMsg"></div>
+    </div>
+
+    <div v-if="cancelBtn" @click="setCancel()" class="cancelBtn">
+        <i class="icon-chevron-square-right"></i>
     </div>
 
     <div class="mainBottom">
-        <div v-if="cancelBtn" @click="setCancel()" style="text-align:center">
-            <i class="icon-chevron-square-right"></i>
-            <span style="margin-right: 12px;">بعدی</span>
-        </div>
-
-        <div v-if="!cancelBtn && !raye" class="d-flex">
-            <i onclick="sticker.handleUpdate('l1')"></i>
-            <i onclick="sticker.handleUpdate('l2')"></i>
+        <div v-if="textBtn" style="height:100%">
+            <div class="inputText-group" style="height:100%">
+                <div class="label">
+                    <i class="icon-send-14" @click="addMessage()"></i>
+                </div><input v-model="message" class="inputText" placeholder="ارسال پیام" autocomplete="off">
+            </div>
         </div>
     </div>
+
 </template>

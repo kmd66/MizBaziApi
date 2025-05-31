@@ -9,11 +9,11 @@ export enum DoorType {
     d3 = 'وقت‌آزاد 1',
     d4 = 'سوال‌پیچ 2',
     d5 = 'وقت‌آزاد 2',
-    d6 = 'سوال‌پیچ 3',
+    d6 = 'لبخونی 1',
     d7 = 'وقت‌آزاد 3',
-    d8 = 'سوال‌پیچ 4',
+    d8 = 'سوال‌پیچ 3',
     d9 = 'وقت‌آزاد 4',
-    d10 = 'سوال‌پیچ 5',
+    d10 = 'لبخونی 2',
     d11 = 'وقت‌آزاد 5',
     d12 = '---',
 }
@@ -83,15 +83,18 @@ export class Property {
 
             case DoorType.d2:
             case DoorType.d4:
+            case DoorType.d8:this.state = 'soalPich'; break;
+
             case DoorType.d6:
-            case DoorType.d8:
-            case DoorType.d10: this.state = 'soalPich'; break;
+            case DoorType.d10: this.state = 'labKhoni'; break;
         }
         if (this.door == DoorType.d0)
             this.wait = 12;
         else if (this.state == 'main')
-            this.wait = 20;
+            this.wait = 2;
         else if (this.state == 'soalPich')
+            this.wait = 20;
+        else if (this.state == 'labKhoni')
             this.wait = 20;
         else
             this.wait = 12;
@@ -102,14 +105,16 @@ export class Property {
         const soalPichData = JSON.parse(soalPichRawData);
         //const zabanPichRawData = fs.readFileSync('data/zabanPich.json', 'utf8');
         //const zabanPichData = JSON.parse(zabanPichRawData);
-        //const shaerRawData = fs.readFileSync('data/data3.json', 'utf8');
-        //const shaerData = JSON.parse(shaerRawData);
-        //const masalRawData = fs.readFileSync('data/data4.json', 'utf8');
-        //const masalData = JSON.parse(masalRawData);
+        const shaerRawData = fs.readFileSync('data/data3.json', 'utf8');
+        const shaerData = JSON.parse(shaerRawData);
+        const masalRawData = fs.readFileSync('data/data4.json', 'utf8');
+        const masalData = JSON.parse(masalRawData);
 
         const room = khandeDb().get(roomId);
         room?.users.map((x: any) => {
             const randomSoalPich = getRandomItems(soalPichData, 5);
+            const randomShaer = getRandomItems(shaerData, 1);
+            const randomMasal = getRandomItems(masalData, 1);
             const model = {
                 key: x.key,
                 index: x.index,
@@ -117,8 +122,8 @@ export class Property {
                 soalPich1: randomSoalPich[0],
                 soalPich2: randomSoalPich[1],
                 soalPich3: randomSoalPich[2],
-                soalPich4: randomSoalPich[3],
-                soalPich5: randomSoalPich[4],
+                shaer: randomShaer[0],
+                masal: randomMasal[0],
             };
 
             if (x.type > 20) {

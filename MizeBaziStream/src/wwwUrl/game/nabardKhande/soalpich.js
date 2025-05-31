@@ -4,7 +4,6 @@
     soalpich.topTimeProgressTimer = null;
     soalpich.topTimeProgressAnimation?.cancel();
     soalpich.topTimeProgressAnimation = null;
-    vm.$refs.childsoalpich.soundDivI = false;
     vm.$refs.childsoalpich.topTime = '- ----';
     vm.$refs.childsoalpich.progressbarWidth = "0px";
     if (itemMainFix) {
@@ -75,6 +74,7 @@ soalpich.Component = function (app) {
             },
             addMessage() {
                 if (this.isMessage || globalModel.user.index == globalModel.activeUser2.index) return;
+                if (!this.message || this.message.length < 3) return;
                 let message = this.message.slice(0, 30);
                 this.isMessage = true;
                 globalModel.connection.emit('addMessage', {
