@@ -50,4 +50,18 @@ export default class Receive extends Stream {
         KhandeControll.sendToSocket('sendSoalReceive', user.connectionId!, model);
     }
 
+    public gameResponseReceive(wait: number) {
+        const users: any = [];
+
+        const room = khandeDb().get(this.roomId);
+        room?.users.map(({ id, type }) => {
+            users.push({ id: id, type: type })
+        });
+        const model = {
+            wait: wait,
+            winner: this.winner,
+            users: users
+        };
+        KhandeControll.sendToMultipleSockets(this.roomId, 'gameResponseReceive', model);
+    }
 }

@@ -117,10 +117,6 @@ class KhandeTimer {
                 this.isDisconnectByRoomId = roomId;
             }
             userInDb().update(roomId, x);
-
-            if (x.userInGameStatus == 11) {
-                KhandeControll.statusReceive(roomId);
-            }
         });
 
         this.disconnectCheckGame();
@@ -134,7 +130,9 @@ class KhandeTimer {
             this.stop(this.isDisconnectByRoomId);
             return;
         }
+        controller.setPartnerLose();
         controller.isAddDisconnec = true;
+        KhandeControll.statusReceive(this.isDisconnectByRoomId);
         this.isDisconnectByRoomId = 'false';
     }
 

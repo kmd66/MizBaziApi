@@ -40,7 +40,13 @@ export default class Set extends Receive {
         if (!user) return;
         const soal = this.soalReplace(model.msg);
         if (soal == this.soal) {
+            const item = this.groupItem(user.key!);
+            if (!item) return;
             this.isSoal = true;
+            if (!this.score.has(item.type)) {
+                this.score.set(item.type, []);
+            }
+            this.score.get(item.type)!.push(1);
         }
 
         KhandeControll.sendToMultipleSockets(this.roomId, 'addMessageReceive', {
@@ -48,5 +54,27 @@ export default class Set extends Receive {
             userName: user.info.UserName,
             msg: model.msg
         });
+    }
+
+    public setSmile(model: any) {
+        const room = khandeDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
+        const item = this.groupItem(model.key!);
+        if (!item || !user) return;
+
+        if (model.smile > this.smileReng) {
+            user.userInGameStatus = 2;
+            const pKey = this.getPartnerKey(user.key!);
+            const pUser = room!.users.find(x => x.key == pKey);
+            if (pUser) pUser!.userInGameStatus = 2;
+            khandeDb().update(this.roomId, room!);
+            this.isUserAction = true;
+            KhandeControll.sendToMultipleSockets(this.roomId, 'setSmileReceive', { user: user.id, p: pUser?.id });
+        }
+
+        if (this.score.has(item.type)) {
+            this.smile.delete(item.type);
+        }
+        this.score.set(item.type, model.smile);
     }
 }

@@ -27,6 +27,7 @@ export class Property {
     public door?: DoorType = DoorType.d0;
 
     public isAddDisconnec: boolean = false;
+    public isUserAction: boolean = false;
 
     public wait: number = 14;
     public mainWait: number = 2;
@@ -46,7 +47,9 @@ export class Property {
 
     protected isStream: boolean = false;
 
-    public score: Map<number, number[]> = new Map();
+    public score: Map<string, number[]> = new Map();
+    public smileReng: number = 80;
+    public smile: Map<string, number> = new Map();
     public groups: any[] = [];
 
     protected soal: string = '';

@@ -2,6 +2,8 @@
 import { khandeDb } from './khandeDb';
 import { User } from '../../model/interfaces';
 import Set from './set';
+import { KhandeControll } from './extensions';
+import { winnerType2 } from '../../model/gameInterfaces';
 
 export default class khandeHandler extends Set {
 
@@ -35,13 +37,31 @@ export default class khandeHandler extends Set {
         }
     }
 
+
+    public setPartnerLose() {
+        const room = khandeDb().get(this.roomId);
+        if (!room) return;
+        room.users.map(x => {
+            if (x.userInGameStatus == 11) {
+                const pKey = this.getPartnerKey(x.key!);
+                if (pKey) {
+                    const pUser = room.users.find(x => x.key == pKey);
+                    if (pUser && [2, 11].indexOf(pUser.userInGameStatus) == -1) {
+                        pUser.userInGameStatus = 2;
+                        khandeDb().update(this.roomId, room!);
+                    }
+                }
+            }
+        });
+    }
+
     //-----------main
 
     public async main() {
         if (this.finish)
             return;
 
-        if (this.isAddDisconnec || !this.door || this.door == DoorType.d12) {
+        if (this.isUserAction || this.isAddDisconnec || !this.door || this.door == DoorType.d12) {
             this.checkLoser();
             return;
         }
@@ -110,14 +130,93 @@ export default class khandeHandler extends Set {
 
     private checkLoser() {
         this.isAddDisconnec = false;
+        this.isUserAction = false;
 
-        if (!this.door || this.door == DoorType.d12) {
+        const room = khandeDb().get(this.roomId);
+        if (!room) return;
+
+        let usersLength = 0;
+        room.users.map(x => {
+            if (x.userInGameStatus == 10 || x.userInGameStatus == 1) {
+                usersLength++;
+            }
+        });
+
+        if (!this.door || this.door == DoorType.d12 || usersLength < 3) {
+            this.endGame();
         }
 
         this.main();
     }
 
     private async endGame() {
+        const room = khandeDb().get(this.roomId);
+        if (!room) return;
+
+        let type: string[] = [];
+        room.users.map(x => {
+            if (x.userInGameStatus == 10 || x.userInGameStatus == 1) {
+                const item = this.groupItem(x.key!);
+                if (item && !type.includes(item.type)) {
+                    type.push(item.type);
+                }
+            }
+        });
+
+        if (type.length == 0) {
+            const index = Math.floor(Math.random() * room.users.length);
+            const randomUser = room.users[index];
+            const item = this.groupItem(randomUser.key!);
+            type.push(item.type);
+        }
+
+        this.winner = winnerType2.abi;
+
+        if (type.length == 1) {
+            if (type[0] == 'red')
+                this.winner = winnerType2.germez;
+            if (type[0] == 'green')
+                this.winner = winnerType2.sabz;
+        } else {
+            let maxLength = -1;
+            let candidates: string[] = [];
+
+            for (const [type, scores] of this.score.entries()) {
+                const len = scores.length;
+
+                if (len > maxLength) {
+                    maxLength = len;
+                    candidates = [type];
+                } else if (len === maxLength) {
+                    candidates.push(type);
+                }
+            }
+
+            let selectedType: string | undefined;
+
+            if (candidates.length === 1) {
+                selectedType = candidates[0];
+            } else if (candidates.length > 1) {
+                selectedType = candidates.reduce((minType, current) => {
+                    const smileCurrent = this.smile.get(current) ?? 0;
+                    const smileMin = this.smile.get(minType) ?? 0;
+                    return smileCurrent < smileMin ? current : minType;
+                });
+            }
+
+            if (selectedType == 'red')
+                this.winner = winnerType2.germez;
+            if (selectedType == 'green')
+                this.winner = winnerType2.sabz;
+        }
+
+        this.gameResponseReceive(90)
+        await this.delay(90000);
+
+        KhandeControll.sendToMultipleSockets(this.roomId, 'endGameReceive', true);
+        await this.delay(1000);
+
+        this.setFinish();
     }
 
     //--------------------
