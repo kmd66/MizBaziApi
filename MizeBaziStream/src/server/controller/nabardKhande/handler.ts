@@ -143,7 +143,7 @@ export default class khandeHandler extends Set {
         });
 
         if (!this.door || this.door == DoorType.d12 || usersLength < 3) {
-            this.endGame();
+            this.endGame(); return;
         }
 
         this.main();
@@ -198,8 +198,8 @@ export default class khandeHandler extends Set {
                 selectedType = candidates[0];
             } else if (candidates.length > 1) {
                 selectedType = candidates.reduce((minType, current) => {
-                    const smileCurrent = this.smile.get(current) ?? 0;
-                    const smileMin = this.smile.get(minType) ?? 0;
+                    const smileCurrent = this.faceOff.get(current) ?? 0;
+                    const smileMin = this.faceOff.get(minType) ?? 0;
                     return smileCurrent < smileMin ? current : minType;
                 });
             }

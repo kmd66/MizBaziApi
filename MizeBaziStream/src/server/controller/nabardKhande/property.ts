@@ -50,6 +50,7 @@ export class Property {
     public score: Map<string, number[]> = new Map();
     public smileReng: number = 80;
     public smile: Map<string, number> = new Map();
+    public faceOff: Map<string, number> = new Map();
     public groups: any[] = [];
 
     protected soal: string = '';
@@ -86,7 +87,7 @@ export class Property {
 
             case DoorType.d2:
             case DoorType.d4:
-            case DoorType.d8:this.state = 'soalPich'; break;
+            case DoorType.d8: this.state = 'soalPich'; break;
 
             case DoorType.d6:
             case DoorType.d10: this.state = 'labKhoni'; break;
@@ -101,6 +102,21 @@ export class Property {
             this.wait = 20;
         else
             this.wait = 12;
+
+        switch (this.door) {
+            case DoorType.d0:
+            case DoorType.d1:
+            case DoorType.d2:
+            case DoorType.d3:
+            case DoorType.d4: this.smileReng = 80; break; 
+            case DoorType.d5:
+            case DoorType.d6:
+            case DoorType.d7: this.smileReng = 70; break; 
+            case DoorType.d8:
+            case DoorType.d9:
+            case DoorType.d10:
+            case DoorType.d11: this.smileReng = 60; break; 
+        }
     }
 
     private addGroups(roomId: string): void {

@@ -6,6 +6,20 @@ socketHandler.init = function () {
     globalModel.connection.on('sendSoalReceive', sendSoalReceive);
     globalModel.connection.on('addSticker2Receive', addSticker2Receive);
     globalModel.connection.on('addMessageReceive', addMessageReceive);
+    globalModel.connection.on('setSmileReceive', setSmileReceive);
+}
+socketHandler.setSmile = function (smileReng) {
+    globalModel.connection.emit('setSmile', {
+        smile: smileReng,
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
+}
+socketHandler.setFaceOff = function () {
+    globalModel.connection.emit('setFaceOff', {
+        roomId: socketHandler.roomId,
+        userKey: socketHandler.userKey,
+    });
 }
 function mainReceive(model) {
     main.stream = false;
@@ -188,4 +202,24 @@ function removeListMsg() {
         query = '.labKhoni .listMsg';
     const listMsg = document.querySelector(query);
     listMsg.innerHTML = '';
+}
+function setSmileReceive(model) {
+    const i = globalModel.users.findIndex(u => u.id == model.userId);
+    const pI = globalModel.users.findIndex(u => u.id == model.pId);
+    if (i == -1 || pI == -1) return;
+
+    globalModel.users[i].userInGameStatus = 2;
+    globalModel.users[pI].userInGameStatus = 2;
+    main.setUsers();
+
+
+    const helpItem = help.find(globalModel.users[i].type);
+    const divEl = document.createElement('div');
+    divEl.className = `modalBady`;
+    divEl.style.textAlign = 'center';
+    divEl.innerHTML = `<div>بازیکن ${globalModel.users[i].info.UserName} از <span style="color:${helpItem.color};">${helpItem.title}</span> خندید :)</div><div>${helpItem.title} حذف شد !</div>`;
+    document.body.appendChild(divEl);
+    setTimeout(() => {
+        divEl.remove();
+    }, 5000);
 }

@@ -109,6 +109,7 @@ export function KandeMethod() {
             addSticker2: wrapHandler('addSticker2'),
             addMessage: wrapHandler('addMessage'),
             setSmile: wrapHandler('setSmile'),
+            setFaceOff: wrapHandler('setFaceOff'),
         },
 
         streamHandler: {

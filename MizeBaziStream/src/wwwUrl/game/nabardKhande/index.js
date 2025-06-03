@@ -5,7 +5,8 @@ import './help'
 import './soalpich'
 import '../sticker'
 import './labkhoni'
-//import '../itemclick'
+import '../itemclick'
+import '../gameresponse'
 
 const app = Vue.createApp({
     data() {
@@ -35,6 +36,8 @@ const app = Vue.createApp({
                     vm.$refs.childmain.init(); break;
                 case 'labKhoni':
                     vm.$refs.childlabkhoni.init(); break;
+                case 'gameresponse':
+                    vm.$refs.childGameresponse.init(); break;
             }
             this.appModel.state = state;
         }
@@ -45,8 +48,8 @@ help.Component(app);
 soalpich.Component(app);
 labkhoni.Component(app);
 sticker.Component(app);
-//itemclick.Component(app);
-//gameresponse.Component(app);
+itemclick.Component(app);
+gameresponse.Component(app);
 
 document.addEventListener("DOMContentLoaded", () => {
     vm = app.mount('#app');

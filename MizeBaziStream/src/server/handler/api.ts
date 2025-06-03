@@ -156,6 +156,11 @@ class PageRoot {
         const labkhoniFile = path.join(__dirname, '../../public/nabardKhande/labkhoni.html');
         const labkhoniTemp = fs.readFileSync(labkhoniFile, 'utf8');
 
+        const gameresponseFile = path.join(__dirname, '../../public/gameresponse.html');
+        const gameresponseTemp = fs.readFileSync(gameresponseFile, 'utf8');
+        const itemclickFile = path.join(__dirname, '../../public/itemclick.html');
+        const itemclickTemp = fs.readFileSync(itemclickFile, 'utf8');
+
         const stickerFile = path.join(__dirname, '../../public/sticker.html');
         const stickerTemp = fs.readFileSync(stickerFile, 'utf8');
 
@@ -169,6 +174,8 @@ class PageRoot {
             labkhoni: labkhoniTemp,
             soalpich: soalpichTemp,
             sticker: stickerTemp,
+            itemclick: itemclickTemp,
+            gameresponse: gameresponseTemp
         });
         res.send(renderedHtml);
     }

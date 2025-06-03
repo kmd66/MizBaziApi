@@ -167,6 +167,7 @@ export default class Stream extends Property {
         this.sfu.clear();
         this.score.clear();
         this.smile.clear();
+        this.faceOff.clear();
         clearTimeout(this.timeoutId);
         khandeDb().delete(this.roomId);
         khandeInstance().stop(this.roomId);

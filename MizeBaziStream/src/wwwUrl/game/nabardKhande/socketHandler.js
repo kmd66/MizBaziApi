@@ -31,6 +31,10 @@ socketHandler.initSoket = function () {
     globalModel.connection.on('userStatusReceive', globalModel.userStatusReceive);
     globalModel.connection.on('infoMainReceive', globalModel.infoMainReceive);
     globalModel.connection.on('addStickerReceive', sticker.addStickerReceive);
+    
+    globalModel.connection.on('gameResponseReceive', gameresponse.gameResponseReceive);
+    globalModel.connection.on('getMessage', gameresponse.getMessage);
+    globalModel.connection.on('endGameReceive', gameresponse.endGameReceive);
 }
 function socketCallBack() {
     publicUserRow = 3;

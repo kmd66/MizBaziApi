@@ -46,6 +46,21 @@ function setWinner(w) {
             vm.$refs.childGameresponse.winner = 'مافیا';
         }
     }
+
+    if (globalModel.gameName == 'nabardKhande') {
+        if (w == 1) {
+            vm.$refs.childGameresponse.winner = 'گروه آبی';
+            vm.$refs.childGameresponse.winnerColor = 'rgb(48, 204, 255)';
+        }
+        else if (w == 2) {
+            vm.$refs.childGameresponse.winner = 'گروه سبز';
+            vm.$refs.childGameresponse.winnerColor = 'rgb(130, 243, 90)';
+        }
+        else if (w == 3) {
+            vm.$refs.childGameresponse.winner = 'گروه قرمز';
+            vm.$refs.childGameresponse.winnerColor =   ' rgb(243, 90, 159)';
+        }
+    }
 }
 
 gameresponse.getMessage = function (model) {

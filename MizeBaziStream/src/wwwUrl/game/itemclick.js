@@ -38,6 +38,9 @@ function itemMainClick(i) {
         vm.$refs.childitemclick.rangOrazClick(i);
     if (globalModel.gameName == 'afsonVajeh' || globalModel.gameName == 'mafia')
         vm.$refs.childitemclick.modal = true;
+
+    if (globalModel.gameName == 'nabardKhande')
+        vm.$refs.childitemclick.info();
 }
 
 function rangOrazClick(i) {

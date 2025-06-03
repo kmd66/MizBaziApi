@@ -59,22 +59,35 @@ export default class Set extends Receive {
     public setSmile(model: any) {
         const room = khandeDb().get(this.roomId);
         const user = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
-        const item = this.groupItem(model.key!);
+        const item = this.groupItem(model.userKey!);
         if (!item || !user) return;
 
         if (model.smile > this.smileReng) {
             user.userInGameStatus = 2;
             const pKey = this.getPartnerKey(user.key!);
             const pUser = room!.users.find(x => x.key == pKey);
-            if (pUser) pUser!.userInGameStatus = 2;
+            if (pUser && [2, 11].indexOf(pUser.userInGameStatus) == -1) pUser!.userInGameStatus = 2;
             khandeDb().update(this.roomId, room!);
             this.isUserAction = true;
-            KhandeControll.sendToMultipleSockets(this.roomId, 'setSmileReceive', { user: user.id, p: pUser?.id });
+            KhandeControll.sendToMultipleSockets(this.roomId, 'setSmileReceive', { userId: user.id, pId: pUser?.id });
         }
 
-        if (this.score.has(item.type)) {
+        if (this.smile.has(item.type)) {
             this.smile.delete(item.type);
         }
-        this.score.set(item.type, model.smile);
+        this.smile.set(item.type, model.smile);
+    }
+    public setFaceOff(model: any) {
+        const room = khandeDb().get(this.roomId);
+        const user = room?.users.find((x: User) => x.key == model.userKey && x.userInGameStatus == 1);
+        const item = this.groupItem(model.userKey!);
+        if (!item || !user) return;
+
+        let reng = 1;
+        if (this.faceOff.has(item.type)) {
+            reng = this.faceOff.get(item.type)!;
+            this.faceOff.delete(item.type);
+        }
+        this.faceOff.set(item.type, reng);
     }
 }

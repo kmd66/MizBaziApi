@@ -17,7 +17,7 @@ function initShare() {
     globalModel.user = {};
 
     sticker = {};
-    //itemclick = {};
+    itemclick = {};
     socketHandler = {};
     main = {};
     help = {};
