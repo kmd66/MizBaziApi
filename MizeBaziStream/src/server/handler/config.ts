@@ -1,6 +1,7 @@
 import os from 'os';
 import { RtpCodecCapability } from 'mediasoup/node/lib/types';
-
+import { readFileSync } from 'fs';
+import path from 'path';
 interface NetworkInterfaceInfo {
     address: string;
     netmask: string;
@@ -34,6 +35,7 @@ interface WebRtcTransportOptions {
 }
 
 interface ConfigModel {
+    testCreateRoom: string;
     apiKey: string;
     apiUrl: string;
     numWorkers: number;
@@ -101,17 +103,43 @@ const webRtcTransport_options: WebRtcTransportOptions = {
     preferUdp: true,
 };
 
-const model: ConfigModel = {
-    apiKey: '123a5Mdmdsaui124d8a01220sa8w60123e56',
-    apiUrl:'https://localhost:7230/',
-    numWorkers: Object.keys(os.cpus()).length,
-    listenPort: 3000,
-    rtcMinPort: 10000,
-    rtcMaxPort: 10100,
-    sslCrt: '/ssl/cert.pem',
-    sslKey: '/ssl/key.pem',
-    webRtcTransport_options: webRtcTransport_options,
-    mediaCodecs: mediaCodecs,
-};
+function loadConfigSync(): any {
+    try {
+        const configPath = path.join(__dirname,  '..', 'config.json');
+        const configData = readFileSync(configPath, 'utf-8');
+        return JSON.parse(configData) as ConfigModel;
+    } catch (error) {
+        throw new Error(`Failed to load config: ${error}`);
+    }
+}
 
+class ConfigSingleton {
+    private static instance: ConfigModel;
+
+    private constructor() { }
+
+    public static getInstance(): ConfigModel {
+
+        if (!ConfigSingleton.instance) {
+            const jsonModel: ConfigModel = loadConfigSync();
+            ConfigSingleton.instance = {
+                testCreateRoom: jsonModel.testCreateRoom,
+                apiKey: jsonModel.apiKey,
+                apiUrl: jsonModel.apiUrl,
+                numWorkers: Object.keys(os.cpus()).length,
+                listenPort: jsonModel.listenPort,
+                rtcMinPort: jsonModel.rtcMinPort,
+                rtcMaxPort: jsonModel.rtcMaxPort,
+                sslCrt: jsonModel.sslCrt,
+                sslKey: jsonModel.sslKey,
+                webRtcTransport_options: webRtcTransport_options,
+                mediaCodecs: mediaCodecs,
+            };
+        }
+        return ConfigSingleton.instance;
+    }
+}
+
+const model: ConfigModel = ConfigSingleton.getInstance();
 export default model;
+

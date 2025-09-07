@@ -1,0 +1,2 @@
+D:\mizbazi\MizeBaziApi\MizeBaziStream\src\wwwUrl\game>npm run watch
+D:\mizbazi\MizeBaziApi\MizeBaziStream>npm run dev

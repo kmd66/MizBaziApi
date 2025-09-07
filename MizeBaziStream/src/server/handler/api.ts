@@ -10,10 +10,7 @@ import { globalDb } from '../handler/globalDb';
 
 
 class PageRoot {
-    //اصلاح
-    private _fileBaseUrl: string = '';
-    //private _fileBaseUsrl: string = config.apiUrl;
-    //اصلاح
+    private _fileBaseUrl: string = config.apiUrl;
 
     constructor() { }
 
@@ -266,7 +263,7 @@ class ApiRoot {
 class TestApiRoot {
     constructor() { }
     public async testCreateRoom(req: Request, res: Response): Promise<any> {
-        const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/testPage/userdata-nabardKhande.json', 'utf-8');
+        const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/testPage/' + config.testCreateRoom, 'utf-8');
         const model: RoomUsers = JSON.parse(jsonData);
         globalDb().clear();
         model.key = config.apiKey;

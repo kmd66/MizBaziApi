@@ -1,0 +1,10 @@
+{
+  "testCreateRoom": "userdata-mafia.json",
+  "apiKey": "123a5Mdmdsaui124d8a01220sa8w60123e56",
+  "apiUrl": "",
+  "listenPort": 3000,
+  "rtcMinPort": 10000,
+  "rtcMaxPort": 10100,
+  "sslCrt": "/ssl/cert.pem",
+  "sslKey": "/ssl/key.pem"
+}
