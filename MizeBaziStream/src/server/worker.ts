@@ -49,7 +49,7 @@ async function init() {
     globalDb(PORT);
 
     httpsServer.listen(PORT, () => {
-        console.log(`serverid: ${process.pid}  ${ENV} work in http://localhost:${PORT}`);
+        console.log(`serverid: ${process.pid}  ${ENV} work in http://0.0.0.0:${PORT}`);
     });
 
 }

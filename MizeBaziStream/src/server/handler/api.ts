@@ -263,7 +263,7 @@ class ApiRoot {
 class TestApiRoot {
     constructor() { }
     public async testCreateRoom(req: Request, res: Response): Promise<any> {
-        const jsonData = fs.readFileSync(__dirname + '../../../wwwUrl/testPage/' + config.testCreateRoom, 'utf-8');
+        const jsonData = fs.readFileSync(__dirname + '/../../wwwUrl/testPage/' + config.testCreateRoom, 'utf-8');
         const model: RoomUsers = JSON.parse(jsonData);
         globalDb().clear();
         model.key = config.apiKey;

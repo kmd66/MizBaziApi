@@ -111,22 +111,7 @@ class SFU {
 
     async addRouter(): Promise<void> {
         await this.clear();
-        const mediaCodecs: RtpCodecCapability[] = [
-            {
-                kind: 'audio' as MediaKind,
-                mimeType: 'audio/opus',
-                clockRate: 48000,
-                channels: 2,
-            },
-            {
-                kind: 'video' as MediaKind,
-                mimeType: 'video/VP8',
-                clockRate: 90000,
-                parameters: {
-                    'x-google-start-bitrate': 1000,
-                },
-            },
-        ];
+        const mediaCodecs = config.mediaCodecs;
 
         this.router = await SFU.worker.createRouter({ mediaCodecs });
     }

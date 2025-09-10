@@ -42,7 +42,7 @@ function init() {
         });
 
         statusApp.listen(statusPort, () => {
-            console.log(`📡 Status API running at http://localhost:${statusPort}/status`);
+            console.log(`📡 Status API running at http://0.0.0.0:${statusPort}/status`);
         });
     }
     else {
