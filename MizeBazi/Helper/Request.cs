@@ -34,7 +34,12 @@ public class AppRequest
     }
     async Task<Result<string>> post(object body, string url)
     {
-        using (HttpClient client = new HttpClient())
+        var handler = new HttpClientHandler
+        {
+            // نادیده گرفتن تمام خطاهای گواهی
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        using (HttpClient client = new HttpClient(handler))
         {
             if (body == null)
                 body = new { };

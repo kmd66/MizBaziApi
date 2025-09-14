@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
 using MizeBazi.Helper;
 using MizeBazi.Models;
 using System.Collections.Concurrent;
@@ -80,6 +81,8 @@ public abstract class MainHub : Hub
             Context.Abort();
             throw MizeBaziException_Hub.Error(message: "Authorization error ", code: 401);
         }
+        if (!string.IsNullOrEmpty(userResult.data.Img))
+            userResult.data.Img = RomHubCountHelper.apiUrl() + userResult.data.Img;
 
         if (Playing.TryGetValue(userResult.data.Id, out UserPlaying userPlaying))
         {
@@ -89,6 +92,7 @@ public abstract class MainHub : Hub
             //return;
         }
 
+        RomHubCountHelper.apiUrl();
         initUser.TryAdd(connectionId, userResult.data);
 
         if (initUser.Count == _count)
@@ -134,7 +138,7 @@ public abstract class MainHub : Hub
             var k = result.data.users.First(x=>x.userId == user.user.Id).userKey;
             var u = UserPlaying.GetInstance(user.user, _type, result.data.roomId, k);
             Playing.TryAdd(user.user.Id, u);
-            await Clients.Client(user.connectionId).SendAsync("InitGameReceive", _type.GameUrl(result.data.roomId), k);
+            await Clients.Client(user.connectionId).SendAsync("InitGameReceive", _type.GameUrl(result.data.roomId, k, user.user.Id));
         }
 
     }

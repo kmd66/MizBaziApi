@@ -12,7 +12,12 @@ function initSoket() {
     });
 
     connection.on("InitGameReceive", (link) => {
-        alert('InitGameReceive')
+        // window.location.href = link;
+        window.flutter_inappwebview.callHandler('InitGameReceive', link);
+    });
+
+    connection.on("RestartGameReceive", (link) => {
+        window.flutter_inappwebview.callHandler('RestartGameReceive', link);
     });
 
     function callbackSoketStart() {

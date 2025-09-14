@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SixLabors.ImageSharp;
 using System.IO.Compression;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -19,24 +20,38 @@ public static class RomHubCountHelper
 
     public static byte HubCount(this GameType val)
     {
-         return val switch
-         {
-             GameType.نبرد_خنده => 6,
-             GameType.رنگ_و_راز=> 5,
-             GameType.افسون_واژه => 8,
-             GameType.مافیا => 10,
-             _ => 0
-         };
+        return val switch
+        {
+            GameType.نبرد_خنده => 6,
+            GameType.رنگ_و_راز => 5,
+            GameType.افسون_واژه => 8,
+            GameType.مافیا => 10,
+            _ => 0
+        };
 
     }
-    public static string GameUrl(this GameType val, Guid id)
-        => GameLinkSection[$"BaseUrl:{val.ToString()}"]+$"?{id}";
+    public static string EnName(this GameType val)
+    {
+        return val switch
+        {
+            GameType.نبرد_خنده => "nabardKhande",
+            GameType.رنگ_و_راز => "rangOraz",
+            GameType.افسون_واژه => "afsonVajeh",
+            GameType.مافیا => "mafia",
+            _ => ""
+        };
+
+    }
+    public static string GameUrl(this GameType val, Guid roomId, Guid userKey, long userId)
+        => GameLinkSection[$"BaseUrl:{val.ToString()}"]+$"/{val.EnName()}?roomId={roomId}&userKey={userKey}&userId={userId}";
     public static string GameBaseUrl(this GameType val)
         => GameLinkSection[$"BaseUrl:{val.ToString()}"];
     public static string CreateRoomUrl(this GameType val)
         => GameLinkSection["createRoomUrl"];
     public static string CreateRoomKey(this GameType val)
         => GameLinkSection["createRoomKey"];
+    public static string apiUrl()
+        => GameLinkSection["apiUrl"];
 }
 public enum FriendRequestType : byte
 {

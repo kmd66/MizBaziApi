@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MizeBazi.Helper;
 using MizeBazi.Models;
-using System;
-using System.Text.Json;
-using static System.Net.WebRequestMethods;
 
 namespace MizeBazi.Controllers;
 
@@ -11,6 +9,12 @@ public class HomeController : Controller
 {
     public ActionResult Index()
         => View();
+
+
+
+    [AllowAnonymous, HttpGet, Route("TestApi")]
+    public Task<Result> TestApi()
+        => Result.SuccessfulAsync();
 
     //[Helper.Authorize]
     [HttpPost, Route("api/CheckHost")]
