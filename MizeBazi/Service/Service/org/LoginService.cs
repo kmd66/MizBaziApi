@@ -46,14 +46,15 @@ public class LoginService : IService
         var securityStamDataSource = new DataSource.SecurityStampDataSource();
         var result = await securityStamDataSource.GetLast(model.Phone);
 
-        if (result.data == null || result.data.Count > 3)
-            return Result<string>.Failure(message: "محدودیت در بررسی otp. دوباره درخاست ارسال پیامک دهید");
+        // اصلاح
+        //if (result.data == null || result.data.Count > 3)
+        //    return Result<string>.Failure(message: "محدودیت در بررسی otp. دوباره درخاست ارسال پیامک دهید");
 
-        if (result.data.Date.AddSeconds(125) < DateTime.Now)
-            return Result<string>.Failure(message: "کد ارسالی منقضی شده است. دوباره درخاست ارسال پیامک دهید");
+        //if (result.data.Date.AddSeconds(125) < DateTime.Now)
+        //    return Result<string>.Failure(message: "کد ارسالی منقضی شده است. دوباره درخاست ارسال پیامک دهید");
 
-        if (result.data.Stamp != model.Stamp)
-            return Result<string>.Failure(message: "کد ارسالی صحیح نمیباشد");
+        //if (result.data.Stamp != model.Stamp)
+        //    return Result<string>.Failure(message: "کد ارسالی صحیح نمیباشد");
 
         var userDataSource = new DataSource.UserDataSource();
         var userResult = await userDataSource.GetByPhone(model.Phone);

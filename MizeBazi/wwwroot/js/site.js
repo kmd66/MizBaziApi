@@ -7,10 +7,6 @@ function setLocalToken() {
 }
 
 //replace
-publicDeviceId = '';
-publicToken = '';
-publicApiBaseUrl = '';
-publicHubBaseUrl = '';
 setLocalToken(); // remove
 //replace
 
