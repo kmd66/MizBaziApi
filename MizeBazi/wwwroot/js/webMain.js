@@ -2,7 +2,11 @@
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(publicHubBaseUrl + connectionLink)
+        .withUrl(publicHubBaseUrl + connectionLink, {
+            skipNegotiation: false,
+            transport: signalR.HttpTransportType.WebSockets,
+            withCredentials: false
+        })
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
