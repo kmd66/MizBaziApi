@@ -100,27 +100,35 @@ function streamSuccess(stream) {
     params.track = track;
 }
 
-function getLocalStream() {
-    const audioConstraints = {
-        channelCount: 1,
-        sampleRate: 48000,
-        sampleSize: 16,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-    };
-    const videoConstraints = {
-        width: { ideal: 426 },
-        height: { ideal: 240 },
-        frameRate: { ideal: 15, max: 20 },
-    };
-    navigator.getUserMedia({
-        video: videoConstraints,
-        audio: audioConstraints,
-    }, streamSuccess, error => {
-    })
-}
+async function getLocalStream() {
+    try {
+        const audioConstraints = {
+            channelCount: 1,
+            sampleRate: 48000,
+            sampleSize: 16,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+        };
+        const videoConstraints = {
+            width: { ideal: 426 },
+            height: { ideal: 240 },
+            frameRate: { ideal: 15, max: 20 },
+        };
 
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: videoConstraints,
+            audio: audioConstraints
+        });
+        //const stream = await navigator.mediaDevices.getUserMedia({
+        //    video: true,
+        //    audio: true
+        //});
+        streamSuccess(stream);
+    } catch (error) {
+        console.log('---------------------error-s-', error);
+    }
+}
 async function getRtpCapabilities(local) {
     localObj = local;
     globalModel.connection.emit('getRtpCapabilities', {
