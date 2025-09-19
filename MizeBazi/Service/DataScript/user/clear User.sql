@@ -1,8 +1,17 @@
 delete [org].[Devices]
 delete [org].[SecurityStamps]
---delete[org].[Tokens]
---delete[org].[UsersExtra]
---delete[org].[Users]
+delete[org].[Tokens]
+delete[org].[UsersExtra]
+delete [flw].[BlockFriends]
+delete [org].[SecurityStamps]
+delete [flw].[FriendRequests]
+delete [flw].[Friends]
+delete [flw].[Notifications]
+delete [flw].[Messages]
+delete [flw].[GroupMembers]
+delete [flw].[Groups]
+
+delete[org].[Users]
 
 
 	--DROP TABLE org.newDevices;

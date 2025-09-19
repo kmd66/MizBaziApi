@@ -1,11 +1,4 @@
-﻿
-//replace
-publicDeviceId = '';
-publicToken = '';
-publicApiBaseUrl = '';
-publicHubBaseUrl = '';
-//replace
-publicUserRow = 5;
+﻿publicUserRow = 5;
 let mainTemplate;
 let isAddChalesh = true;
 

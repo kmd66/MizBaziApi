@@ -26,11 +26,7 @@ public class HomeController : Controller
     [HttpPost, Route("api/app/DownloadList")]
     public async Task<Result<List<DownloadItem>>> DownloadList()
     {
-        var type = GameType.افسون_واژه.GameBaseUrl();//status
-        var result = await new Helper.AppRequest().Post<List<int>>(null, $"{type}/status", false);
-
-        string signalUrl = "https://10.0.3.2:7230";
-        string streamUrl = $"http://10.0.3.2:{result.data[0]}";
+        string signalUrl = RomHubCountHelper.apiUrl();
 
         List<DownloadItem> list = new List<DownloadItem>{
             //img
@@ -56,10 +52,18 @@ public class HomeController : Controller
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/sDATA.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/signalr.min.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/signalr-protocol-msgpack.min.js"),
-            new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/vue.prod.min.js")
+            new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/vue.prod.min.js"),
+            
+            //js
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/site.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/webMain.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/wheelFortune.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/group.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/friend.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/room.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/webHome.js"),
         };
 
-        //signal
         list.AddRange(new List<DownloadItem>{
             new DownloadItem(htmlName : "Home", baseUrl:signalUrl, downloadUrl: "/Home"),
 
@@ -79,20 +83,31 @@ public class HomeController : Controller
             new DownloadItem(htmlName : "WheelFortune", baseUrl:signalUrl, downloadUrl: "/pages/WheelFortune"),
         });
 
-        //streams
+        var aUrl = RomHubCountHelper.GameBaseUrl(GameType.رنگ_و_راز);
         list.AddRange(new List<DownloadItem>{
-            new DownloadItem(htmlName : "rangOraz", baseUrl:streamUrl, downloadUrl: "/rangOraz"),
-            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/rangOraz.min.js"),
-
-            new DownloadItem(htmlName : "afsonVajeh", baseUrl:streamUrl, downloadUrl: "/afsonVajeh"),
-            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/afsonVajeh.min.js"),
-            
-            new DownloadItem(htmlName : "nabardKhande", baseUrl:streamUrl, downloadUrl: "/nabardKhande"),
-            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/nabardKhande.min.js"),
-            
-            new DownloadItem(htmlName : "mafia", baseUrl:streamUrl, downloadUrl: "/mafia"),
-            new DownloadItem(dirName: "game", downloadUrl: $"{streamUrl}/game/mafia.min.js")
+            new DownloadItem(htmlName : "rangOraz", baseUrl:aUrl, downloadUrl: "/rangOraz"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{aUrl}/game/rangOraz.min.js"),
         });
+
+        var bUrl = RomHubCountHelper.GameBaseUrl(GameType.افسون_واژه);
+        list.AddRange(new List<DownloadItem>{
+            new DownloadItem(htmlName : "afsonVajeh", baseUrl:bUrl, downloadUrl: "/afsonVajeh"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{bUrl}/game/afsonVajeh.min.js"),
+        });
+
+        var cUrl = RomHubCountHelper.GameBaseUrl(GameType.نبرد_خنده);
+        list.AddRange(new List<DownloadItem>{
+            new DownloadItem(htmlName : "nabardKhande", baseUrl:cUrl, downloadUrl: "/nabardKhande"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{cUrl}/game/nabardKhande.min.js"),
+        });
+
+        var dUrl = RomHubCountHelper.GameBaseUrl(GameType.مافیا);
+        list.AddRange(new List<DownloadItem>{
+            new DownloadItem(htmlName : "mafia", baseUrl:dUrl, downloadUrl: "/mafia"),
+            new DownloadItem(dirName: "game", downloadUrl: $"{dUrl}/game/mafia.min.js")
+        });
+
+        //streams
 
         return Result<List<DownloadItem>>.Successful(data: list);
     }
@@ -104,7 +119,7 @@ public class HomeController : Controller
         var type = GameType.افسون_واژه.GameBaseUrl();//status
         var result = await new Helper.AppRequest().Post<List<int>>(null, type);
 
-        string signalUrl = "https://10.0.3.2:7230";
+        string signalUrl = RomHubCountHelper.apiUrl();
         string streamUrl = $"https://10.0.3.2:{result.data[0]}";
 
         List<DownloadItem> list = new List<DownloadItem>{};
