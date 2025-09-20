@@ -1,12 +1,12 @@
 ﻿
-    if (!publicToken) {
-        publicDeviceId = '';
-        publicToken = '';
-        publicApiBaseUrl = '';
-        publicHubBaseUrl = '';
-        publicDeviceId = localStorage.getItem("publicDeviceId");
-        publicToken = localStorage.getItem("publicToken");
-    }
+if (typeof publicToken === 'undefined') {
+    publicDeviceId = '';
+    publicToken = '';
+    publicApiBaseUrl = '';
+    publicHubBaseUrl = '';
+    publicDeviceId = localStorage.getItem("publicDeviceId");
+    publicToken = localStorage.getItem("publicToken");
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     selectBtn();

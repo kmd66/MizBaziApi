@@ -2,6 +2,13 @@
 let mainTemplate;
 let isAddChalesh = true;
 
+if (typeof publicToken === 'undefined') {
+    publicDeviceId = '';
+    publicToken = '';
+    publicApiBaseUrl = '';
+    publicHubBaseUrl = '';
+}
+
 function setMainTemplate() {
     mainTemplate = document.querySelector(`.mainTemplate`);
 }
