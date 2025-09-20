@@ -51,26 +51,12 @@ public class UserValidate
             throw MizeBaziException.Error(message: " نام کاربری باید از اعداد و حروف لاتین باشد");
     }
 }
-public class UserPlaying : UserView
+public record UserPlaying(long Id, GameType UserGameType, Guid RoomId, Guid Key, string BaseUrl)
 {
-    public GameType UserGameType { get; set; }
-
-    public Guid RoomId { get; set; }
-
-    public Guid Key { get; set; }
-
-    public static UserPlaying GetInstance(UserView user, GameType userGameType, Guid roomId, Guid key)
-    {
-        string jsonString = System.Text.Json.JsonSerializer.Serialize(user);
-        var instance = System.Text.Json.JsonSerializer.Deserialize<UserPlaying>(jsonString);
-        instance.UserGameType = userGameType;
-        instance.RoomId = roomId;
-        instance.Key = key;
-        return instance;
-    }
+    public string UserGameName => UserGameType.EnName();
 }
 
-    [Keyless]
+[Keyless]
 public class UserView : User
 {
     public string Bio { get; set; }

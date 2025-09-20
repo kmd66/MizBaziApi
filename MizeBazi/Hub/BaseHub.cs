@@ -136,9 +136,12 @@ public abstract class MainHub : Hub
         foreach (var user in users)
         {
             var k = result.data.users.First(x=>x.userId == user.user.Id).userKey;
-            var u = UserPlaying.GetInstance(user.user, _type, result.data.roomId, k);
+            var u = new UserPlaying(user.user.Id, _type, result.data.roomId, k, _type.GameBaseUrl());
             Playing.TryAdd(user.user.Id, u);
-            await Clients.Client(user.connectionId).SendAsync("InitGameReceive", _type.GameUrl(result.data.roomId, k, user.user.Id));
+
+
+            string json = System.Text.Json.JsonSerializer.Serialize(u);
+            await Clients.Client(user.connectionId).SendAsync("InitGameReceive", json);
         }
 
     }

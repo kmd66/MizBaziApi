@@ -1,5 +1,4 @@
 ﻿var connection;
-
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
         .withUrl(publicHubBaseUrl + connectionLink, {
@@ -15,14 +14,25 @@ function initSoket() {
         setList(obj);
     });
 
-    connection.on("InitGameReceive", (link) => {
-        // window.location.href = link;
-        window.flutter_inappwebview.callHandler('InitGameReceive', link);
+    connection.on("InitGameReceive", (json) => {
+        if (window.flutter_inappwebview)
+            window.flutter_inappwebview.callHandler('f_initGameReceive', json);
+        else
+            window.location.href = gameUrl(json)
     });
 
     connection.on("RestartGameReceive", (link) => {
-        window.flutter_inappwebview.callHandler('RestartGameReceive', link);
+        window.flutter_inappwebview.callHandler('f_restartGameReceive', link);
     });
+
+    connection.on("ReloadtGameReceive", (link) => {
+        window.flutter_inappwebview.callHandler('f_restartGameReceive', link);
+    });
+
+    function gameUrl(json) {
+        const obj = JSON.parse(json);
+        return `${obj.BaseUrl}/${obj.UserGameName}?roomId=${obj.RoomId}&userKey=${obj.Key}&userId=${obj.Id}`;
+    }
 
     function callbackSoketStart() {
         setList(null);
