@@ -23,7 +23,7 @@ public class HomeController : Controller
         return Result<CheckHost>.Successful(data: new CheckHost());
     }
 
-    [HttpPost, Route("api/app/DownloadList")]
+    [HttpPost, AllowAnonymous, Route("api/app/DownloadList")]
     public async Task<Result<List<DownloadItem>>> DownloadList()
     {
         string signalUrl = RomHubCountHelper.apiUrl();
@@ -65,7 +65,7 @@ public class HomeController : Controller
         };
 
         list.AddRange(new List<DownloadItem>{
-            new DownloadItem(htmlName : "Home", baseUrl:signalUrl, downloadUrl: "/Home"),
+            new DownloadItem(htmlName : "Home", baseUrl:signalUrl, downloadUrl: "/pages/home"),
 
             new DownloadItem(htmlName : "Main25", baseUrl:signalUrl, downloadUrl: "/pages/main?gameId=25"),
             new DownloadItem(htmlName : "Main45", baseUrl:signalUrl, downloadUrl: "/pages/main?gameId=45"),

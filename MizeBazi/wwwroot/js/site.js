@@ -7,7 +7,7 @@ function setLocalToken() {
 }
 
 //replace
-setLocalToken(); // remove
+//setLocalToken(); // remove
 //replace
 
 document.addEventListener("DOMContentLoaded", () => {
