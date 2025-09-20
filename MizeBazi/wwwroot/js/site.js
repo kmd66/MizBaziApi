@@ -1,14 +1,12 @@
 ﻿
-function setLocalToken() {
     if (!publicToken) {
+        publicDeviceId = '';
+        publicToken = '';
+        publicApiBaseUrl = '';
+        publicHubBaseUrl = '';
         publicDeviceId = localStorage.getItem("publicDeviceId");
         publicToken = localStorage.getItem("publicToken");
     }
-}
-
-//replace
-//setLocalToken(); // remove
-//replace
 
 document.addEventListener("DOMContentLoaded", () => {
     selectBtn();
