@@ -2,7 +2,6 @@
     font-family: 'icomoon';
     src: url('/fonts/icomoon.ttf') format('truetype');
 }
-
 [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
@@ -17,7 +16,6 @@
     font-size: var(--IconSize);
     color: var(--TextColor2);
 }
-
 .icon-mask:before {
     content: "\e922";
 }
