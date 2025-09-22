@@ -62,7 +62,7 @@
             <p>{{userInfo?.info?.UserName}}</p>
             <p>{{userInfo?.info?.BirthDate}}</p>
             <p>{{userInfo?.info?.Date}}</p>
-            <button class="btn btn-Greenlight " v-show="!isMy">درخاست دوستی</button>
+            <button class="btn btn-Greenlight " v-show="!isMy" @click="friend(userInfo?.info?.Id)">درخاست دوستی</button>
         </div>
     </div>
 

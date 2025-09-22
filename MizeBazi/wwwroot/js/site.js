@@ -236,7 +236,6 @@ async function appHttp(url = '', data = {}) {
             pushErrorMessage({ comment: `code:${e.code}<br> ${e.message}`})
         throw e;
     }
-    
 }
 function pushErrorMessage({ comment, time = 2 }) {
     pushMessage({ comment: comment, type: 'error', time: time });

@@ -170,6 +170,7 @@ itemclick.listen = function () {
         });
     }
 }
+
 function addTarget(type) {
     if (!vm.$refs.childitemclick.isAddTarget)
         return;
@@ -185,6 +186,20 @@ function addTarget(type) {
         userKey: socketHandler.userKey,
     });
 
+}
+
+friendRequestList = [];
+function addFriend(id) {
+    if (friendRequestList.indexOf(id) > -1) {
+        pushErrorMessage({ comment: `شما قبلا درخواست برای این کاربر ارسال کرده اید` })
+        return;
+    }
+    friendRequestList.push(id);
+    var url = `${publicApiBaseUrl}/api/v1/Friend/Request?userId=${id}`;
+    appHttp(url)
+        .then(() => {
+            pushSuccessMessage({ comment: `درخواست ارسال شد` })
+        });
 }
 
 itemclick.Component = function (app) {
@@ -222,6 +237,12 @@ itemclick.Component = function (app) {
             target(type) {
                 addTarget(type)
             },
+
+            friend(id) {
+                this.userInfo = null
+                addFriend(id)
+            },
+
             info() {
                 this.userInfo = vm.$refs.childmain.users.find(x => x.row == rowNum);
             },
