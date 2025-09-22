@@ -85,6 +85,9 @@ public class HomeController : Controller
 
         var aUrl = RomHubCountHelper.GameBaseUrl(GameType.رنگ_و_راز);
         list.AddRange(new List<DownloadItem>{
+            new DownloadItem(dirName: "game", downloadUrl: $"{aUrl}/game/game.js"),
+
+
             new DownloadItem(htmlName : "rangOraz", baseUrl:aUrl, downloadUrl: "/rangOraz"),
             new DownloadItem(dirName: "game", downloadUrl: $"{aUrl}/game/rangOraz.min.js"),
         });
