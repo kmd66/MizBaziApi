@@ -57,8 +57,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 #region hub link
-app.MapHub<MizeBazi.HubControllers.TestHub>("/testHub");
-app.MapHub<MizeBazi.HubControllers.RoomHub>("/roomhub");
+//app.MapHub<MizeBazi.HubControllers.TestHub>("/testHub");
 
 app.MapHub<MizeBazi.HubControllers.NabardKhandeHub>("/nabardkhandehub");
 app.MapHub<MizeBazi.HubControllers.RangRazHub>("/rangrazhub");
@@ -67,6 +66,8 @@ app.MapHub<MizeBazi.HubControllers.MafiaHub>("/mafiahub");
 
 app.MapHub<MizeBazi.HubControllers.GroupHub>("/grouphub");
 app.MapHub<MizeBazi.HubControllers.FriendHub>("/friendhub");
+app.MapHub<MizeBazi.HubControllers.RoomHub>("/roomhub");
+
 #endregion
 
 app.ExceptionHandling();

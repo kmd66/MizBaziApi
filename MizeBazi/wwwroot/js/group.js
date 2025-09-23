@@ -13,7 +13,11 @@ const urlEdit = `${publicApiBaseUrl}/api/v1/Group/Edit`;
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(`${publicHubBaseUrl}/grouphub`)
+        .withUrl(`${publicHubBaseUrl}/grouphub`, {
+            skipNegotiation: false,
+            transport: signalR.HttpTransportType.WebSockets,
+            withCredentials: false
+        })
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
@@ -266,6 +270,9 @@ const app = Vue.createApp({
     methods: {
         changeState(state) {
             this.appModel.state = state
+        },
+        urlBack() {
+            f_urlBack()
         }
     }
 })

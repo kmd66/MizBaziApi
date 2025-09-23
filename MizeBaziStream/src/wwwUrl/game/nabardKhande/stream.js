@@ -129,25 +129,9 @@ let consumer = new Map();
 let localObj
 
 let params = {
-    // mediasoup params
     encodings: [
-        {
-            rid: 'r0',
-            maxBitrate: 100000,
-            scalabilityMode: 'S1T3',
-        },
-        {
-            rid: 'r1',
-            maxBitrate: 300000,
-            scalabilityMode: 'S1T3',
-        },
-        {
-            rid: 'r2',
-            maxBitrate: 900000,
-            scalabilityMode: 'S1T3',
-        },
+        { maxBitrate: 900000 }
     ],
-    // https://mediasoup.org/documentation/v3/mediasoup-client/api/#ProducerCodecOptions
     codecOptions: {
         videoGoogleStartBitrate: 1000
     }
@@ -164,25 +148,30 @@ function streamSuccess(stream) {
     params.track = track;
 }
 
-function getLocalStream() {
-    const audioConstraints = {
-        channelCount: 1,
-        sampleRate: 48000,
-        sampleSize: 16,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-    };
-    const videoConstraints = {
-        width: { ideal: 426 },
-        height: { ideal: 240 },
-        frameRate: { ideal: 15, max: 20 },
-    };
-    navigator.getUserMedia({
-        video: videoConstraints,
-        audio: audioConstraints,
-    }, streamSuccess, error => {
-    })
+async function getLocalStream() {
+    try {
+        const audioConstraints = {
+            channelCount: 1,
+            sampleRate: 48000,
+            sampleSize: 16,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+        };
+        const videoConstraints = {
+            width: { ideal: 426 },
+            height: { ideal: 240 },
+            frameRate: { ideal: 15, max: 20 },
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: videoConstraints,
+            audio: audioConstraints
+        });
+        streamSuccess(stream);
+    } catch (error) {
+        console.log('---------------------error-s-', error);
+    }
 }
 
 async function getRtpCapabilities(local, producerUserId) {

@@ -32,10 +32,15 @@
              v-bind:style="{ backgroundColor: appModel.state =='myGroup' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
             گروه‌ها
         </div>
-        <div class="item"
+        <div class="item" style="border-left: 1px solid var(--TextColor2);"
              v-on:click="changeState('searchGroup')"
              v-bind:style="{ backgroundColor: appModel.state =='searchGroup' ? 'rgb(3 218 198 / 60%)' : 'transparent'}">
             جستجو
+        </div>
+        <div class="item"
+             v-on:click="urlBack()"
+             v-bind:style="">
+            بازگشت
         </div>
     </div>
 

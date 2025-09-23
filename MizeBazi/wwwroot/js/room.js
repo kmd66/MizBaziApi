@@ -7,7 +7,11 @@ var usersInfo = null;
 
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(`${publicHubBaseUrl}/roomhub`)
+        .withUrl(`${publicHubBaseUrl}/roomhub`, {
+            skipNegotiation: false,
+            transport: signalR.HttpTransportType.WebSockets,
+            withCredentials: false
+        })
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
@@ -133,7 +137,10 @@ function UpdateReceive(b, connectionId, json) {
 
 function mainTopItem() {
     var info = $(this).attr('info');
-    if (info == 'createRoom') {
+    if (info == 'back') {
+        f_urlBack()
+    }
+    else if (info == 'createRoom') {
         $("#inpRoomName").val('');
         $("#inpPassword").val('');
         $("#createRoomErro").css("display", "none");

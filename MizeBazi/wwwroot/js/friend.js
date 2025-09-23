@@ -18,8 +18,13 @@ const urlMessageAdd = `${publicApiBaseUrl}/api/v1/Message/Add`;
 const urlMessageRemove = `${publicApiBaseUrl}/api/v1/Message/Remove`;
 
 function initSoket() {
+    console.log(`--------public Hub BaseUrl- ${publicHubBaseUrl}`)
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(`${publicHubBaseUrl}/friendhub`)
+        .withUrl(`${publicHubBaseUrl}/friendhub`, {
+            skipNegotiation: false,
+            transport: signalR.HttpTransportType.WebSockets,
+            withCredentials: false
+        })
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
@@ -108,6 +113,9 @@ const app = Vue.createApp({
             }
             this.appModel.state = state
 
+        },
+        urlBack() {
+            f_urlBack()
         }
     }
 })
