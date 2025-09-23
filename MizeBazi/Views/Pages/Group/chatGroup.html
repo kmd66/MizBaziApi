@@ -43,9 +43,9 @@
              v-on:click="pinPreLine = !pinPreLine"
              v-bind:style="{ 'white-space': pinPreLine ? 'pre-line' : 'nowrap'}">{{pinText}}</div>
 
-        <div v-for="(item, index) in texts">
+        <div v-for="(item, index) in texts" :class="item.my? 'grpMy' : 'grpMyf'">
             <div :class="['chatMain', 'd-flex', `item-${index}`]">
-                <div class="chatImg">
+                <div class="chatImg" v-if="!item.my">
                     <div class="chatListUserImg ">
                         <div class="chatUserImg">
                             <img :src="item.UserImg + '90.jpg'">

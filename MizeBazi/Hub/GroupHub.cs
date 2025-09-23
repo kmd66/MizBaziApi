@@ -54,16 +54,16 @@ public class GroupHub : Hub
 
         var connectionId = Context.ConnectionId;
 
-        var remove = listUser.FirstOrDefault(x => x.Key == userResult.data.Id);
-        if (remove.Key != 0)
-            listUser.TryRemove(remove.Key, out _);
+        var remove = listUser.Where(x => x.Key == userResult.data.Id).ToList();
+        if (remove.Count > 0)
+            remove.ForEach(r => listUser.TryRemove(r.Key, out _));
 
         var key = Guid.NewGuid();
         var user = new GroupMessageUser(connectionId, key, userResult.data);
         listUser.TryAdd(userResult.data.Id, user);
 
 
-        await Clients.Caller.SendAsync("InitReceive", key);
+        await Clients.Caller.SendAsync("InitReceive", key, userResult.data.UserName);
     }
 
     public async Task GetGroups(Guid key)

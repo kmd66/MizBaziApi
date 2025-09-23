@@ -11,6 +11,7 @@ const urlList = `${publicApiBaseUrl}/api/v1/Group/List`;
 const urlAdd = `${publicApiBaseUrl}/api/v1/Group/Add`;
 const urlEdit = `${publicApiBaseUrl}/api/v1/Group/Edit`;
 
+userName = '';
 function initSoket() {
     connection = new signalR.HubConnectionBuilder()
         .withUrl(`${publicHubBaseUrl}/grouphub`, {
@@ -21,7 +22,8 @@ function initSoket() {
         .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
         .build();
 
-    connection.on("InitReceive", (k) => {
+    connection.on("InitReceive", (k, u) => {
+        userName = u;
         key = k;
         connection.invoke("GetGroups", key);
     });
@@ -36,6 +38,8 @@ function initSoket() {
     connection.on("JoinReceive", (texts, pinText) => {
         var objTexts = JSON.parse(texts);
         objTexts.map((item) => {
+            if (item.UserName == userName)
+                item.my = true; 
             item.pDate = item.Date.toJalaaliString() + ' ' + item.Date.getTime();
         });
         vm.mainModel.loding = false;
@@ -55,6 +59,9 @@ function initSoket() {
 
     connection.on("MessageReceive", (t) => {
         var item = JSON.parse(t);
+        if (item.UserName == userName)
+            item.my = true; 
+
         item.pDate = item.Date.toJalaaliString() + ' ' + item.Date.getTime();
         vm.$refs.childchat.texts.push(item);
             scrollEl('#chatList');

@@ -225,3 +225,18 @@
     width: 55px;
     text-align: center;
 }
+.grpMy .chatMain {
+    justify-content: end !important;
+}
+.grpMy .chatText {
+    padding: 0 0 0 14px;
+}
+.grpMy .chatBox {
+    background: #00ceff2e;
+}
+    .grpMy .chatBox::after {
+        right: unset;
+        clip-path: polygon(0 50%, 100% 0, 100% 100%);
+        background-color: #00ceff2e;
+        left: -0.99rem;
+    }

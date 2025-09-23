@@ -12,6 +12,11 @@ public class FriendHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
+        var connectionId = Context.ConnectionId;
+        var remove = listUser.FirstOrDefault(x => x.Value.ConnectionId == connectionId);
+        if (remove.Key != 0)
+            listUser.TryRemove(remove.Key, out _);
+
         await base.OnDisconnectedAsync(exception);
     }
 
