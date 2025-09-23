@@ -49,7 +49,7 @@ public class HomeController : Controller
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/jquery.min.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/msgpack.min.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/pako.min.js"),
-            new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/sDATA.js"),
+            new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/sData.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/signalr.min.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/signalr-protocol-msgpack.min.js"),
             new DownloadItem(dirName: "lib", downloadUrl: $"{signalUrl}/lib/vue.prod.min.js"),
