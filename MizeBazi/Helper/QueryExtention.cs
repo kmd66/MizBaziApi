@@ -61,8 +61,8 @@ public static class QueryExtention
     {
         if (i == null)
             return "NULL";
-        return $"'{i.ToString()}'";
+        return $"'{i?.ToString("yyyy-MM-dd HH:mm:ss")}'";
     }
     public static string Query(this DateTime i)
-        => $"'{i.ToString()}'";
+        => $"'{i.ToString("yyyy-MM-dd HH:mm:ss")}'";
 }

@@ -58,9 +58,9 @@ public class HomeController : Controller
             new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/site.js"),
             new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/webMain.js"),
             new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/wheelFortune.js"),
-            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/group.js"),
-            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/friend.js"),
-            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/room.js"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/group.js", version:"1.1.1"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/friend.js", version:"1.1.1"),
+            new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/room.js", version:"1.1.1"),
             new DownloadItem(dirName: "js", downloadUrl: $"{signalUrl}/js/webHome.js"),
         };
 
@@ -77,8 +77,8 @@ public class HomeController : Controller
             new DownloadItem(htmlName : "Help68", baseUrl:signalUrl, downloadUrl: "/pages/help?gameId=68"),
             new DownloadItem(htmlName : "Help89", baseUrl:signalUrl, downloadUrl: "/pages/help?gameId=89"),
             
-            new DownloadItem(htmlName : "Group",  baseUrl:signalUrl, downloadUrl: "/pages/Group"),
-            new DownloadItem(htmlName : "Frind",  baseUrl:signalUrl, downloadUrl: "/pages/Friend"),
+            new DownloadItem(htmlName : "Group",  baseUrl:signalUrl, downloadUrl: "/pages/Group", version:"1.1.1"),
+            new DownloadItem(htmlName : "Frind",  baseUrl:signalUrl, downloadUrl: "/pages/Friend", version : "1.1.1"),
             new DownloadItem(htmlName : "Room",   baseUrl:signalUrl, downloadUrl: "/pages/Room"),
             new DownloadItem(htmlName : "WheelFortune", baseUrl:signalUrl, downloadUrl: "/pages/WheelFortune"),
         });

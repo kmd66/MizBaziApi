@@ -2,7 +2,7 @@
 <div class="mainTop d-flex" style="height: 70px;">
     <div class="mainTopItem d-flex">
         <div style="margin-left: 12px;">
-            <div class="userImg"><img :src="listUser[userIndex]?.Img + '90.jpg'"></div>
+            <div class="userImg"><img :src="publicApiBaseUrl + listUser[userIndex]?.Img + '90.jpg'"></div>
         </div>
         <div class="mainTopItemInfo">
             <div>{{listUser[userIndex]?.FirstName}} {{listUser[userIndex]?.LastName}}</div>

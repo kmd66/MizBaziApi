@@ -512,6 +512,8 @@ app.config.globalProperties.resetModal = function (modal) {
     modal.item = {};
 };
 
+app.config.globalProperties.publicApiBaseUrl = publicApiBaseUrl;
+
 vm = app.mount('#app');
 initSoket();
 

@@ -224,7 +224,7 @@ function updateRoom(b, user) {
         let elRoomTopUserList = ''
         for (let i = 0; i < roomInfo.count; i++) {
             if (usersInfo.length > i) {
-                elRoomTopUserList += `<div class="roomTopUserImg"><img src="${usersInfo[i].img}90.jpg"></div>`;
+                elRoomTopUserList += `<div class="roomTopUserImg">${imgTag(usersInfo[i].img)}</div>`;
 
             } else {
                 elRoomTopUserList += `<div class="roomTopUserImg"><i class="icon-user-2"></i></div>`;
@@ -235,7 +235,7 @@ function updateRoom(b, user) {
 
         let elRoomUserListBody = '';
         usersInfo.map((x) => {
-            elRoomUserListBody += `<div class="roomListUserImg"><div class="roomTopUserImg"><img src="${x.img}90.jpg"></div>`
+            elRoomUserListBody += `<div class="roomListUserImg"><div class="roomTopUserImg">${imgTag(x.img)}</div>`
                 + `<div class="roomListUserMess"><div>${x.userName}</div><div>${x.name}</div></div></div>`;
         });
 
@@ -259,7 +259,7 @@ function updateRoom(b, user) {
     function userNotif() {
         if (user) {
             var el = '<div class="roomListUser"><div class="roomListUserImg">'
-                + `<div class="roomTopUserImg"><img src="${user.img}90.jpg"></div>`
+                + `<div class="roomTopUserImg">${imgTag(user.img)}</div>`
                 + `<div class="roomListUserMess">${user.userName}</div></div><div class="roomListUserMess">`
                 + `کاربر ${user.name} <span style="color: ${b == true ? "var(--SuccessColor)" : "var(--ErrorColor)"}; font-weight: bold;">${b == true ? "وارد" : "خارج" }</span> شد</div></div>`;
 
@@ -287,7 +287,7 @@ function MessageReceive(connectionId, mes) {
         return;
 
     var el = `<div class="chatMain ${b == true ? 'myText': ''} d-flex">`;
-    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg"><img src="${user.img}90.jpg" /></div></div><div class="chatUserName">${user.userName}</div></div>`;
+    var chatImg = `<div class="chatImg"><div class="roomListUserImg"><div class="roomTopUserImg">${imgTag(user.img)}</div></div><div class="chatUserName">${user.userName}</div></div>`;
     var chatText = `<div class="chatText"><div class="chatBox"><div class="chatInfo">${user.name}</div><div class="chatMsg">${mes}</div></div></div>`;
 
     el += (b == true ? chatText + chatImg : chatImg + chatText) + '</div>';
@@ -299,6 +299,9 @@ function MessageReceive(connectionId, mes) {
 
 function trashRoom() {
     connection.invoke("Destroy", publicToken, publicDeviceId, roomInfo.name);
+}
+function imgTag(url) {
+    return `<img src="${publicApiBaseUrl}${url}90.jpg" />`;
 }
 
 $(".mainTopItem").on("click", mainTopItem);

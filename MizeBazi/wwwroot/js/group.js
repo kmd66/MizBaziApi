@@ -456,6 +456,7 @@ app.config.globalProperties.limitText = function (event, limit) {
         this.text = event.target.value;
     }
 };
+app.config.globalProperties.publicApiBaseUrl = publicApiBaseUrl;
 
 initSoket();
 
